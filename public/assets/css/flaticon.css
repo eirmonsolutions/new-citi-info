@@ -124,5 +124,6 @@ i[class*=" flaticon-"]:before {
 }
 
 .flaticon-avatar:before {
-    content: "\f11b";
+    content: "\e07b";
 }
+

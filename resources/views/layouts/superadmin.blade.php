@@ -28,21 +28,100 @@
 
 <body>
 
-    {{-- 🔹 Sidebar --}}
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+        <div id="appToast"
+            class="toast align-items-center text-bg-success border-0"
+            role="alert"
+            aria-live="assertive"
+            aria-atomic="true">
+
+            <div class="d-flex">
+                <div class="toast-body" id="appToastMsg">
+                    {{-- message from session --}}
+                </div>
+
+                <button type="button"
+                    class="btn-close btn-close-white me-2 m-auto"
+                    data-bs-dismiss="toast"
+                    aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-wrapper">
+        @include('superadmin.sidebar')
+
+        <div class="dashboard-area">
+
+            <header class="dashboard-header">
+                <button class="menu-icon-btn" id="menu-toggle-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu-icon lucide-menu">
+                        <path d="M4 5h16" />
+                        <path d="M4 12h16" />
+                        <path d="M4 19h16" />
+                    </svg>
+                </button>
+
+                <div class="dashboard-right-header">
+                    <div class="profile-box">A</div>
+                    <div class="dropdown-area">
+                        <span>Admin</span>
+                        <ul class="d-none">
+                            <li>Logout</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </header>
+            @yield('content')
+        </div>
+    </div>
 
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ✅ Success Toast
+            @if(session('success'))
+            const toastEl = document.getElementById('appToast');
+            const toastMsg = document.getElementById('appToastMsg');
+
+            toastEl.classList.remove('text-bg-danger');
+            toastEl.classList.add('text-bg-success');
+
+            toastMsg.innerText = @json(session('success'));
+
+            const toast = new bootstrap.Toast(toastEl, {
+                delay: 2500
+            });
+            toast.show();
+            @endif
+
+            // ✅ Error Toast (optional)
+            @if(session('error'))
+            const toastEl = document.getElementById('appToast');
+            const toastMsg = document.getElementById('appToastMsg');
+
+            toastEl.classList.remove('text-bg-success');
+            toastEl.classList.add('text-bg-danger');
+
+            toastMsg.innerText = @json(session('error'));
+
+            const toast = new bootstrap.Toast(toastEl, {
+                delay: 3000
+            });
+            toast.show();
+            @endif
+
+        });
+    </script>
 
 
-    {{-- 🔹 Page Content --}}
-
-    @yield('content')
-
-
-    {{-- 🔹 Footer --}}
 
 
     <!-- Bootstrap JS -->
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/aos.js') }}"></script>
     <script src="{{ asset('assets/js/gsap.js') }}"></script>
