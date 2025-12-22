@@ -1,27 +1,38 @@
 <?php
 
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 // use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\SuperAdmin\CategoryController;
 use App\Http\Controllers\SuperAdmin\FeatureController;
+use App\Http\Controllers\ListingController;
+use App\Models\Category;
+use App\Models\Country;
 
-Route::get('/', function () {
-    return view('pages.homepage');
-});
+
+Route::get('/', [HomeController::class, 'index'])->name('homepage');
 
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
 // Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
-
+Route::get('/add-listing', function () {
+    $categories = Category::all();
+    $countries = Country::orderBy('name')->get();
+    return view('pages.addlisting', compact('categories', 'countries'));
+});
 
 
 Route::get('/register', function () {
     return view('auth.register');
 });
 
+Route::get('/listing/create', [ListingController::class, 'create'])->name('listing.create');
+
+Route::post('/get-states', [ListingController::class, 'getStates'])->name('get.states');
+Route::post('/get-cities', [ListingController::class, 'getCities'])->name('get.cities');
 
 
 

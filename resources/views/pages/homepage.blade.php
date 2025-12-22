@@ -47,29 +47,43 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
+
+            @foreach($categories as $category)
             <div class="col-lg-3 col-md-6 col-sm-12">
                 <div class="category-item category-item-two">
                     <div class="category-img">
-                        <img src="{{ asset('assets/images/saloon.jpg') }}" alt="Category Image">
+                        <img
+                            src="{{ $category->image ? asset('storage/'.$category->image) : asset('assets/images/saloon.jpg') }}"
+                            alt="{{ $category->name }}">
                         <div class="category-overlay">
                             <div class="category-content">
-                                <a href=""><i class="ti-link"></i></a>
+                                <a href="{{ url('category/'.$category->id) }}">
+                                    <i class="ti-link"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="info">
                         <div class="icon">
-                            <i class="flaticon-government"></i>
+                            <i class="{{ $category->icon ?? 'flaticon-government' }}"></i>
                         </div>
-                        <h3 class="title"><a href="#">Saloon</a></h3>
+                        <h3 class="title">
+                            <a href="{{ url('category/'.$category->id) }}">
+                                {{ $category->name }}
+                            </a>
+                        </h3>
                         <span class="listing">15 Listing</span>
                     </div>
                 </div>
             </div>
+            @endforeach
+
         </div>
     </div>
 </section>
+
 
 <section class="explore-city-area">
     <div class="container">

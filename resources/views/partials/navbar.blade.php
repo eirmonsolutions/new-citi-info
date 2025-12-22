@@ -28,7 +28,7 @@
             <div class="right-header d-none d-lg-flex">
                 <a class="login-btn" href="/login">Login</a>
 
-                <a class="listing-btn" href="">
+                <a class="listing-btn" href="/add-listing">
                     <i class="fi-plus fs-lg"></i>
                     Add Listing</a>
             </div>
