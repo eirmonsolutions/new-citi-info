@@ -7,6 +7,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\SuperAdmin\CategoryController;
 use App\Http\Controllers\SuperAdmin\FeatureController;
 use App\Http\Controllers\ListingController;
+use App\Models\Feature;
 use App\Models\Category;
 use App\Models\Country;
 
@@ -19,9 +20,10 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 // Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
 
 Route::get('/add-listing', function () {
+    $features = Feature::all();
     $categories = Category::all();
     $countries = Country::orderBy('name')->get();
-    return view('pages.addlisting', compact('categories', 'countries'));
+    return view('pages.addlisting', compact('categories', 'countries', 'features'));
 });
 
 

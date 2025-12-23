@@ -56,17 +56,18 @@
         <div class="container">
 
             <form action="" class="row">
-                <div class="form-step active">
+                <div class="form-step active" data-step="1">
                     <div class="row">
+                        <h2>Basic Information</h2>
                         <div class="col-lg-7">
                             <div class="form-step-inner">
-                                <h2>Basic Information</h2>
+
                                 <div class="form-grid">
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="business_name" class="form-label">Business Name <span class="required">*</span></label>
-                                                <input type="text" id="business_name" name="business_name" placeholder="Enter your business name" required>
+                                                <input type="text" id="business_name" name="business_name" placeholder="Enter your business name">
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
@@ -214,8 +215,7 @@
                                                     name="full_address"
                                                     class="form-control textarea-field"
                                                     placeholder="Enter full business address"
-                                                    rows="3"
-                                                    required></textarea>
+                                                    rows="3"></textarea>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
@@ -230,8 +230,7 @@
                                                     name="business_description"
                                                     class="form-control textarea-field"
                                                     placeholder="Describe your business, services, and specialties"
-                                                    rows="4"
-                                                    required></textarea>
+                                                    rows="4"></textarea>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
@@ -272,17 +271,991 @@
                     </div>
                 </div>
 
+                <div class="form-step" data-step="2">
+                    <div class="row">
+                        <h2>Contact Information</h2>
+                        <div class="col-lg-12">
+                            <div class="form-step-inner">
+                                <div class="form-grid">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label" for="contact_name">Your Name <span class="required">*</span></label>
+                                                <input type="text" id="contact_name" name="contact_name" placeholder="John Doe">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label" for="phone">Phone <span class="required">*</span></label>
+                                                <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label" for="email">Email <span class="required">*</span></label>
+                                                <input type="email" id="email" name="email" placeholder="business@example.com">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label" for="website">Website</label>
+                                                <input type="url" id="website" name="website" placeholder="https://yoursite.com">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label class="form-label" for="alternate">Alternate Phone</label>
+                                                <input type="tel" id="alternate" name="alternate_phone" placeholder="(555) 987-6543">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h2>Social Media Links</h2>
+                        <div class="col-lg-12">
+                            <div class="form-step-inner">
+                                <div class="form-grid">
+                                    <div class="row">
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="facebook" class="form-label">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1877f2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook-icon lucide-facebook">
+                                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+                                                    </svg>
+                                                    Facebook
+                                                </label>
+                                                <input type="url" id="facebook" name="facebook"
+                                                    placeholder="https://facebook.com/yourbusiness">
+                                                <div class="error-message"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="instagram" class="form-label">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e4405f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram-icon lucide-instagram">
+                                                        <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                                                        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+                                                    </svg>
+                                                    Instagram
+                                                </label>
+                                                <input type="url" id="instagram" name="instagram"
+                                                    placeholder="https://instagram.com/yourbusiness">
+                                                <div class="error-message"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="youtube" class="form-label">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e4405f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-youtube-icon lucide-youtube">
+                                                        <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
+                                                        <path d="m10 15 5-3-5-3z" />
+                                                    </svg>
+                                                    Youtube
+                                                </label>
+                                                <input type="url" id="youtube" name="youtube"
+                                                    placeholder="https://youtube.com/yourbusiness">
+                                                <div class="error-message"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="twitter" class="form-label">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1da1f2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter-icon lucide-twitter">
+                                                        <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
+                                                    </svg>
+                                                    Twitter
+                                                </label>
+                                                <input type="url" id="twitter" name="twitter"
+                                                    placeholder="https://twitter.com/yourbusiness">
+                                                <div class="error-message"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="linkedin" class="form-label">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin-icon lucide-linkedin">
+                                                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                                                        <rect width="4" height="12" x="2" y="9" />
+                                                        <circle cx="4" cy="4" r="2" />
+                                                    </svg>
+                                                    LinkedIn
+                                                </label>
+                                                <input type="url" id="linkedin" name="linkedin"
+                                                    placeholder="https://linkedin.com/company/yourbusiness">
+                                                <div class="error-message"></div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="snapchat" class="form-label">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                        fill="none" stroke="#fffc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-snapchat-icon lucide-snapchat">
+                                                        <path d="M12 2c-3.4 0-6 2.6-6 6v2.3c0 .6-.3 1.1-.8 1.4-.6.4-1.3.7-2 .9-.7.2-1.2.7-1.2 1.3 0 .7.7 1.2 1.7 1.6 1.3.5 2.2 1.2 2.8 2.1.4.6 1 .9 1.7.9h1.1c.4 0 .7.2 1 .5.5.5 1.1.8 1.7.8s1.2-.3 1.7-.8c.3-.3.6-.5 1-.5h1.1c.7 0 1.3-.3 1.7-.9.6-.9 1.5-1.6 2.8-2.1 1-.4 1.7-.9 1.7-1.6 0-.6-.5-1.1-1.2-1.3-.7-.2-1.4-.5-2-.9-.5-.3-.8-.8-.8-1.4V8c0-3.4-2.6-6-6-6z" />
+                                                    </svg>
+
+                                                    Snapchat
+                                                </label>
+                                                <input type="url" id="snapchat" name="snapchat"
+                                                    placeholder="https://snapchat.com/yourbusiness">
+                                                <div class="error-message"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="3">
+                    <div class="row">
+                        <h2>Add working hours</h2>
+
+                        <div class="col-lg-12">
+                            <div class="working-hours-card">
+
+                                <!-- ====== Day Row Template (Repeat for all days) ====== -->
+                                <div class="day-row" data-day="monday">
+                                    <label class="switch">
+                                        <input type="checkbox" checked class="day-toggle">
+                                        <span class="slider"></span>
+                                    </label>
+
+                                    <div class="day-name">Monday</div>
+
+                                    <div class="time-wrap">
+                                        <!-- Start -->
+                                        <div class="time-box">
+                                            <input type="time" name="hours[monday][start]" value="09:00">
+
+                                        </div>
+
+                                        <div class="to-text">to</div>
+
+                                        <!-- End -->
+                                        <div class="time-box">
+                                            <input type="time" name="hours[monday][end]" value="17:00">
+
+                                        </div>
+
+                                        <!-- ✅ Lunch Time (Added like you asked) -->
+                                        <span class="lunch-label">Lunch</span>
+
+                                        <!-- Lunch Start -->
+                                        <div class="time-box">
+                                            <input type="time" name="hours[monday][lunch_start]" value="13:00">
+
+                                        </div>
+
+                                        <div class="to-text">to</div>
+
+                                        <!-- Lunch End -->
+                                        <div class="time-box">
+                                            <input type="time" name="hours[monday][lunch_end]" value="14:00">
+
+                                        </div>
+                                    </div>
+
+                                    <div class="closed-text d-none">Closed</div>
+                                </div>
+
+                                <!-- Tuesday -->
+                                <div class="day-row" data-day="tuesday">
+                                    <label class="switch">
+                                        <input type="checkbox" checked class="day-toggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <div class="day-name">Tuesday</div>
+                                    <div class="time-wrap">
+                                        <div class="time-box">
+                                            <input type="time" name="hours[tuesday][start]" value="09:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[tuesday][end]" value="17:00">
+
+                                        </div>
+
+                                        <span class="lunch-label">Lunch</span>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[tuesday][lunch_start]" value="13:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[tuesday][lunch_end]" value="14:00">
+
+                                        </div>
+                                    </div>
+                                    <div class="closed-text d-none">Closed</div>
+                                </div>
+
+                                <!-- Wednesday -->
+                                <div class="day-row" data-day="wednesday">
+                                    <label class="switch">
+                                        <input type="checkbox" checked class="day-toggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <div class="day-name">Wednesday</div>
+                                    <div class="time-wrap">
+                                        <div class="time-box">
+                                            <input type="time" name="hours[wednesday][start]" value="09:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[wednesday][end]" value="17:00">
+
+                                        </div>
+
+                                        <span class="lunch-label">Lunch</span>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[wednesday][lunch_start]" value="13:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[wednesday][lunch_end]" value="14:00">
+
+                                        </div>
+                                    </div>
+                                    <div class="closed-text d-none">Closed</div>
+                                </div>
+
+                                <!-- Thursday -->
+                                <div class="day-row" data-day="thursday">
+                                    <label class="switch">
+                                        <input type="checkbox" checked class="day-toggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <div class="day-name">Thursday</div>
+                                    <div class="time-wrap">
+                                        <div class="time-box">
+                                            <input type="time" name="hours[thursday][start]" value="11:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[thursday][end]" value="16:00">
+
+                                        </div>
+
+                                        <span class="lunch-label">Lunch</span>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[thursday][lunch_start]" value="13:30">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[thursday][lunch_end]" value="14:00">
+
+                                        </div>
+                                    </div>
+                                    <div class="closed-text d-none">Closed</div>
+                                </div>
+
+                                <!-- Friday -->
+                                <div class="day-row" data-day="friday">
+                                    <label class="switch">
+                                        <input type="checkbox" checked class="day-toggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <div class="day-name">Friday</div>
+                                    <div class="time-wrap">
+                                        <div class="time-box">
+                                            <input type="time" name="hours[friday][start]" value="11:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[friday][end]" value="16:00">
+
+                                        </div>
+
+                                        <span class="lunch-label">Lunch</span>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[friday][lunch_start]" value="13:30">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[friday][lunch_end]" value="14:00">
+
+                                        </div>
+                                    </div>
+                                    <div class="closed-text d-none">Closed</div>
+                                </div>
+
+                                <!-- Saturday (Closed by default) -->
+                                <div class="day-row is-closed" data-day="saturday">
+                                    <label class="switch">
+                                        <input type="checkbox" class="day-toggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <div class="day-name">Saturday</div>
+                                    <div class="time-wrap">
+                                        <div class="time-box">
+                                            <input type="time" name="hours[saturday][start]" value="09:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[saturday][end]" value="17:00">
+
+                                        </div>
+
+                                        <span class="lunch-label">Lunch</span>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[saturday][lunch_start]" value="13:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[saturday][lunch_end]" value="14:00">
+
+                                        </div>
+                                    </div>
+                                    <div class="closed-text">Closed</div>
+                                </div>
+
+                                <!-- Sunday (Closed by default) -->
+                                <div class="day-row is-closed" data-day="sunday">
+                                    <label class="switch">
+                                        <input type="checkbox" class="day-toggle">
+                                        <span class="slider"></span>
+                                    </label>
+                                    <div class="day-name">Sunday</div>
+                                    <div class="time-wrap">
+                                        <div class="time-box">
+                                            <input type="time" name="hours[sunday][start]" value="09:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[sunday][end]" value="17:00">
+
+                                        </div>
+
+                                        <span class="lunch-label">Lunch</span>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[sunday][lunch_start]" value="13:00">
+
+                                        </div>
+                                        <div class="to-text">to</div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[sunday][lunch_end]" value="14:00">
+
+                                        </div>
+                                    </div>
+                                    <div class="closed-text">Closed</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="4">
+                    <div class="row">
+                        <div class="col-lg-8">
+                            <h2>Services Offered</h2>
+
+                            <div id="servicesWrap" class="so-wrap">
+                                <!-- service row -->
+                                <div class="service-card service-row">
+                                    <div class="service-grid">
+                                        <div class="fg">
+                                            <label>Service Name</label>
+                                            <input type="text" name="services[0][name]" placeholder="e.g., Haircut">
+                                        </div>
+                                        <div class="fg">
+                                            <label>Price</label>
+                                            <input type="text" name="services[0][price]" placeholder="e.g., $25">
+                                        </div>
+                                        <div class="fg">
+                                            <label>Duration (mins)</label>
+                                            <input type="number" name="services[0][duration]" value="30" min="0">
+                                        </div>
+
+                                        <button type="button" class="delete-service" title="Remove">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4h8v2" />
+                                                <path d="M19 6l-1 14H6L5 6" />
+                                                <path d="M10 11v6" />
+                                                <path d="M14 11v6" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" id="addServiceBtn" class="add-service-btn">
+                                <span class="plus">＋</span> Add Service
+                            </button>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <h2>Features</h2>
+
+                            <div class="features-card">
+                                <!-- TOP: selectable boxes -->
+                                <div class="features-grid" id="featuresGrid">
+                                    @foreach($features as $f)
+                                    <button type="button"
+                                        class="feature-tile"
+                                        data-id="{{ $f->id }}"
+                                        data-name="{{ $f->name }}">
+                                        <span class="ft-icon">
+                                            @if(!empty($f->icon))
+                                            <i class="{{ $f->icon }}"></i>
+                                            @else
+                                            <!-- fallback icon -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <circle cx="12" cy="12" r="10"></circle>
+                                                <path d="M12 8v8M8 12h8"></path>
+                                            </svg>
+                                            @endif
+                                        </span>
+                                        <span class="ft-text">{{ $f->name }}</span>
+                                    </button>
+                                    @endforeach
+                                </div>
+
+                                <div class="features-divider"></div>
+
+                                <!-- BOTTOM: selected chips -->
+                                <div class="selected-head">
+                                    <div class="selected-title">SELECTED (<span id="selectedCount">0</span>)</div>
+                                </div>
+
+                                <div class="selected-chips" id="selectedChips"></div>
+
+                                <!-- hidden input: selected ids csv -->
+                                <input type="hidden" id="featuresHidden" name="features" value="">
+                            </div>
+
+
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-step" data-step="5">
+                    <h2 class="step-title">Media</h2>
+
+                    <div class="row g-4">
+                        <!-- Business Gallery -->
+                        <div class="col-lg-6">
+                            <div class="media-card">
+                                <div class="media-card-head">
+                                    <div class="media-icon">
+                                        <!-- image icon -->
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="3"></rect>
+                                            <circle cx="9" cy="9" r="2"></circle>
+                                            <path d="M21 15l-5-5L5 21"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="media-title">Business Gallery</div>
+                                        <div class="media-subtitle">Professional Photos</div>
+                                    </div>
+                                </div>
+
+                                <label class="upload-box" for="business_gallery">
+                                    <div class="upload-inner">
+                                        <div class="upload-circle">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M12 3v12"></path>
+                                                <path d="M7 8l5-5 5 5"></path>
+                                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            </svg>
+                                        </div>
+
+                                        <div class="upload-title">Upload Your Photos</div>
+                                        <div class="upload-hint">Drag and drop multiple images or click to browse</div>
+                                        <div class="upload-meta">PNG, JPG up to 10MB each (max 20 images)</div>
+
+                                        <div class="upload-btn">Choose Images</div>
+                                    </div>
+
+                                    <input
+                                        id="business_gallery"
+                                        name="business_gallery[]"
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        hidden />
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- YouTube Video -->
+                        <div class="col-lg-6">
+                            <div class="media-card">
+                                <div class="media-card-head">
+                                    <div class="media-icon">
+                                        <!-- youtube/video icon -->
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="5" width="18" height="14" rx="3"></rect>
+                                            <path d="M10 9l6 3-6 3V9z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <div class="media-title">YouTube Video</div>
+                                        <div class="media-subtitle">Promotional Content</div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group mb-3">
+                                    <label class="form-label">Video Link / Embed Code</label>
+                                    <input
+                                        type="text"
+                                        class="form-control media-input"
+                                        name="youtube_video"
+                                        id="youtube_video"
+                                        placeholder="https://youtu.be/xxxx or iframe embed code" />
+                                </div>
+
+                                <div class="video-preview-wrap">
+                                    <div class="video-preview-title">VIDEO PREVIEW</div>
+
+                                    <div class="video-preview" id="videoPreviewEmpty">
+                                        <div class="video-preview-icon">
+                                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                <path d="M8 5v14l11-7L8 5z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="video-preview-text">Video preview will appear here</div>
+                                    </div>
+
+                                    <!-- if you want iframe later, render it into this container -->
+                                    <div class="ratio ratio-16x9 d-none" id="videoPreviewFrame"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Gallery Preview -->
+                        <div class="col-12">
+                            <div class="media-card">
+                                <div class="gallery-head">
+                                    <div>
+                                        <div class="media-title">Gallery Preview</div>
+                                        <div class="media-subtitle" id="galleryCountText">0 photos ready to showcase</div>
+                                    </div>
+                                </div>
+
+                                <div class="gallery-strip thumb-row" id="galleryPreview">
+                                    <!-- thumbnails will be injected here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="form-step" data-step="6">
+                    <h2>Review</h2>
+                    <!-- Step 6 fields here -->
+
+                    <div class="review-wrap">
+
+                        <!-- 1) Basic Information -->
+                        <div class="review-card theme-basic">
+                            <div class="review-head" data-bs-toggle="collapse" data-bs-target="#revBasic" aria-expanded="true">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <!-- location icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0Z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                    </span>
+                                    <span>Basic Information</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <button type="button" class="btn-edit" onclick="goToStep(1)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revBasic" class="collapse show">
+                                <div class="review-body">
+                                    <div class="review-grid">
+                                        <div class="review-item">
+                                            <div class="lbl">Business Name</div>
+                                            <div class="val" id="rv_business_name">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">Business Logo</div>
+                                            <div class="val" id="rv_business_logo">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">Category</div>
+                                            <div class="val" id="rv_category">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">Country</div>
+                                            <div class="val" id="rv_country">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">State</div>
+                                            <div class="val" id="rv_state">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">City</div>
+                                            <div class="val" id="rv_city">—</div>
+                                        </div>
+
+                                        <div class="review-item full">
+                                            <div class="lbl">Address</div>
+                                            <div class="val" id="rv_address">—</div>
+                                        </div>
+
+                                        <div class="review-item full">
+                                            <div class="lbl">Description</div>
+                                            <div class="val" id="rv_description">—</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2) Contact Information -->
+                        <div class="review-card theme-contact">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revContact" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <!-- tag icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.59 13.41 11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82Z"></path>
+                                            <circle cx="7.5" cy="7.5" r="1.5"></circle>
+                                        </svg>
+                                    </span>
+                                    <span>Contact Information</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <button type="button" class="btn-edit" onclick="goToStep(2)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revContact" class="collapse">
+                                <div class="review-body">
+                                    <div class="review-grid">
+                                        <div class="review-item">
+                                            <div class="lbl">Your Name</div>
+                                            <div class="val" id="rv_contact_name">—</div>
+                                        </div>
+                                        <div class="review-item">
+                                            <div class="lbl">Phone</div>
+                                            <div class="val" id="rv_phone">—</div>
+                                        </div>
+                                        <div class="review-item">
+                                            <div class="lbl">Email</div>
+                                            <div class="val" id="rv_email">—</div>
+                                        </div>
+                                        <div class="review-item">
+                                            <div class="lbl">Website</div>
+                                            <div class="val" id="rv_website">—</div>
+                                        </div>
+                                        <div class="review-item">
+                                            <div class="lbl">Alternate Phone</div>
+                                            <div class="val" id="rv_alt_phone">—</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3) Business Hours -->
+                        <div class="review-card theme-hours">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revHours" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <!-- clock -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M12 6v6l4 2"></path>
+                                        </svg>
+                                    </span>
+                                    <span>Business Hours</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <button type="button" class="btn-edit" onclick="goToStep(3)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revHours" class="collapse">
+                                <div class="review-body">
+                                    <!-- You can fill these rows dynamically -->
+                                    <div class="hours-table" id="rv_hours_table">
+                                        <div class="hours-row">
+                                            <div class="d">Monday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Tuesday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Wednesday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Thursday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Friday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Saturday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Sunday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4) Services & Pricing -->
+                        <div class="review-card theme-services">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revServices" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <!-- bolt -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path>
+                                        </svg>
+                                    </span>
+                                    <span>Services &amp; Pricing</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <button type="button" class="btn-edit" onclick="goToStep(4)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revServices" class="collapse">
+                                <div class="review-body">
+                                    <div id="rv_services_list" class="muted-sm">No services added.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5) Features -->
+                        <div class="review-card theme-features">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revFeatures" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <!-- tag -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.59 13.41 11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82Z"></path>
+                                            <circle cx="7.5" cy="7.5" r="1.5"></circle>
+                                        </svg>
+                                    </span>
+                                    <span>Features</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <button type="button" class="btn-edit" onclick="goToStep(5)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revFeatures" class="collapse">
+                                <div class="review-body">
+                                    <div class="chips" id="rv_features_chips">
+                                        <!-- chips append here -->
+                                        <span class="muted-sm">No features selected.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 6) Media -->
+                        <div class="review-card theme-media">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revMedia" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <!-- image -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                            <path d="m21 15-5-5L5 21"></path>
+                                        </svg>
+                                    </span>
+                                    <span>Media</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <button type="button" class="btn-edit" onclick="goToStep(5)">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 20h9" />
+                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                                        </svg>
+                                        Edit
+                                    </button>
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revMedia" class="collapse">
+                                <div class="review-body">
+                                    <div class="media-block">
+                                        <div class="media-label">YouTube Video</div>
+                                        <div class="media-video" id="rv_youtube_box">
+                                            <div class="video-empty">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="m22 8-6 4 6 4V8Z"></path>
+                                                    <rect x="2" y="6" width="14" height="12" rx="2"></rect>
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <div class="media-label mt-3">Gallery Images (<span id="rv_gallery_count">0</span> images)</div>
+                                        <div class="media-thumbs" id="rv_gallery_thumbs">
+                                            <!-- thumbs append -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms box -->
+                        <div class="terms-box mt-3">
+                            <label class="d-flex align-items-start gap-2 m-0">
+                                <input type="checkbox" name="agree_terms" id="agree_terms" class="mt-1">
+                                <span class="terms-text">
+                                    I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>.
+                                    I confirm that all information provided is accurate and up to date.
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Listing Options -->
+                        <div class="listing-card mt-3">
+                            <div class="listing-head">Listing Options</div>
+
+                            <label class="opt-card active" id="optFreeWrap">
+                                <input type="radio" name="listing_option" value="free" checked>
+                                <div class="opt-body">
+                                    <div class="opt-title">Free Listing</div>
+                                    <div class="opt-sub">Basic listing with standard features</div>
+                                </div>
+                            </label>
+
+                            <label class="opt-card" id="optPremiumWrap">
+                                <input type="radio" name="listing_option" value="premium">
+                                <div class="opt-body">
+                                    <div class="opt-title">Premium Listing - $29/month</div>
+                                    <div class="opt-sub">Enhanced visibility, priority placement, and additional features</div>
+                                </div>
+                            </label>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="wizard-footer">
+                    <button type="button" class="btn-prev" id="btnPrev">Previous</button>
+
+                    <div class="wizard-center">
+                        <span id="stepIndicator">Step 1 of 6</span>
+                    </div>
+
+                    <button type="button" class="btn next-btn" id="nextBtn">Next</button>
+
+                    <button type="submit" class="btn submit-btn" id="submitBtn" style="display:none;">
+                        Submit Listing
+                    </button>
+                </div>
+
             </form>
 
         </div>
     </div>
 
-
-
-
-
-
 </section>
+
+
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -488,6 +1461,7 @@
     });
 </script>
 
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -531,6 +1505,484 @@
         }
 
     });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const formSteps = Array.from(document.querySelectorAll('.form-step'));
+        const progressBoxes = Array.from(document.querySelectorAll('.progess-area-list .progess-box'));
+        const totalSteps = Math.max(formSteps.length, progressBoxes.length) || 6;
+
+        // ✅ IDs matched with your HTML
+        const prevBtn = document.getElementById('btnPrev'); // was prevBtn
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // ✅ Your indicator: "Step 1 of 6"
+        const stepIndicator = document.getElementById('stepIndicator');
+
+        const tickSVG = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="lucide lucide-check-icon lucide-check">
+              <path d="M20 6 9 17l-5-5"/>
+            </svg>
+        `;
+
+        // number labels store
+        progressBoxes.forEach((box, idx) => {
+            const circle = box.querySelector('.step-circle');
+            if (circle) circle.dataset.stepNumber = String(idx + 1);
+        });
+
+        let currentStep = 1;
+
+        function clearStepErrors(stepEl) {
+            stepEl.querySelectorAll('.is-invalid').forEach(el => el.classList.remove('is-invalid'));
+            stepEl.querySelectorAll('.error-message').forEach(em => em.textContent = '');
+        }
+
+        function setFieldError(field, message) {
+            field.classList.add('is-invalid');
+            const fg = field.closest('.form-group');
+            if (fg) {
+                const em = fg.querySelector('.error-message');
+                if (em) em.textContent = message || 'This field is required.';
+            }
+        }
+
+        function validateCurrentStep() {
+            const stepEl = formSteps[currentStep - 1];
+            if (!stepEl) return true;
+
+            clearStepErrors(stepEl);
+
+            const requiredFields = Array.from(stepEl.querySelectorAll('[required]'));
+            let firstInvalid = null;
+
+            requiredFields.forEach(field => {
+                // hidden inputs (custom selects)
+                if (field.type === 'hidden') {
+                    if (!field.value || String(field.value).trim() === '') {
+                        if (!firstInvalid) firstInvalid = field;
+                        setFieldError(field, 'Please select a value.');
+                    }
+                    return;
+                }
+
+                if (!field.checkValidity()) {
+                    if (!firstInvalid) firstInvalid = field;
+                    setFieldError(field, field.validationMessage || 'This field is required.');
+                }
+            });
+
+            if (firstInvalid) {
+                if (firstInvalid.type !== 'hidden') {
+                    firstInvalid.focus({
+                        preventScroll: true
+                    });
+                    firstInvalid.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                } else {
+                    const fg = firstInvalid.closest('.form-group');
+                    if (fg) fg.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        function renderSteps() {
+            // show active step
+            formSteps.forEach((stepEl, idx) => {
+                stepEl.classList.toggle('active', (idx + 1) === currentStep);
+            });
+
+            // progress UI
+            progressBoxes.forEach((box, idx) => {
+                const stepNo = idx + 1;
+                const circle = box.querySelector('.step-circle');
+
+                box.classList.remove('active', 'completed');
+
+                if (stepNo < currentStep) {
+                    box.classList.add('completed');
+                    if (circle) circle.innerHTML = tickSVG;
+                } else if (stepNo === currentStep) {
+                    box.classList.add('active');
+                    if (circle) circle.textContent = circle.dataset.stepNumber || stepNo;
+                } else {
+                    if (circle) circle.textContent = circle.dataset.stepNumber || stepNo;
+                }
+            });
+
+            // prev disabled on step 1
+            if (prevBtn) prevBtn.disabled = currentStep === 1;
+
+            // last step => hide next, show submit
+            const isLast = currentStep === totalSteps;
+            if (nextBtn) nextBtn.style.display = isLast ? 'none' : 'inline-flex';
+            if (submitBtn) submitBtn.style.display = isLast ? 'inline-flex' : 'none';
+
+            // Step indicator text: "Step X of Y"
+            if (stepIndicator) stepIndicator.textContent = `Step ${currentStep} of ${totalSteps}`;
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', () => {
+                if (!validateCurrentStep()) return;
+
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    renderSteps();
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+
+        if (prevBtn) {
+            prevBtn.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    renderSteps();
+                    window.scrollTo({
+                        top: 0,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        }
+
+        renderSteps();
+    });
+</script>
+
+
+<script>
+    // ✅ Toggle open/close day rows + disable inputs when closed
+    document.querySelectorAll(".day-row").forEach((row) => {
+        const toggle = row.querySelector(".day-toggle");
+        const timeWrap = row.querySelector(".time-wrap");
+        const closedText = row.querySelector(".closed-text");
+        const inputs = row.querySelectorAll('input[type="time"]');
+
+        function applyState() {
+            const open = toggle.checked;
+
+            row.classList.toggle("is-closed", !open);
+
+            if (timeWrap) timeWrap.style.display = open ? "flex" : "none";
+            if (closedText) closedText.classList.toggle("d-none", open);
+
+            inputs.forEach(i => i.disabled = !open);
+        }
+
+        toggle.addEventListener("change", applyState);
+        applyState();
+    });
+</script>
+
+
+<!-- services step -->
+
+<script>
+    (function() {
+        // ====== Services (your existing code) ======
+        const servicesWrap = document.getElementById('servicesWrap');
+        const addServiceBtn = document.getElementById('addServiceBtn');
+
+        function reIndexServices() {
+            const rows = servicesWrap.querySelectorAll('.service-row');
+            rows.forEach((row, i) => {
+                row.querySelectorAll('input').forEach(inp => {
+                    inp.name = inp.name
+                        .replace(/services\[\d+\]\[name\]/, `services[${i}][name]`)
+                        .replace(/services\[\d+\]\[price\]/, `services[${i}][price]`)
+                        .replace(/services\[\d+\]\[duration\]/, `services[${i}][duration]`);
+                });
+            });
+        }
+
+        servicesWrap.addEventListener('click', function(e) {
+            const btn = e.target.closest('.delete-service');
+            if (!btn) return;
+            const rows = servicesWrap.querySelectorAll('.service-row');
+            if (rows.length === 1) return;
+            btn.closest('.service-row').remove();
+            reIndexServices();
+        });
+
+        addServiceBtn.addEventListener('click', function() {
+            const idx = servicesWrap.querySelectorAll('.service-row').length;
+            const div = document.createElement('div');
+            div.className = 'service-card service-row';
+            div.innerHTML = `
+      <div class="service-grid">
+        <div class="fg">
+          <label>Service Name</label>
+          <input type="text" name="services[${idx}][name]" placeholder="e.g., Haircut, Massage">
+        </div>
+        <div class="fg">
+          <label>Price</label>
+          <input type="text" name="services[${idx}][price]" placeholder="e.g., $25">
+        </div>
+        <div class="fg">
+          <label>Duration (mins)</label>
+          <input type="number" name="services[${idx}][duration]" value="30" min="0">
+        </div>
+        <button type="button" class="delete-service" title="Remove">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
+          </svg>
+        </button>
+      </div>
+    `;
+            servicesWrap.appendChild(div);
+        });
+
+        // ====== Features Select (NEW) ======
+        const featuresGrid = document.getElementById('featuresGrid');
+        const selectedChips = document.getElementById('selectedChips');
+        const selectedCount = document.getElementById('selectedCount');
+        const hidden = document.getElementById('featuresHidden');
+
+        const selected = new Map(); // key: slug, value: label
+
+        function slugify(str) {
+            return String(str).trim().toLowerCase().replace(/\s+/g, ' ').replace(/[^\w ]+/g, '').replace(/\s/g, '_');
+        }
+
+        function syncHidden() {
+            hidden.value = Array.from(selected.values()).join(',');
+            selectedCount.textContent = String(selected.size);
+        }
+
+        function renderChips() {
+            selectedChips.innerHTML = '';
+            Array.from(selected.entries()).forEach(([key, label]) => {
+                const chip = document.createElement('div');
+                chip.className = 'sel-chip';
+                chip.setAttribute('data-key', key);
+                chip.innerHTML = `<span>${label}</span><button type="button" aria-label="remove">×</button>`;
+                selectedChips.appendChild(chip);
+            });
+            syncHidden();
+        }
+
+        function setTileSelected(tile, isSel) {
+            tile.classList.toggle('is-selected', isSel);
+            tile.setAttribute('aria-pressed', isSel ? 'true' : 'false');
+        }
+
+        // click on tiles
+        featuresGrid.addEventListener('click', function(e) {
+            const tile = e.target.closest('.feature-tile');
+            if (!tile) return;
+
+            const label = tile.getAttribute('data-feature') || tile.textContent;
+            const key = slugify(label);
+
+            if (selected.has(key)) {
+                selected.delete(key);
+                setTileSelected(tile, false);
+            } else {
+                selected.set(key, label.trim());
+                setTileSelected(tile, true);
+            }
+
+            renderChips();
+        });
+
+        // click on chip remove
+        selectedChips.addEventListener('click', function(e) {
+            const btn = e.target.closest('button');
+            if (!btn) return;
+            const chip = btn.closest('.sel-chip');
+            const key = chip.getAttribute('data-key');
+
+            selected.delete(key);
+            chip.remove();
+
+            // unselect tile too
+            const tile = featuresGrid.querySelector(`.feature-tile[data-feature]`);
+            const allTiles = featuresGrid.querySelectorAll('.feature-tile');
+            allTiles.forEach(t => {
+                const label = t.getAttribute('data-feature') || t.textContent;
+                if (slugify(label) === key) setTileSelected(t, false);
+            });
+
+            syncHidden();
+            selectedCount.textContent = String(selected.size);
+        });
+
+        // Optional: if you already have saved value in hidden (edit page)
+        // it will auto-select tiles + chips
+        if (hidden.value.trim()) {
+            hidden.value.split(',').map(s => s.trim()).filter(Boolean).forEach(label => {
+                const key = slugify(label);
+                selected.set(key, label);
+                const tiles = featuresGrid.querySelectorAll('.feature-tile');
+                tiles.forEach(t => {
+                    const tLabel = t.getAttribute('data-feature') || t.textContent;
+                    if (slugify(tLabel) === key) setTileSelected(t, true);
+                });
+            });
+            renderChips();
+        }
+    })();
+</script>
+
+<!-- media step js -->
+
+<script>
+    // Gallery preview (shows thumbnails like your screenshot)
+    const galleryInput = document.getElementById("business_gallery");
+    const galleryPreview = document.getElementById("galleryPreview");
+    const galleryCountText = document.getElementById("galleryCountText");
+
+    // IMPORTANT: FileList read-only hoti hai, so we keep our own array
+    let selectedFiles = [];
+
+    function syncInputFiles() {
+        // Update the actual input.files using DataTransfer
+        const dt = new DataTransfer();
+        selectedFiles.forEach(f => dt.items.add(f));
+        galleryInput.files = dt.files;
+    }
+
+    function renderGallery() {
+        galleryPreview.innerHTML = "";
+
+        // show max 20 like your code
+        selectedFiles.slice(0, 20).forEach((file, index) => {
+            const url = URL.createObjectURL(file);
+
+            // wrapper
+            const wrap = document.createElement("div");
+            wrap.className = "gallery-item";
+
+            // image
+            const img = document.createElement("img");
+            img.className = "gallery-thumb";
+            img.src = url;
+            img.alt = "Gallery Image";
+
+            // remove button
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "gallery-remove-btn";
+            btn.innerHTML = "&times;"; // ×
+
+            btn.addEventListener("click", () => {
+                // remove that file from array
+                selectedFiles.splice(index, 1);
+
+                // update input files + re-render
+                syncInputFiles();
+                renderGallery();
+
+                // cleanup object url
+                URL.revokeObjectURL(url);
+            });
+
+            wrap.appendChild(img);
+            wrap.appendChild(btn);
+            galleryPreview.appendChild(wrap);
+        });
+
+        galleryCountText.textContent = `${selectedFiles.length} photos ready to showcase`;
+    }
+
+    galleryInput?.addEventListener("change", () => {
+        const files = Array.from(galleryInput.files || []);
+
+        // replace selection (same behaviour as your old code)
+        selectedFiles = files.slice(0, 20);
+
+        syncInputFiles();
+        renderGallery();
+    });
+
+    // Optional: YouTube preview (basic)
+    const ytInput = document.getElementById("youtube_video");
+    const emptyBox = document.getElementById("videoPreviewEmpty");
+    const frameBox = document.getElementById("videoPreviewFrame");
+
+    function extractYouTubeId(value) {
+        if (!value) return null;
+
+        // iframe embed
+        const iframeMatch = value.match(/src=["']([^"']+)["']/i);
+        if (iframeMatch) value = iframeMatch[1];
+
+        // youtu.be / watch?v=
+        const idMatch =
+            value.match(/youtu\.be\/([A-Za-z0-9_-]{6,})/) ||
+            value.match(/v=([A-Za-z0-9_-]{6,})/) ||
+            value.match(/embed\/([A-Za-z0-9_-]{6,})/);
+
+        return idMatch ? idMatch[1] : null;
+    }
+
+    ytInput?.addEventListener("input", () => {
+        const id = extractYouTubeId(ytInput.value.trim());
+        if (!id) {
+            frameBox.classList.add("d-none");
+            emptyBox.classList.remove("d-none");
+            frameBox.innerHTML = "";
+            return;
+        }
+
+        emptyBox.classList.add("d-none");
+        frameBox.classList.remove("d-none");
+        frameBox.innerHTML = `<iframe src="https://www.youtube.com/embed/${id}" title="YouTube video"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen></iframe>`;
+    });
+</script>
+
+<script>
+    // ---------- Listing option active border ----------
+    const optFree = document.getElementById('optFreeWrap');
+    const optPremium = document.getElementById('optPremiumWrap');
+
+    function refreshListingUI() {
+        const freeChecked = optFree.querySelector('input').checked;
+        optFree.classList.toggle('active', freeChecked);
+        optPremium.classList.toggle('active', !freeChecked);
+    }
+    optFree?.addEventListener('click', refreshListingUI);
+    optPremium?.addEventListener('click', refreshListingUI);
+    refreshListingUI();
+
+    // ---------- Edit button jump (you already have steps) ----------
+    function goToStep(stepNumber) {
+        // yahan aap apna existing step show wala function call karo
+        // Example: showStep(stepNumber)
+        // Abhi demo:
+        const allSteps = document.querySelectorAll('.form-step');
+        allSteps.forEach(s => s.classList.add('d-none'));
+        const target = document.querySelector('.form-step[data-step="' + stepNumber + '"]');
+        if (target) {
+            target.classList.remove('d-none');
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+    }
 </script>
 
 
