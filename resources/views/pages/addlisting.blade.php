@@ -55,7 +55,11 @@
     <div class="step-area">
         <div class="container">
 
-            <form action="" class="row">
+            <form action="{{ route('listing.store') }}" method="POST" enctype="multipart/form-data" class="row">
+                @csrf
+
+
+
                 <div class="form-step active" data-step="1">
                     <div class="row">
                         <h2>Basic Information</h2>
@@ -1983,6 +1987,192 @@
             });
         }
     }
+</script>
+
+<script>
+    function fillReviewFromForm() {
+        const setText = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = (val && String(val).trim()) ? val : '—';
+        };
+
+        // Step 1
+        const businessName = document.querySelector('[name="business_name"]')?.value || '—';
+
+        // ✅ Custom selects: label text (shown text) yaha se milega
+        const categoryLabel = document.querySelector('#categorySelect [data-label]')?.textContent?.trim() || '—';
+        const countryLabel = document.querySelector('#countrySelect [data-label]')?.textContent?.trim() || '—';
+        const stateLabel = document.querySelector('#stateSelect [data-label]')?.textContent?.trim() || '—';
+        const cityLabel = document.querySelector('#citySelect [data-label]')?.textContent?.trim() || '—';
+
+        // ✅ Hidden selected ids
+        const categoryId = document.querySelector('[name="category_id"]')?.value || '';
+        const countryId = document.querySelector('[name="country_id"]')?.value || '';
+        const stateId = document.querySelector('[name="state_id"]')?.value || '';
+        const cityId = document.querySelector('[name="city_id"]')?.value || '';
+
+        const address = document.querySelector('[name="full_address"]')?.value || '—';
+        const description = document.querySelector('[name="business_description"]')?.value || '—';
+
+        setText('rv_business_name', businessName);
+        setText('rv_category', categoryId ? categoryLabel : '—');
+        setText('rv_country', countryId ? countryLabel : '—');
+        setText('rv_state', stateId ? stateLabel : '—');
+        setText('rv_city', cityId ? cityLabel : '—');
+        setText('rv_address', address);
+        setText('rv_description', description);
+
+        // Step 2: Contact
+        setText('rv_contact_name', document.querySelector('[name="contact_name"]')?.value || '—');
+        setText('rv_phone', document.querySelector('[name="phone"]')?.value || '—');
+        setText('rv_email', document.querySelector('[name="email"]')?.value || '—');
+        setText('rv_alt_phone', document.querySelector('[name="alternate_phone"]')?.value || '—');
+        setText('rv_website', document.querySelector('[name="website"]')?.value || '—');
+
+        // ✅ Logo in review (aapke preview img se)
+        const logoImg = document.getElementById('logoImage');
+        const rvLogo = document.getElementById('rv_business_logo');
+        if (rvLogo) {
+            if (logoImg && logoImg.src && logoImg.src.startsWith('blob:')) {
+                rvLogo.innerHTML = `<img src="${logoImg.src}" style="max-width:120px; height:auto; border-radius:8px;" alt="Logo" />`;
+            } else {
+                rvLogo.textContent = '—';
+            }
+        }
+
+        // Step 4: Services list
+        const rvServices = document.getElementById('rv_services_list');
+        if (rvServices) {
+            const serviceRows = document.querySelectorAll('#servicesWrap .service-row');
+            const items = [];
+            serviceRows.forEach((row) => {
+                const name = row.querySelector('input[name*="[name]"]')?.value?.trim();
+                const price = row.querySelector('input[name*="[price]"]')?.value?.trim();
+                const dur = row.querySelector('input[name*="[duration]"]')?.value?.trim();
+                if (name || price || dur) items.push({
+                    name,
+                    price,
+                    dur
+                });
+            });
+
+            if (!items.length) {
+                rvServices.textContent = 'No services added.';
+            } else {
+                rvServices.innerHTML = items.map(s =>
+                    `<div class="hours-row">
+            <div class="d">${s.name || '—'}</div>
+            <div class="t">${s.price || '—'} ${s.dur ? `• ${s.dur} mins` : ''}</div>
+          </div>`
+                ).join('');
+            }
+        }
+
+        // Step 4: Features chips (hidden input: features)
+        const rvFeat = document.getElementById('rv_features_chips');
+        const featHidden = document.getElementById('featuresHidden')?.value || '';
+        if (rvFeat) {
+            if (!featHidden.trim()) {
+                rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
+            } else {
+                // chips already in UI (#selectedChips) — just copy them
+                const selectedChips = document.getElementById('selectedChips');
+                rvFeat.innerHTML = selectedChips ? selectedChips.innerHTML : `<span class="muted-sm">Selected.</span>`;
+            }
+        }
+
+        // Step 5: Gallery thumbs
+        const rvThumbs = document.getElementById('rv_gallery_thumbs');
+        const galleryPreview = document.getElementById('galleryPreview');
+        const rvCount = document.getElementById('rv_gallery_count');
+        if (rvThumbs && galleryPreview) {
+            rvThumbs.innerHTML = galleryPreview.innerHTML || '';
+            const count = galleryPreview.querySelectorAll('img').length;
+            if (rvCount) rvCount.textContent = count;
+            if (!rvThumbs.innerHTML.trim()) rvThumbs.innerHTML = `<span class="muted-sm">—</span>`;
+        }
+
+        // Step 5: Youtube (just show text or embed later)
+        const yt = document.getElementById('youtube_video')?.value?.trim();
+        const rvYt = document.getElementById('rv_youtube_box');
+        if (rvYt) {
+            if (!yt) {
+                rvYt.innerHTML = `<div class="video-empty">—</div>`;
+            } else {
+                rvYt.innerHTML = `<div style="font-size:14px; word-break:break-all;">${yt}</div>`;
+            }
+        }
+
+        fillHoursInReview();
+    }
+
+    function fillHoursInReview() {
+        const rvTable = document.getElementById('rv_hours_table');
+        if (!rvTable) return;
+
+        // review me already Monday..Sunday rows hain (d=day, t=time). :contentReference[oaicite:2]{index=2}
+        const rows = rvTable.querySelectorAll('.hours-row');
+
+        rows.forEach((row) => {
+            const dayName = (row.querySelector('.d')?.textContent || '').trim().toLowerCase();
+            const timeCell = row.querySelector('.t');
+            if (!timeCell || !dayName) return;
+
+            // step 3 day-row data-day="monday" etc
+            const dayRow = document.querySelector(`.day-row[data-day="${dayName}"]`);
+            if (!dayRow) {
+                timeCell.textContent = '—';
+                return;
+            }
+
+            const toggle = dayRow.querySelector('.day-toggle');
+            const isOpen = toggle ? toggle.checked : true;
+
+            if (!isOpen) {
+                timeCell.textContent = 'Closed';
+                return;
+            }
+
+            const start = document.querySelector(`input[name="hours[${dayName}][start]"]`)?.value || '';
+            const end = document.querySelector(`input[name="hours[${dayName}][end]"]`)?.value || '';
+
+            const lunchStart = document.querySelector(`input[name="hours[${dayName}][lunch_start]"]`)?.value || '';
+            const lunchEnd = document.querySelector(`input[name="hours[${dayName}][lunch_end]"]`)?.value || '';
+
+            let txt = '';
+            if (start && end) txt += `${start} - ${end}`;
+            if (lunchStart && lunchEnd) txt += `  |  Lunch: ${lunchStart} - ${lunchEnd}`;
+
+            timeCell.textContent = txt || '—';
+        });
+    }
+</script>
+
+
+<script>
+    // goToStep already hai aapke project me (Edit buttons me call ho raha hai)
+    // बस isme end me yeh add kardo:
+
+    function goToStep(step) {
+        document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+        document.querySelector('.form-step[data-step="' + step + '"]')?.classList.add('active');
+
+        // ✅ Step 6 par आते hi review fill
+        if (Number(step) === 6) {
+            fillReviewFromForm();
+        }
+    }
+
+    // ✅ Next button se jab step 6 aayega tab bhi fill
+    document.getElementById('nextBtn')?.addEventListener('click', () => {
+        const active = document.querySelector('.form-step.active');
+        const step = Number(active?.getAttribute('data-step') || 1);
+        const next = step + 1;
+
+        // (aapka existing step change logic rahe)
+        // बस before/after step activate, yeh call ensure:
+        if (next === 6) fillReviewFromForm();
+    });
 </script>
 
 
