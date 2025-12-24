@@ -6,11 +6,13 @@ use App\Http\Controllers\Auth\LoginController;
 // use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\SuperAdmin\CategoryController;
 use App\Http\Controllers\SuperAdmin\FeatureController;
+use App\Http\Controllers\SuperAdmin\SuperadminListingController;
 use App\Http\Controllers\ListingController;
 use App\Models\Feature;
 use App\Models\Category;
 use App\Models\Country;
 use Illuminate\Support\Facades\Artisan;
+use App\Http\Controllers\SuperAdmin\SuperadminUserController;
 
 Route::get('/add-listing', [ListingController::class, 'create'])->name('listing.create');
 Route::get('/submit-listing', [ListingController::class, 'create'])->name('listing.submit');
@@ -61,6 +63,32 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
     Route::post('/feature/{feature}/update', [FeatureController::class, 'update'])->name('.feature.update');
     Route::delete('/feature/{feature}', [FeatureController::class, 'destroy'])->name('.feature.destroy');
     Route::patch('/feature/{feature}/toggle-status', [FeatureController::class, 'toggleStatus'])->name('.feature.toggle-status');
+
+
+    Route::get('/listing', [SuperadminListingController::class, 'index'])->name('.listing.index');
+
+    Route::patch('/listing/{listing}/approve', [SuperadminListingController::class, 'approve'])
+        ->name('.listing.approve');
+
+    Route::get('/listing/{listing}', [SuperadminListingController::class, 'show'])
+        ->name('.listing.view');
+
+    Route::delete('/listing/{listing}', [SuperadminListingController::class, 'destroy'])
+        ->name('.listing.destroy');
+
+    Route::patch('/listing/{id}/restore', [SuperadminListingController::class, 'restore'])
+        ->name('.listing.restore');
+
+    Route::patch('/listing/{listing}/toggle-allow', [SuperadminListingController::class, 'toggleAllow'])
+        ->name('.listing.toggleAllow');
+
+    Route::get('/user', [SuperadminUserController::class, 'index'])
+        ->name('.user.index');
+
+    Route::patch('/user/{user}/toggle-status', [SuperadminUserController::class, 'toggleStatus'])
+        ->name('.user.toggleStatus');
+
+    Route::delete('/user/{user}', [SuperadminUserController::class, 'destroy'])->name('.user.destroy');
 });
 
 

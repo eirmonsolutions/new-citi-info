@@ -5,8 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class BusinessListing extends Model
 {
+
+    use SoftDeletes;
+
+
     protected $table = 'business_listings';
 
     protected $fillable = [
@@ -25,6 +31,7 @@ class BusinessListing extends Model
         'listing_type',
         'is_featured',
         'status',
+        'is_allowed',
         'submitted_at',
         'approved_at',
         'expires_at',
@@ -34,6 +41,7 @@ class BusinessListing extends Model
 
     protected $casts = [
         'is_featured'  => 'boolean',
+        'is_allowed' => 'boolean',
         'submitted_at' => 'datetime',
         'approved_at'  => 'datetime',
         'expires_at'   => 'datetime',
@@ -91,6 +99,10 @@ class BusinessListing extends Model
     {
         return $this->hasMany(\App\Models\BusinessService::class, 'business_id')
             ->orderBy('sort_order');
+    }
+    public function cityRel()
+    {
+        return $this->belongsTo(\App\Models\City::class, 'city'); // agar city table hai
     }
 
     public function features()
