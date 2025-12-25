@@ -14,6 +14,7 @@ use App\Models\Country;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\SuperAdmin\SuperadminUserController;
 
+
 Route::get('/add-listing', [ListingController::class, 'create'])->name('listing.create');
 Route::get('/submit-listing', [ListingController::class, 'create'])->name('listing.submit');
 Route::post('/submit-listing', [ListingController::class, 'store'])->name('listing.store');
@@ -82,13 +83,13 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
     Route::patch('/listing/{listing}/toggle-allow', [SuperadminListingController::class, 'toggleAllow'])
         ->name('.listing.toggleAllow');
 
-    Route::get('/user', [SuperadminUserController::class, 'index'])
-        ->name('.user.index');
+    Route::get('/user', [SuperadminUserController::class, 'index'])->name('.user.index');
 
     Route::patch('/user/{user}/toggle-status', [SuperadminUserController::class, 'toggleStatus'])
         ->name('.user.toggleStatus');
 
-    Route::delete('/user/{user}', [SuperadminUserController::class, 'destroy'])->name('.user.destroy');
+    Route::delete('/user/{user}', [SuperadminUserController::class, 'destroy'])
+        ->name('.user.destroy');
 });
 
 
