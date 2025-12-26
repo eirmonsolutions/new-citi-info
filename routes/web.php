@@ -13,7 +13,8 @@ use App\Models\Category;
 use App\Models\Country;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\SuperAdmin\SuperadminUserController;
-
+use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Admin\AdminDashboardController;
 
 Route::get('/add-listing', [ListingController::class, 'create'])->name('listing.create');
 Route::get('/submit-listing', [ListingController::class, 'create'])->name('listing.submit');
@@ -40,6 +41,14 @@ Route::get('/register', function () {
 });
 
 
+// Route::get('/test-mail', function () {
+//     Mail::raw('Test Email OK', function ($m) {
+//         $m->to('vishaleirmon15896@gmail.com')
+//           ->subject('Test Mail');
+//     });
+
+//     return 'Mail sent successfully';
+// });
 
 Route::post('/get-states', [ListingController::class, 'getStates'])->name('get.states');
 Route::post('/get-cities', [ListingController::class, 'getCities'])->name('get.cities');
@@ -91,6 +100,22 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
     Route::delete('/user/{user}', [SuperadminUserController::class, 'destroy'])
         ->name('.user.destroy');
 });
+
+
+Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
+    Route::get('/dashboard', function () {
+        return view('admin.dashboard');
+    })->name('.dashboard');
+   
+});
+
+
+
+// Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
+//     ->name('admin.dashboard');
+
+
+
 
 
 Route::get('/clear-all-cache-now', function () {

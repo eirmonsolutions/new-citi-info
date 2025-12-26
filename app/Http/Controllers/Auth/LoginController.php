@@ -6,11 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class LoginController  extends Controller
+class LoginController extends Controller
 {
     public function showLogin()
     {
-        return view('auth.login'); // aapki login blade file
+        return view('auth.login');
     }
 
     public function login(Request $request)
@@ -20,12 +20,33 @@ class LoginController  extends Controller
             'password' => 'required|min:6',
         ]);
 
-        $credentials = $request->only('email', 'password');
         $remember = $request->boolean('remember');
+
+        // ✅ only email + password
+        $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
-            return redirect()->route('superadmin.dashboard');
+
+            // ✅ if your table has is_blocked then check, else ignore
+            $user = auth()->user();
+
+            if (isset($user->is_blocked) && $user->is_blocked) {
+                Auth::logout();
+                return back()->withErrors(['email' => 'Your account is blocked.'])->onlyInput('email');
+            }
+
+            $role = $user->role ?? 'user';
+
+            if ($role === 'superadmin') {
+                return redirect()->route('superadmin.dashboard');
+            }
+
+            if ($role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+
+            return redirect()->route('home');
         }
 
         return back()

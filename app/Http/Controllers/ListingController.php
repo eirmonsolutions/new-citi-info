@@ -7,7 +7,8 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\Category;
 use App\Models\Feature;
-
+use App\Models\User; // ✅ add
+use App\Mail\ListingAdminCredentialsMail; // ✅ add
 use App\Models\BusinessListing;
 use App\Models\BusinessContact;
 use App\Models\BusinessSocialLink;
@@ -16,11 +17,15 @@ use App\Models\BusinessService;
 use App\Models\BusinessFeature;
 use App\Models\BusinessGallery;
 use App\Models\BusinessVideoLink;
-
+use Illuminate\Support\Facades\Hash; // ✅ add
+use Illuminate\Support\Facades\Mail; // ✅ add
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+
+
+
 
 class ListingController extends Controller
 {
@@ -51,6 +56,7 @@ class ListingController extends Controller
         $businessName = $request->input('business_name');
         $categoryId   = $request->input('category_id');
 
+
         // JSON: country_id/state_id/city_id | Form: country_id/state/city (tumhare code me)
         $countryId = $request->input('country_id');
         $stateVal  = $request->input('state') ?? $request->input('state_id');
@@ -70,6 +76,7 @@ class ListingController extends Controller
             'category_id'   => 'required',
             'business_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'business_gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'email' => 'nullable|email',
         ]);
 
         return DB::transaction(function () use (
@@ -139,6 +146,26 @@ class ListingController extends Controller
                     'is_primary'      => true,
                 ]);
             }
+
+            $listingEmail = $request->email; // aapka email input name="email"
+
+            $user = User::where('email', $listingEmail)->first();
+
+            if (!$user) {
+                $plainPassword = Str::random(10);
+
+                $user = User::create([
+                    'name' => $request->contact_name ?? $request->business_name ?? 'Admin',
+                    'email' => $listingEmail,
+                    'password' => Hash::make($plainPassword),
+                    'role' => 'admin',
+                    'is_blocked' => 0,
+                ]);
+
+                // mail send
+                Mail::to($listingEmail)->send(new ListingAdminCredentialsMail($user, $plainPassword));
+            }
+
 
             // ✅ social links:
             // Handle BOTH:
@@ -327,8 +354,7 @@ class ListingController extends Controller
                 ]);
             }
 
-            return back()
-                ->with('success', 'Listing submitted successfully! (Pending approval)');
+            return back()->with('success', 'Your listing submitted successfully! (Pending approval)');
         });
     }
 }

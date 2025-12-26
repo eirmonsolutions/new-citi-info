@@ -11,6 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('role')->default('user')->after('password');
+            // roles: user, admin, superadmin
+        });
+
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
@@ -42,6 +48,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('role');
+        });
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');

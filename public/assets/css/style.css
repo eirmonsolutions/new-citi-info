@@ -2391,6 +2391,7 @@ section.listing-area-front {
     overflow: hidden;
     transition: all 0.3s ease;
     position: relative;
+    margin-bottom: 50px;
 }
 
 .front-listing-img {
