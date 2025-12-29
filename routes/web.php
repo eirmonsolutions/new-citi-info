@@ -14,7 +14,7 @@ use App\Models\Country;
 use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\SuperAdmin\SuperadminUserController;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AnnouncementController;
 
 Route::get('/add-listing', [ListingController::class, 'create'])->name('listing.create');
 Route::get('/submit-listing', [ListingController::class, 'create'])->name('listing.submit');
@@ -106,7 +106,23 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('.dashboard');
-   
+
+
+    // Route::get('/announcement', [AnnouncementController::class, 'index'])->name('.announcement.index');
+    // Route::get('/announcement/create', [AnnouncementController::class, 'create'])->name('.announcement.create');
+    // Route::post('/announcement', [AnnouncementController::class, 'store'])->name('.announcement.store');
+
+
+
+    Route::get('/announcement', [AnnouncementController::class, 'index'])->name('.announcement.index');
+    Route::get('/announcement/create', [AnnouncementController::class, 'create'])->name('.announcement.create');
+    Route::post('/announcement', [AnnouncementController::class, 'store'])->name('.announcement.store');
+
+    Route::get('/announcement/{announcement}/edit', [AnnouncementController::class, 'edit'])->name('.announcement.edit');
+    Route::put('/announcement/{announcement}', [AnnouncementController::class, 'update'])->name('.announcement.update');
+
+    Route::patch('announcement/{announcement}/toggle', [AnnouncementController::class, 'toggle'])->name('.announcement.toggle');
+    Route::delete('/announcement/{announcement}', [AnnouncementController::class, 'destroy'])->name('.announcement.destroy');
 });
 
 
