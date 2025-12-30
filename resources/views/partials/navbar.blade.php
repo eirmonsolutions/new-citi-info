@@ -11,7 +11,7 @@
 
                 <ul class="navbar-nav m-auto">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        <a class="nav-link active" aria-current="page" href="/">Home</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">About Us</a>

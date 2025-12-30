@@ -21,6 +21,8 @@ class AnnouncementController extends Controller
 
     public function create()
     {
+
+        $admin = auth()->user();
         // business listings dropdown
         $listings = \App\Models\BusinessListing::select('id', 'business_name')
             ->orderBy('business_name')
@@ -91,14 +93,20 @@ class AnnouncementController extends Controller
     }
 
     // status toggle (index table)
-    public function toggle(Announcement $announcement)
+    public function toggle(Request $request, Announcement $announcement)
     {
-        $announcement->update([
-            'is_active' => !$announcement->is_active
+        $request->validate([
+            'is_active' => ['required', 'boolean'],
         ]);
 
-        // ✅ yahi page par hi on/off hona chahiye (redirect back)
-        return back();
+        $announcement->update([
+            'is_active' => $request->boolean('is_active'),
+        ]);
+
+        return response()->json([
+            'success'   => true,
+            'is_active' => (int) $announcement->is_active,
+        ]);
     }
 
     public function destroy(Announcement $announcement)

@@ -29,6 +29,13 @@ use Illuminate\Support\Str;
 
 class ListingController extends Controller
 {
+
+    public function show()
+    {
+
+        return view('pages.listingdetail');
+    }
+
     public function create()
     {
         $countries  = Country::orderBy('name')->get();

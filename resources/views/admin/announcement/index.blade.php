@@ -160,44 +160,50 @@
 
 {{-- ✅ JS: status toggle + lucide icons --}}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
 
-        // ✅ Render lucide icons
-        if (window.lucide && typeof lucide.createIcons === 'function') {
-            lucide.createIcons();
-        }
+    if (window.lucide && typeof lucide.createIcons === 'function') {
+        lucide.createIcons();
+    }
 
-        // ✅ Toggle status without leaving page
-        document.querySelectorAll('.status-toggle').forEach((toggle) => {
-            toggle.addEventListener('change', async function() {
+    document.querySelectorAll('.status-toggle').forEach((toggle) => {
+        toggle.addEventListener('change', async function () {
 
-                const url = this.dataset.url; // ✅ already has ID
-                const isActive = this.checked ? 1 : 0;
+            const url = this.dataset.url;
+            const isActive = this.checked ? 1 : 0;
 
-                try {
-                    const res = await fetch(url, {
-                        method: "PATCH",
-                        headers: {
-                            "Content-Type": "application/json",
-                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
-                            "Accept": "application/json",
-                        },
-                        body: JSON.stringify({
-                            is_active: isActive
-                        })
-                    });
+            // prevent double click while saving
+            this.disabled = true;
 
-                    if (!res.ok) {
-                        // revert toggle if failed
-                        this.checked = !this.checked;
-                    }
-                } catch (e) {
-                    this.checked = !this.checked;
+            try {
+                const res = await fetch(url, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                        "Accept": "application/json",
+                    },
+                    body: JSON.stringify({ is_active: isActive })
+                });
+
+                if (!res.ok) {
+                    this.checked = !this.checked; // revert
+                } else {
+                    const data = await res.json();
+                    // force UI to match server
+                    this.checked = data.is_active == 1;
                 }
-            });
-        });
 
+            } catch (e) {
+                this.checked = !this.checked; // revert
+            } finally {
+                this.disabled = false;
+            }
+        });
     });
+
+});
 </script>
+
 
 @endsection

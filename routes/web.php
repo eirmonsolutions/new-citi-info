@@ -41,6 +41,7 @@ Route::get('/register', function () {
 });
 
 
+
 // Route::get('/test-mail', function () {
 //     Mail::raw('Test Email OK', function ($m) {
 //         $m->to('vishaleirmon15896@gmail.com')
@@ -130,6 +131,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 // Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
 //     ->name('admin.dashboard');
 
+Route::get('/{slug}', [ListingController::class, 'show'])->name('listingdetail');
 
 
 
