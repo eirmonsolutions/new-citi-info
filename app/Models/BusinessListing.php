@@ -16,6 +16,7 @@ class BusinessListing extends Model
     protected $table = 'business_listings';
 
     protected $fillable = [
+        'user_id',
         'business_name',
         'category_id',
         'category',
@@ -36,7 +37,7 @@ class BusinessListing extends Model
         'approved_at',
         'expires_at',
         'views_count',
-        'clicks_count'
+        'clicks_count',
     ];
 
     protected $casts = [
@@ -100,10 +101,22 @@ class BusinessListing extends Model
         return $this->hasMany(\App\Models\BusinessService::class, 'business_id')
             ->orderBy('sort_order');
     }
+
+    public function countryRel()
+    {
+        return $this->belongsTo(\App\Models\Country::class, 'country'); // country_id stored in country
+    }
+
+    public function stateRel()
+    {
+        return $this->belongsTo(\App\Models\State::class, 'state'); // state_id stored in state
+    }
+
     public function cityRel()
     {
-        return $this->belongsTo(\App\Models\City::class, 'city'); // agar city table hai
+        return $this->belongsTo(\App\Models\City::class, 'city'); // city_id stored in city
     }
+
 
     public function features()
     {
@@ -119,5 +132,10 @@ class BusinessListing extends Model
     public function videos()
     {
         return $this->hasMany(\App\Models\BusinessVideoLink::class, 'business_id');
+    }
+
+    public function announcements()
+    {
+        return $this->hasMany(\App\Models\Announcement::class, 'listing_id');
     }
 }

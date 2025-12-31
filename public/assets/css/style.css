@@ -2791,6 +2791,9 @@ section.listing-area-front {
 
 .listing-slider-single {
     border-radius: 10px;
+    height: 460px !important;
+    width: 100%;
+    object-fit: cover;
 }
 
 section.listing-slider {

@@ -23,8 +23,10 @@ class AnnouncementController extends Controller
     {
 
         $admin = auth()->user();
-        // business listings dropdown
+
+        // ✅ Sirf login admin ki listings
         $listings = \App\Models\BusinessListing::select('id', 'business_name')
+            ->where('user_id', $admin->id)
             ->orderBy('business_name')
             ->get();
 

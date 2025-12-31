@@ -26,7 +26,9 @@
         <div class="profile-wrapper">
             <div class="profile-detail-area">
                 <div class="profile-img">
-                    <img src="{{ asset('assets/images/saloon.jpg') }}" alt="Profile Image">
+                    <img
+                        src="{{ $listing->logo ? asset('storage/'.$listing->logo) : asset('assets/images/default-logo.png') }}"
+                        alt="{{ $listing->business_name ?? 'Profile Image' }}">
                 </div>
                 <div class="profile-content">
                     <div class="profile-name">
@@ -42,9 +44,9 @@
                             <li>
                                 <i data-lucide="map-pin"></i>
                                 <span class="profile-review-count">
-                                    {{ $listing->city ?? '' }}
-                                    @if($listing->state), {{ $listing->state }} @endif
-                                    @if($listing->country), {{ $listing->country }} @endif
+                                    {{ $listing->cityRel->name ?? '' }}
+                                    @if($listing->stateRel?->name), {{ $listing->stateRel->name }} @endif
+                                    @if($listing->countryRel?->name), {{ $listing->countryRel->name }} @endif
                                 </span>
                             </li>
                         </ul>
@@ -87,39 +89,38 @@
 
                 <div class="listing-slider-wrapper mySwiper mb-5">
                     <div class="swiper-wrapper">
-
+                        @foreach($listing->gallery as $img)
                         <div class="swiper-slide listing-slider-single">
-                            <img loading="lazy" src="{{ asset('assets/images/banner-1.jpg') }}" alt="Listing Slider">
+                            <img
+                                loading="lazy"
+                                src="{{ asset('storage/'.$img->image_path) }}"
+                                alt="{{ $img->alt_text ?? $listing->business_name }}">
                         </div>
+                        @endforeach
 
-                        <div class="swiper-slide listing-slider-single">
-                            <img loading="lazy" src="{{ asset('assets/images/banner-2.jpg') }}" alt="Listing Slider">
-                        </div>
-
-                        <div class="swiper-slide listing-slider-single">
-                            <img loading="lazy" src="{{ asset('assets/images/banner-3.jpg') }}" alt="Listing Slider">
-                        </div>
                     </div>
                     <!-- scrollbar -->
                     <div class="swiper-scrollbar"></div>
                 </div>
 
-
+                @if($listing->announcements->count())
+                @foreach($listing->announcements as $ad)
                 <div class="ann-card ann-preview">
                     <div class="ann-card-head">Live Preview</div>
                     <div class="ann-card-body">
-                        <div class="ann-preview-icon" id="pvIconWrap"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="megaphone" class="lucide lucide-megaphone">
-                                <path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"></path>
-                                <path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"></path>
-                                <path d="M8 6v8"></path>
-                            </svg></div>
-                        <div class="ann-preview-texts">
-                            <div id="pvTitle" class="ann-preview-title">—</div>
-                            <div id="pvDesc" class="ann-preview-desc">—</div>
+                        <div class="ann-preview-icon" id="pvIconWrap">
+                            <i data-lucide="{{ $ad->icon }}"></i>
                         </div>
-                        <span id="pvBtn" class="ann-chip">Announcement</span>
+                        <div class="ann-preview-texts">
+                            <div id="pvTitle" class="ann-preview-title">{{ $ad->title }}</div>
+                            <div id="pvDesc" class="ann-preview-desc">{{ $ad->description }}</div>
+                        </div>
+                        <a href="{{ $ad->button_link }}" id="pvBtn" class="ann-chip">{{ $ad->button_text ?? 'Announcement' }}</a>
                     </div>
                 </div>
+                @endforeach
+                @endif
+
 
 
                 <div class="listing-details-about">

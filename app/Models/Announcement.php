@@ -24,8 +24,17 @@ class Announcement extends Model
         'end_date' => 'date',
     ];
 
-    public function listing()   
+    public function listing()
     {
         return $this->belongsTo(\App\Models\BusinessListing::class, 'listing_id');
+    }
+
+    public function scopeActiveNow($query)
+    {
+        $today = now()->toDateString();
+
+        return $query->where('is_active', 1)
+            ->whereDate('start_date', '<=', $today)
+            ->whereDate('end_date', '>=', $today);
     }
 }

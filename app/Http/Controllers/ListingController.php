@@ -23,7 +23,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-
+use Carbon\Carbon;
 
 
 
@@ -32,12 +32,27 @@ class ListingController extends Controller
 
     public function show($slug)
     {
-        $listing = BusinessListing::with(['hours', 'features.feature'])
-        ->where('slug', $slug)
-        ->firstOrFail();
+        $today = Carbon::today()->toDateString();
+
+        $listing = BusinessListing::with([
+            'hours',
+            'gallery',
+            'features.feature',
+            'cityRel',
+            'stateRel',
+            'countryRel',
+            'announcements' => function ($q) use ($today) {
+                $q->where('is_active', 1)
+                    ->whereDate('start_date', '<=', $today)
+                    ->whereDate('end_date', '>=', $today)
+                    ->latest();
+            }
+        ])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
 
-    return view('pages.listingdetail', compact('listing'));
+        return view('pages.listingdetail', compact('listing'));
     }
 
     public function create()
@@ -122,6 +137,7 @@ class ListingController extends Controller
 
             // ✅ create listing
             $listing = BusinessListing::create([
+                'user_id'        => auth()->id(),
                 'business_name' => $businessName,
                 'category_id'   => $categoryId,
                 'category'      => $request->input('category') ?? null,
