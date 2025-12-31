@@ -715,7 +715,8 @@
                                     <button type="button"
                                         class="feature-tile"
                                         data-id="{{ $f->id }}"
-                                        data-name="{{ $f->name }}">
+                                        data-name="{{ $f->name }}"
+                                        data-icon="{{ $f->icon }}">
                                         <span class="ft-icon">
                                             @if(!empty($f->icon))
                                             <i class="{{ $f->icon }}"></i>
@@ -741,13 +742,15 @@
 
                                 <div class="selected-chips" id="selectedChips"></div>
 
-                                <!-- hidden input: selected ids csv -->
+                                {{-- hidden inputs (arrays) yahan JS append karega --}}
+                                <div id="featuresHiddenWrap"></div>
+                                <input type="hidden" id="featureIDHidden" name="feature_id" value="">
                                 <input type="hidden" id="featuresHidden" name="features" value="">
+                                <input type="hidden" id="featureIconsHidden" name="feature_icons" value="">
+
                             </div>
-
-
-
                         </div>
+
                     </div>
                 </div>
 
@@ -1261,6 +1264,9 @@
 
 
 
+<!-- dropdown js category, , country, state, city js -->
+
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -1466,6 +1472,9 @@
 </script>
 
 
+
+<!-- logo select box for  -->
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
 
@@ -1511,6 +1520,8 @@
     });
 </script>
 
+
+<!-- form previous btn, next btn, and top form progress bar js -->
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -1673,9 +1684,9 @@
     });
 </script>
 
+<!-- // ✅ Toggle open/close day rows + disable inputs when closed -->
 
 <script>
-    // ✅ Toggle open/close day rows + disable inputs when closed
     document.querySelectorAll(".day-row").forEach((row) => {
         const toggle = row.querySelector(".day-toggle");
         const timeWrap = row.querySelector(".time-wrap");
@@ -1719,7 +1730,7 @@
             });
         }
 
-        servicesWrap.addEventListener('click', function(e) {
+        servicesWrap?.addEventListener('click', function(e) {
             const btn = e.target.closest('.delete-service');
             if (!btn) return;
             const rows = servicesWrap.querySelectorAll('.service-row');
@@ -1728,7 +1739,7 @@
             reIndexServices();
         });
 
-        addServiceBtn.addEventListener('click', function() {
+        addServiceBtn?.addEventListener('click', function() {
             const idx = servicesWrap.querySelectorAll('.service-row').length;
             const div = document.createElement('div');
             div.className = 'service-card service-row';
@@ -1756,97 +1767,171 @@
             servicesWrap.appendChild(div);
         });
 
-        // ====== Features Select (NEW) ======
+        // ====== Features Select (FIXED) ======
         const featuresGrid = document.getElementById('featuresGrid');
         const selectedChips = document.getElementById('selectedChips');
         const selectedCount = document.getElementById('selectedCount');
-        const hidden = document.getElementById('featuresHidden');
 
-        const selected = new Map(); // key: slug, value: label
+        const featuresHidden = document.getElementById('featuresHidden'); // CSV names
+        const featureIconsHidden = document.getElementById('featureIconsHidden'); // CSV icons
+        const featureIDHidden = document.getElementById('featureIDHidden'); // CSV icons
 
-        function slugify(str) {
-            return String(str).trim().toLowerCase().replace(/\s+/g, ' ').replace(/[^\w ]+/g, '').replace(/\s/g, '_');
+        const rvFeat = document.getElementById('rv_features_chips'); // Step6 review
+
+        if (!featuresGrid || !selectedChips || !selectedCount || !featuresHidden || !featureIconsHidden) {
+            return; // features section not on this page
         }
 
-        function syncHidden() {
-            hidden.value = Array.from(selected.values()).join(',');
-            selectedCount.textContent = String(selected.size);
-        }
-
-        function renderChips() {
-            selectedChips.innerHTML = '';
-            Array.from(selected.entries()).forEach(([key, label]) => {
-                const chip = document.createElement('div');
-                chip.className = 'sel-chip';
-                chip.setAttribute('data-key', key);
-                chip.innerHTML = `<span>${label}</span><button type="button" aria-label="remove">×</button>`;
-                selectedChips.appendChild(chip);
-            });
-            syncHidden();
-        }
+        // Map key = feature_id (string), value = {name, icon}
+        const selected = new Map();
 
         function setTileSelected(tile, isSel) {
             tile.classList.toggle('is-selected', isSel);
             tile.setAttribute('aria-pressed', isSel ? 'true' : 'false');
         }
 
-        // click on tiles
+        function syncHidden() {
+            const names = [];
+            const icons = [];
+            const ids = [];
+
+            selected.forEach((v, k) => { // k = feature_id
+                names.push(v.name);
+                icons.push(v.icon || '');
+                ids.push(k); // ✅ id Map key se
+            });
+
+            featuresHidden.value = names.join(',');
+            featureIconsHidden.value = icons.join(',');
+            featureIDHidden.value = ids.join(',');
+            selectedCount.textContent = String(selected.size);
+        }
+
+
+
+        function renderReviewFeatures() {
+            if (!rvFeat) return;
+
+            rvFeat.innerHTML = '';
+
+            if (selected.size === 0) {
+                rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
+                return;
+            }
+
+            // Review chips (simple chips without remove button)
+            selected.forEach((v) => {
+                const chip = document.createElement('span');
+                chip.className = 'chip';
+                chip.textContent = v.name;
+                rvFeat.appendChild(chip);
+            });
+        }
+
+        function renderChips() {
+            selectedChips.innerHTML = '';
+
+            selected.forEach((v, id) => {
+                const chip = document.createElement('div');
+                chip.className = 'sel-chip';
+                chip.setAttribute('data-id', id);
+
+                chip.innerHTML = `
+        <span>${v.name}</span>
+        <button type="button" aria-label="remove">×</button>
+      `;
+                selectedChips.appendChild(chip);
+            });
+
+            syncHidden();
+            renderReviewFeatures();
+        }
+
+        // Click on tiles (select / deselect)
         featuresGrid.addEventListener('click', function(e) {
             const tile = e.target.closest('.feature-tile');
             if (!tile) return;
 
-            const label = tile.getAttribute('data-feature') || tile.textContent;
-            const key = slugify(label);
+            const id = String(tile.getAttribute('data-id') || '').trim();
+            const name = String(tile.getAttribute('data-name') || '').trim();
+            const icon = String(tile.getAttribute('data-icon') || '').trim();
 
-            if (selected.has(key)) {
-                selected.delete(key);
+            console.log({
+                id,
+                name,
+                icon
+            });
+
+            if (!id || !name) return;
+
+            if (selected.has(id)) {
+                selected.delete(id);
                 setTileSelected(tile, false);
             } else {
-                selected.set(key, label.trim());
+                selected.set(id, {
+                    name,
+                    icon
+                });
                 setTileSelected(tile, true);
             }
 
             renderChips();
         });
 
-        // click on chip remove
+        // Remove from chips
         selectedChips.addEventListener('click', function(e) {
             const btn = e.target.closest('button');
             if (!btn) return;
-            const chip = btn.closest('.sel-chip');
-            const key = chip.getAttribute('data-key');
 
-            selected.delete(key);
+            const chip = btn.closest('.sel-chip');
+            const id = chip?.getAttribute('data-id');
+            if (!id) return;
+
+            selected.delete(id);
             chip.remove();
 
             // unselect tile too
-            const tile = featuresGrid.querySelector(`.feature-tile[data-feature]`);
-            const allTiles = featuresGrid.querySelectorAll('.feature-tile');
-            allTiles.forEach(t => {
-                const label = t.getAttribute('data-feature') || t.textContent;
-                if (slugify(label) === key) setTileSelected(t, false);
-            });
+            const tile = featuresGrid.querySelector(`.feature-tile[data-id="${id}"]`);
+            consolelog(tile);
+            if (tile) setTileSelected(tile, false);
 
             syncHidden();
+            renderReviewFeatures();
             selectedCount.textContent = String(selected.size);
+
+            if (selected.size === 0) renderChips();
         });
 
-        // Optional: if you already have saved value in hidden (edit page)
-        // it will auto-select tiles + chips
-        if (hidden.value.trim()) {
-            hidden.value.split(',').map(s => s.trim()).filter(Boolean).forEach(label => {
-                const key = slugify(label);
-                selected.set(key, label);
-                const tiles = featuresGrid.querySelectorAll('.feature-tile');
-                tiles.forEach(t => {
-                    const tLabel = t.getAttribute('data-feature') || t.textContent;
-                    if (slugify(tLabel) === key) setTileSelected(t, true);
-                });
+        // ✅ If edit page (already saved CSV in hidden) -> auto select
+        const savedNames = (featuresHidden.value || '').split(',').map(s => s.trim()).filter(Boolean);
+        const savedIcons = (featureIconsHidden.value || '').split(',').map(s => s.trim());
+
+        if (savedNames.length) {
+            // match by tile name (because CSV me ids nahi)
+            const tiles = featuresGrid.querySelectorAll('.feature-tile');
+            tiles.forEach((tile) => {
+                const id = String(tile.getAttribute('data-id') || '').trim();
+                const name = String(tile.getAttribute('data-name') || '').trim();
+                const icon = String(tile.getAttribute('data-icon') || '').trim();
+
+                const idx = savedNames.findIndex(n => n.toLowerCase() === name.toLowerCase());
+                if (idx > -1 && id) {
+                    selected.set(id, {
+                        name,
+                        icon: savedIcons[idx] || icon
+                    });
+                    setTileSelected(tile, true);
+                }
             });
+
             renderChips();
+        } else {
+            renderReviewFeatures(); // initial
         }
+
     })();
 </script>
+
 
 <!-- media step js -->
 
@@ -2069,17 +2154,16 @@
         }
 
         // Step 4: Features chips (hidden input: features)
-        const rvFeat = document.getElementById('rv_features_chips');
-        const featHidden = document.getElementById('featuresHidden')?.value || '';
-        if (rvFeat) {
-            if (!featHidden.trim()) {
-                rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
-            } else {
-                // chips already in UI (#selectedChips) — just copy them
-                const selectedChips = document.getElementById('selectedChips');
-                rvFeat.innerHTML = selectedChips ? selectedChips.innerHTML : `<span class="muted-sm">Selected.</span>`;
-            }
-        }
+        // const rvFeat = document.getElementById('rv_features_chips');
+        // const featHidden = document.getElementById('featuresHidden')?.value || '';
+        // if (rvFeat) {
+        //     if (!featHidden.trim()) {
+        //         rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
+        //     } else {
+        //         const selectedChips = document.getElementById('selectedChips');
+        //         rvFeat.innerHTML = selectedChips ? selectedChips.innerHTML : `<span class="muted-sm">Selected.</span>`;
+        //     }
+        // }
 
         // Step 5: Gallery thumbs
         const rvThumbs = document.getElementById('rv_gallery_thumbs');

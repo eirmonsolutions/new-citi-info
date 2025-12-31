@@ -30,10 +30,14 @@ use Illuminate\Support\Str;
 class ListingController extends Controller
 {
 
-    public function show()
+    public function show($slug)
     {
+        $listing = BusinessListing::with(['hours', 'features.feature'])
+        ->where('slug', $slug)
+        ->firstOrFail();
 
-        return view('pages.listingdetail');
+
+    return view('pages.listingdetail', compact('listing'));
     }
 
     public function create()
@@ -95,7 +99,7 @@ class ListingController extends Controller
             $cityVal,
             $addressVal,
             $descVal,
-            $listingType
+            $listingType,
         ) {
 
             // ✅ slug
@@ -174,6 +178,35 @@ class ListingController extends Controller
             }
 
 
+
+            // ✅ business hours save
+            $hours = $request->input('hours', []); // monday..sunday
+
+            $daysOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+            foreach ($daysOrder as $day) {
+                $d = $hours[$day] ?? null;
+
+                // agar day ka data hi nahi aaya => treat as closed
+                $isClosed = empty($d) ? 1 : 0;
+
+                BusinessHour::create([
+                    'business_id' => $listing->id,
+                    'day_of_week' => $day,
+                    'is_closed'   => $isClosed,
+
+                    // open/close
+                    'open_time'   => $d['start'] ?? null,
+                    'close_time'  => $d['end'] ?? null,
+
+                    // break/lunch
+                    'break_start' => $d['lunch_start'] ?? null,
+                    'break_end'   => $d['lunch_end'] ?? null,
+                ]);
+            }
+
+
+
             // ✅ social links:
             // Handle BOTH:
             // 1) Form arrays: social_platform[] + social_url[]
@@ -213,49 +246,31 @@ class ListingController extends Controller
                 }
             }
 
-            // ✅ business hours:
-            // Handle BOTH:
-            // 1) Form arrays: day_of_week[] open_time[] close_time[] break_start[] break_end[]
-            // 2) JSON object: hours[monday][start,end,lunch_start,lunch_end]
-            $days = $request->input('day_of_week', []);
-            if (is_array($days) && count($days)) {
-                foreach ($days as $k => $day) {
-                    if (!$day) continue;
+            // ✅ FEATURES (save only once) — CSV from hidden inputs
+            $featuresStr   = $request->input('features');       // "Halwa,hfgfghf,parking"
+            $featureIcons  = $request->input('feature_icons');  // "flaticon-chef,flaticon-government,..."
+            $featureIdsStr = $request->input('feature_id');     // "6,4,5"
 
-                    BusinessHour::create([
-                        'business_id' => $listing->id,
-                        'day_of_week' => $day,
-                        'is_closed'   => (bool)($request->input("is_closed.$k") ?? false),
-                        'open_time'   => $request->input("open_time.$k"),
-                        'close_time'  => $request->input("close_time.$k"),
-                        'break_start' => $request->input("break_start.$k"),
-                        'break_end'   => $request->input("break_end.$k"),
+            if (!empty($featuresStr)) {
+                $names = array_values(array_filter(array_map('trim', explode(',', $featuresStr))));
+                $icons = !empty($featureIcons)
+                    ? array_values(array_map('trim', explode(',', $featureIcons)))
+                    : [];
+                $ids   = !empty($featureIdsStr)
+                    ? array_values(array_map('trim', explode(',', $featureIdsStr)))
+                    : [];
+
+                foreach ($names as $i => $fname) {
+                    BusinessFeature::create([
+                        'business_id'  => $listing->id,
+                        'feature_id'   => $ids[$i] ?? null,
+                        'feature_name' => $fname,
+                        'feature_icon' => $icons[$i] ?? null,
                     ]);
                 }
-            } else {
-                $hours = $request->input('hours', []);
-                if (is_array($hours)) {
-                    foreach ($hours as $day => $info) {
-                        if (!is_array($info)) continue;
-
-                        $open  = $info['start'] ?? null;
-                        $close = $info['end'] ?? null;
-
-                        // If no open/close, skip (or you can mark closed)
-                        if (!$open && !$close) continue;
-
-                        BusinessHour::create([
-                            'business_id' => $listing->id,
-                            'day_of_week' => $day,
-                            'is_closed'   => false,
-                            'open_time'   => $open,
-                            'close_time'  => $close,
-                            'break_start' => $info['lunch_start'] ?? null,
-                            'break_end'   => $info['lunch_end'] ?? null,
-                        ]);
-                    }
-                }
             }
+
+
 
             // ✅ services:
             // Handle BOTH:
@@ -299,37 +314,6 @@ class ListingController extends Controller
                 }
             }
 
-            // ✅ features:
-            // Handle BOTH:
-            // 1) Form arrays: feature_id[] + feature_name[]
-            // 2) JSON: "features": "hfgfghf,parking"
-            $fids   = $request->input('feature_id', []);
-            $fnames = $request->input('feature_name', []);
-
-            if (is_array($fids) && count($fids)) {
-                foreach ($fids as $k => $fid) {
-                    $fname = $fnames[$k] ?? null;
-                    if ($fid || $fname) {
-                        BusinessFeature::create([
-                            'business_id'   => $listing->id,
-                            'feature_id'    => $fid,
-                            'feature_name'  => $fname,
-                        ]);
-                    }
-                }
-            } else {
-                $featuresStr = $request->input('features'); // "hfgfghf,parking"
-                if (!empty($featuresStr)) {
-                    $parts = array_filter(array_map('trim', explode(',', $featuresStr)));
-                    foreach ($parts as $fname) {
-                        BusinessFeature::create([
-                            'business_id'  => $listing->id,
-                            'feature_id'   => null,
-                            'feature_name' => $fname,
-                        ]);
-                    }
-                }
-            }
 
             // ✅ gallery upload (multiple)
             if ($request->hasFile('business_gallery')) {

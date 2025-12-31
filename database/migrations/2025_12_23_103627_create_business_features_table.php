@@ -13,7 +13,7 @@ return new class extends Migration {
 
             $table->unsignedBigInteger('feature_id')->nullable();
             $table->string('feature_name')->nullable();
-
+            $table->string('feature_icon')->nullable();
             $table->timestamps();
 
             $table->foreign('business_id')->references('id')->on('business_listings')->onDelete('cascade');

@@ -15,7 +15,7 @@
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
                 <li class="breadcrumb-item"><a href="#">Category</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Vishal Thakur</li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $listing->business_name }}</li>
             </ol>
         </nav>
     </div>
@@ -30,7 +30,7 @@
                 </div>
                 <div class="profile-content">
                     <div class="profile-name">
-                        <h1>Vishal Thakur</h1>
+                        <h1>{{ $listing->business_name }}</h1>
                     </div>
                     <div class="profile-reviews-area">
                         <ul>
@@ -41,7 +41,11 @@
                             </li>
                             <li>
                                 <i data-lucide="map-pin"></i>
-                                <span class="profile-review-count">Delhi, India</span>
+                                <span class="profile-review-count">
+                                    {{ $listing->city ?? '' }}
+                                    @if($listing->state), {{ $listing->state }} @endif
+                                    @if($listing->country), {{ $listing->country }} @endif
+                                </span>
                             </li>
                         </ul>
                     </div>
@@ -75,13 +79,13 @@
 </section>
 
 
-<section class="listing-slider">
+
+<section class="listing-details-area">
     <div class="container">
-        <div class="row">
+        <div class="row g-5">
             <div class="col-lg-8">
 
-                <!-- MAIN SLIDER (same as yours) -->
-                <div class="listing-slider-wrapper mySwiper">
+                <div class="listing-slider-wrapper mySwiper mb-5">
                     <div class="swiper-wrapper">
 
                         <div class="swiper-slide listing-slider-single">
@@ -95,63 +99,11 @@
                         <div class="swiper-slide listing-slider-single">
                             <img loading="lazy" src="{{ asset('assets/images/banner-3.jpg') }}" alt="Listing Slider">
                         </div>
-
                     </div>
-
                     <!-- scrollbar -->
                     <div class="swiper-scrollbar"></div>
                 </div>
 
-                <!-- ✅ THUMBNAILS (new) -->
-                <!-- <div class="listing-thumbs mySwiperThumbs">
-                    <div class="swiper-wrapper">
-                        <div class="swiper-slide thumb-slide">
-                            <img src="{{ asset('assets/images/banner-1.jpg') }}" alt="Thumb 1">
-                        </div>
-                        <div class="swiper-slide thumb-slide">
-                            <img src="{{ asset('assets/images/banner-2.jpg') }}" alt="Thumb 2">
-                        </div>
-                        <div class="swiper-slide thumb-slide">
-                            <img src="{{ asset('assets/images/banner-3.jpg') }}" alt="Thumb 3">
-                        </div>
-                    </div>
-                </div> -->
-
-            </div>
-
-            <div class="col-lg-4">
-                <div class="row row-cols-2 g-3 g-sm-4 g-md-3 g-xl-4">
-                    <div class="col">
-                        <div class="right-img-box">
-                            <img loading="lazy" src="{{ asset('assets/images/banner-1.jpg') }}" alt="Listing Slider">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="right-img-box">
-                            <img loading="lazy" src="{{ asset('assets/images/banner-1.jpg') }}" alt="Listing Slider">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="right-img-box">
-                            <img loading="lazy" src="{{ asset('assets/images/banner-1.jpg') }}" alt="Listing Slider">
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="right-img-box">
-                            <img loading="lazy" src="{{ asset('assets/images/banner-1.jpg') }}" alt="Listing Slider">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-<section class="listing-details-area">
-    <div class="container">
-        <div class="row g-5">
-            <div class="col-lg-8">
 
                 <div class="ann-card ann-preview">
                     <div class="ann-card-head">Live Preview</div>
@@ -170,11 +122,10 @@
                 </div>
 
 
-
                 <div class="listing-details-about">
                     <h2 class="heading-title">About </h2>
                     <p>
-                        I'm a skilled handyperson adept at various maintenance, repair, and installation tasks. With a keen eye for detail and a wide range of skills, I tackle diverse projects, from fixing leaky faucets and repairing electrical issues to assembling furniture and conducting minor renovations. I bring expertise and efficiency to every job, ensuring homes and spaces remain functional, safe, and aesthetically pleasing.
+                        {{ $listing->description }}
                     </p>
                 </div>
 
@@ -182,67 +133,27 @@
                     <h2 class="heading-title">Features</h2>
 
                     <div class="row mt-4">
+                        @forelse($listing->features as $feat)
                         <div class="col-lg-4 col-md-6 col-sm-12">
                             <div class="icon-box icon-box-one">
                                 <div class="icon">
-                                    <i data-lucide="car"></i>
+                                    <i class="{{ $feat->feature->icon ?? $feat->feature_icon ?? 'flaticon-tag' }}"></i>
+                                    <!-- <i class="{{ $feat->feature_icon }}"></i> -->
+                                    <!-- <i data-lucide="{{ $feat->feature_icon }}"></i> -->
+
                                 </div>
                                 <div class="info">
-                                    <h6>Card Payment</h6>
+                                    <h6>{{ $feat->feature_name }}</h6>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="icon-box icon-box-one">
-                                <div class="icon">
-                                    <i data-lucide="star"></i>
-                                </div>
-                                <div class="info">
-                                    <h6>Cash Payment</h6>
-                                </div>
-                            </div>
+                        @empty
+                        <div class="col-12">
+                            <p class="muted-sm">No features available.</p>
                         </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="icon-box icon-box-one">
-                                <div class="icon">
-                                    <i data-lucide="star"></i>
-                                </div>
-                                <div class="info">
-                                    <h6>Cash Payment</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="icon-box icon-box-one">
-                                <div class="icon">
-                                    <i data-lucide="car"></i>
-                                </div>
-                                <div class="info">
-                                    <h6>Card Payment</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="icon-box icon-box-one">
-                                <div class="icon">
-                                    <i data-lucide="star"></i>
-                                </div>
-                                <div class="info">
-                                    <h6>Cash Payment</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="icon-box icon-box-one">
-                                <div class="icon">
-                                    <i data-lucide="star"></i>
-                                </div>
-                                <div class="info">
-                                    <h6>Cash Payment</h6>
-                                </div>
-                            </div>
-                        </div>
+                        @endforelse
                     </div>
+
                 </div>
 
 
@@ -253,30 +164,23 @@
                         <div class="col-lg-12">
                             <div class="services-list">
                                 <ul>
+                                    @forelse($listing->services as $service)
                                     <li>
-                                        <div class="services-name">Salon</div>
-                                        <div class="services-price">$20</div>
+                                        <div class="services-name">{{ $service->name }}</div>
+
+                                        <div class="services-price">
+                                            @php
+                                            $symbol = $service->currency ? $service->currency : '$';
+                                            @endphp
+                                            {{ $symbol }}{{ is_numeric($service->price) ? number_format($service->price, 2) : $service->price }}
+                                        </div>
                                     </li>
+                                    @empty
                                     <li>
-                                        <div class="services-name">Spa</div>
-                                        <div class="services-price">$50</div>
+                                        <div class="services-name">No services found</div>
+                                        <div class="services-price"></div>
                                     </li>
-                                    <li>
-                                        <div class="services-name">Massage</div>
-                                        <div class="services-price">$75</div>
-                                    </li>
-                                    <li>
-                                        <div class="services-name">Haircut</div>
-                                        <div class="services-price">$15</div>
-                                    </li>
-                                    <li>
-                                        <div class="services-name">Manicure</div>
-                                        <div class="services-price">$25</div>
-                                    </li>
-                                    <li>
-                                        <div class="services-name">Beard Cut</div>
-                                        <div class="services-price">$20</div>
-                                    </li>
+                                    @endforelse
                                 </ul>
                             </div>
                         </div>
@@ -284,6 +188,209 @@
                 </div>
 
 
+                <div class="listing-review-area">
+                    <div class="heading-flex">
+                        <h2 class="heading-title mb-0">Reviews</h2>
+                        <button type="button" class="review-btn" data-bs-toggle="modal" data-bs-target="#reviewForm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-line-icon lucide-pen-line">
+                                <path d="M13 21h8" />
+                                <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                            </svg>
+                            Add review
+                        </button>
+                    </div>
+
+                    <div class="row g-4 pb-3 mb-3">
+                        <div class="col-sm-5 col-md-3 col-lg-4">
+                            <div class="review-box-flex">
+                                <h1>4.5</h1>
+                                <div class="review-box-star-icon">
+                                    <i data-lucide="star"></i>
+                                    <i data-lucide="star"></i>
+                                    <i data-lucide="star"></i>
+                                    <i data-lucide="star"></i>
+                                    <i data-lucide="star"></i>
+                                </div>
+                                <div class="total-review">76 reviews</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-7 col-md-9 col-lg-8">
+                            <div class="review-progress-bar-wrapper">
+                                <div class="review-progress-bar-box">
+                                    <div class="review-progress-bar-1">
+                                        5
+                                        <i data-lucide="star"></i>
+                                    </div>
+                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
+                                        <div class="progress-bar bg-warning rounded-pill" style="width: 58%"></div>
+                                    </div>
+                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">44</div>
+                                </div>
+
+                                <div class="review-progress-bar-box">
+                                    <div class="review-progress-bar-1">
+                                        4
+                                        <i data-lucide="star"></i>
+                                    </div>
+                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
+                                        <div class="progress-bar bg-warning rounded-pill" style="width: 22.4%"></div>
+                                    </div>
+                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">17</div>
+                                </div>
+
+                                <div class="review-progress-bar-box">
+                                    <div class="review-progress-bar-1">
+                                        3
+                                        <i data-lucide="star"></i>
+                                    </div>
+                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
+                                        <div class="progress-bar bg-warning rounded-pill" style="width: 12%"></div>
+                                    </div>
+                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">9</div>
+                                </div>
+
+                                <div class="review-progress-bar-box">
+                                    <div class="review-progress-bar-1">
+                                        2
+                                        <i data-lucide="star"></i>
+                                    </div>
+                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
+                                        <div class="progress-bar bg-warning rounded-pill" style="width: 5%"></div>
+                                    </div>
+                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">4</div>
+                                </div>
+
+                                <div class="review-progress-bar-box">
+                                    <div class="review-progress-bar-1">
+                                        1
+                                        <i data-lucide="star"></i>
+                                    </div>
+                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
+                                        <div class="progress-bar bg-warning rounded-pill" style="width: 2.6%"></div>
+                                    </div>
+                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">2</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="review-details">
+                        <div class="review-details-box">
+                            <div class="review-info">
+                                <h6>Vishal Thakur</h6>
+                                <span class="review-date">November 19, 2024</span>
+                            </div>
+                            <div class="review-star">
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                            </div>
+                            <p>
+                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
+                            </p>
+                        </div>
+
+                        <div class="review-details-box">
+                            <div class="review-info">
+                                <h6>Vishal Thakur</h6>
+                                <span class="review-date">November 19, 2024</span>
+                            </div>
+                            <div class="review-star">
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                            </div>
+                            <p>
+                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
+                            </p>
+                        </div>
+
+                        <div class="review-details-box">
+                            <div class="review-info">
+                                <h6>Vishal Thakur</h6>
+                                <span class="review-date">November 19, 2024</span>
+                            </div>
+                            <div class="review-star">
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                            </div>
+                            <p>
+                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
+                            </p>
+                        </div>
+
+                        <div class="review-details-box">
+                            <div class="review-info">
+                                <h6>Vishal Thakur</h6>
+                                <span class="review-date">November 19, 2024</span>
+                            </div>
+                            <div class="review-star">
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                            </div>
+                            <p>
+                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
+                            </p>
+                        </div>
+
+                        <div class="review-details-box">
+                            <div class="review-info">
+                                <h6>Vishal Thakur</h6>
+                                <span class="review-date">November 19, 2024</span>
+                            </div>
+                            <div class="review-star">
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                                <i data-lucide="star"></i>
+                            </div>
+                            <p>
+                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
+                            </p>
+                        </div>
+
+
+                    </div>
+
+                    <nav class="pt-4 mt-1 mt-sm-0" aria-label="Reviews pagination">
+                        <ul class="pagination">
+                            <li class="page-item active" aria-current="page">
+                                <span class="page-link">
+                                    1
+                                    <span class="visually-hidden">(current)</span>
+                                </span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#!">2</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#!">3</a>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#!">4</a>
+                            </li>
+                            <li class="page-item">
+                                <span class="page-link pe-none">...</span>
+                            </li>
+                            <li class="page-item">
+                                <a class="page-link" href="#!">16</a>
+                            </li>
+                        </ul>
+                    </nav>
+
+
+                </div>
 
 
             </div>
@@ -303,7 +410,7 @@
                                                 </svg>
                                             </span>
 
-                                            jdhsjkahdsjkaasad sdfsjdfksdfsd
+                                            {{ $listing->address }}
                                         </li>
 
                                         <li>
@@ -315,7 +422,7 @@
                                                 </svg>
                                             </span>
 
-                                            +1 (568) 127-9712
+                                            {{ $listing->contacts->first()->phone }}
                                         </li>
 
                                         <li>
@@ -326,7 +433,7 @@
                                                 </svg>
                                             </span>
 
-                                            vakucopecy@mailinator.com
+                                            {{ $listing->contacts->first()->email }}
                                         </li>
 
                                         <li>
@@ -338,21 +445,36 @@
                                                 </svg>
                                             </span>
 
-                                            https://www.fasykirat.me
+                                            <a href="{{ $listing->contacts->first()->website }}" target="_blank">
+                                                {{ $listing->contacts->first()->website }}
+                                            </a>
                                         </li>
 
 
                                     </ul>
                                 </div>
 
+                                @php
+                                $social = $listing->socialLinks->pluck('url', 'platform');
+
+                                $facebook = $social['facebook'] ?? null;
+                                $instagram = $social['instagram'] ?? null;
+                                $youtube = $social['youtube'] ?? null;
+                                $twitter = $social['twitter'] ?? null;
+                                $linkedin = $social['linkedin'] ?? null;
+                                $snapchat = $social['snapchat'] ?? null;
+                                @endphp
+
+
+
                                 <div class="social-links">
-                                    <a href="https://www.kun.tv" class="social-link facebook" target="_blank" rel="noopener">
+                                    <a href="{{ $social['facebook'] ?? '#' }}" class="social-link facebook" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook-icon lucide-facebook">
                                             <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                                         </svg>
                                     </a>
 
-                                    <a href="https://www.cydesomajo.us" class="social-link instagram" target="_blank" rel="noopener">
+                                    <a href="{{ $social['instagram'] ?? '#' }}" class="social-link instagram" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram-icon lucide-instagram">
                                             <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
                                             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
@@ -360,20 +482,20 @@
                                         </svg>
                                     </a>
 
-                                    <a href="https://www.feqofylivetaf.co.uk" class="social-link youtube" target="_blank" rel="noopener">
+                                    <a href="{{ $social['youtube'] ?? '#' }}" class="social-link youtube" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-youtube-icon lucide-youtube">
                                             <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path>
                                             <path d="m10 15 5-3-5-3z"></path>
                                         </svg>
                                     </a>
 
-                                    <a href="https://www.xoxujyxi.co" class="social-link twitter" target="_blank" rel="noopener">
+                                    <a href="{{ $social['twitter'] ?? '#' }}" class="social-link twitter" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter-icon lucide-twitter">
                                             <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
                                         </svg>
                                     </a>
 
-                                    <a href="https://www.firoculajery.org.uk" class="social-link linkedin" target="_blank" rel="noopener">
+                                    <a href="{{ $social['linkedin'] ?? '#' }}" class="social-link linkedin" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin-icon lucide-linkedin">
                                             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                             <rect width="4" height="12" x="2" y="9"></rect>
@@ -381,7 +503,7 @@
                                         </svg>
                                     </a>
 
-                                    <a href="https://www.firoculajery.org.uk" class="social-link snapchat" target="_blank" rel="noopener">
+                                    <a href="{{ $social['snapchat'] ?? '#' }}" class="social-link snapchat" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-snapchat-icon lucide-snapchat">
                                             <path d="M12 2c-3.4 0-6 2.6-6 6v2.3c0 .6-.3 1.1-.8 1.4-.6.4-1.3.7-2 .9-.7.2-1.2.7-1.2 1.3 0 .7.7 1.2 1.7 1.6 1.3.5 2.2 1.2 2.8 2.1.4.6 1 .9 1.7.9h1.1c.4 0 .7.2 1 .5.5.5 1.1.8 1.7.8s1.2-.3 1.7-.8c.3-.3.6-.5 1-.5h1.1c.7 0 1.3-.3 1.7-.9.6-.9 1.5-1.6 2.8-2.1 1-.4 1.7-.9 1.7-1.6 0-.6-.5-1.1-1.2-1.3-.7-.2-1.4-.5-2-.9-.5-.3-.8-.8-.8-1.4V8c0-3.4-2.6-6-6-6z"></path>
                                         </svg>
@@ -393,46 +515,48 @@
                         </div>
                     </div>
 
+
+
                     <div class="listing-business-hour">
+                        @php
+                        $daysOrder = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+
+                        // safe: agar rows nahi hain to empty collection
+                        $hoursByDay = ($listing->hours ?? collect())
+                        ->keyBy(fn($h) => strtolower($h->day_of_week));
+
+                        $fmt = function ($t) {
+                        return $t ? \Carbon\Carbon::parse($t)->format('g:i A') : null;
+                        };
+                        @endphp
+
                         <h3 class="heading-title">Business Hour</h3>
 
                         <div class="row mt-3">
                             <div class="col-md-12">
                                 <div class="business-hour-list">
                                     <ul>
+                                        @foreach($daysOrder as $day)
+                                        @php $h = $hoursByDay->get($day); @endphp
                                         <li>
-                                            <span class="day-title">Monday</span>
-                                            <span class="day-time">9:00 AM - 6:00 PM</span>
-                                        </li>
-                                        <li>
-                                            <span class="day-title">Tuesday</span>
-                                            <span class="day-time">9:00 AM - 6:00 PM</span>
-                                        </li>
-                                        <li>
-                                            <span class="day-title">Wednesday</span>
-                                            <span class="day-time">9:00 AM - 6:00 PM</span>
-                                        </li>
-                                        <li>
-                                            <span class="day-title">Thursday</span>
-                                            <span class="day-time">9:00 AM - 6:00 PM</span>
-                                        </li>
-                                        <li>
-                                            <span class="day-title">Friday</span>
-                                            <span class="day-time">9:00 AM - 6:00 PM</span>
-                                        </li>
-                                        <li>
-                                            <span class="day-title">Saturday</span>
-                                            <span class="day-time">10:00 AM - 4:00 PM</span>
-                                        </li>
-                                        <li>
-                                            <span class="day-title">Sunday</span>
+                                            <span class="day-title">{{ ucfirst($day) }}</span>
+
+                                            @if(!$h || (int)$h->is_closed === 1)
                                             <span class="day-close">Closed</span>
+                                            @else
+                                            <span class="day-time">
+                                                {{ $fmt($h->open_time) }} - {{ $fmt($h->close_time) }}
+                                            </span>
+                                            @endif
                                         </li>
+                                        @endforeach
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+
 
                     <div class="listing-contact-form">
                         <h3 class="heading-title">Business Hour</h3>
@@ -493,7 +617,118 @@
 
 
 
+<!-- Modal -->
+<div class="modal fade" id="reviewForm" tabindex="-1" aria-labelledby="reviewFormModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fs-5" id="reviewFormModalLabel">Write a review</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body pb-3">
+                <form action="" class="row form-grid">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-label" for="user_name">Enter Your Name <span class="required">*</span></label>
+                            <input type="text" id="user_name" name="user_name" placeholder="John Doe">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-label" for="user_email">Enter Your Email <span class="required">*</span></label>
+                            <input type="text" id="user_email" name="user_email" placeholder="abcd@gmail.com">
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-label">Rating <span class="required">*</span></label>
 
+                            <div class="custom-select" data-select id="categorySelect">
+                                <button type="button" class="select-trigger" data-trigger>
+                                    <span class="select-placeholder" data-label>Select rating</span>
+                                    <span class="select-icon">
+                                        {{-- your svg icon --}}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </button>
+
+                                <div class="select-panel" data-panel>
+
+
+                                    <ul class="select-options" data-options id="categoryOptions">
+
+                                        <li class="select-option"
+                                            data-id=""
+                                            data-value="">
+                                            <i data-lucide="star"></i>
+                                        </li>
+
+                                        <li class="select-option"
+                                            data-id=""
+                                            data-value="">
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                        </li>
+
+                                        <li class="select-option"
+                                            data-id=""
+                                            data-value="">
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                        </li>
+
+                                        <li class="select-option"
+                                            data-id=""
+                                            data-value="">
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                        </li>
+
+                                        <li class="select-option"
+                                            data-id=""
+                                            data-value="">
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                            <i data-lucide="star"></i>
+                                        </li>
+
+                                    </ul>
+                                </div>
+
+                                {{-- IMPORTANT: submit this --}}
+                                <input type="hidden" name="category_id" data-hidden />
+                            </div>
+
+                            <div class="error-message"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="user_message" class="form-label">
+                                Review
+                            </label>
+                            <textarea id="user_message" name="user_message" class="form-control textarea-field" placeholder="Your review must be at least 50 characters." rows="4"></textarea>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" class="btn btn-primary">Submit review</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -572,6 +807,79 @@
 </script>
 
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
 
+        const allSelects = document.querySelectorAll('[data-select]');
+
+        // ========= Category (static) =========
+        const categorySelect = document.getElementById('categorySelect');
+        const categoryOptions = document.getElementById('categoryOptions');
+
+        if (categorySelect && categoryOptions) {
+            categoryOptions.addEventListener('click', (e) => {
+                const opt = e.target.closest('.select-option');
+                if (!opt) return;
+
+                const categoryId = opt.dataset.id || opt.dataset.value;
+                setSelectValue(categorySelect, opt.textContent.trim(), categoryId);
+            });
+        }
+
+
+        function closeAll(except = null) {
+            allSelects.forEach(s => {
+                if (s !== except) s.classList.remove('is-open');
+            });
+        }
+
+        // ONLY ONE outside click => close
+        document.addEventListener('click', () => closeAll());
+
+        // stop close when clicking inside dropdown (panel/search/options)
+        allSelects.forEach(sel => {
+            sel.addEventListener('click', (e) => e.stopPropagation());
+        });
+
+        function openSelect(select) {
+            const isOpen = select.classList.contains('is-open');
+            closeAll(select);
+            select.classList.toggle('is-open', !isOpen);
+
+            // focus search on open
+            if (!isOpen) {
+                const search = select.querySelector('[data-search]');
+                const options = select.querySelectorAll('.select-option');
+                if (search) {
+                    search.value = '';
+                    options.forEach(li => li.classList.remove('is-hidden'));
+                    setTimeout(() => search.focus(), 50);
+                }
+            }
+        }
+
+        function setSelectValue(select, text, value) {
+            const label = select.querySelector('[data-label]');
+            const hidden = select.querySelector('[data-hidden]');
+            if (label) {
+                label.textContent = text;
+            }
+            if (hidden) hidden.value = value;
+            select.classList.remove('is-open');
+        }
+
+        // Trigger click => open/close
+        document.querySelectorAll('[data-trigger]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                const select = btn.closest('[data-select]');
+                if (!select || select.classList.contains('is-disabled')) return;
+                openSelect(select);
+            });
+        });
+
+
+    });
+</script>
 
 @endsection

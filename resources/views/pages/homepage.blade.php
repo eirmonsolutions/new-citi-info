@@ -207,7 +207,7 @@
                             <div class="front-listing-title">
                                 <h3>
                                     {{-- VIEW LINK --}}
-                                    <a href="">
+                                    <a href="{{ route('listingdetail', $listing->slug) }}">
                                         {{ $listing->business_name }}
                                     </a>
                                 </h3>
