@@ -27,6 +27,28 @@
 </head>
 
 <body>
+    @php
+    $user = auth()->user();
+
+    $name = $user->name ?? 'Admin';
+
+    $words = explode(' ', trim($name));
+
+    if (count($words) >= 2) {
+    $initials = strtoupper(
+    substr($words[0], 0, 1) . substr($words[1], 0, 1)
+    );
+    } else {
+    $initials = strtoupper(substr($words[0], 0, 1));
+    }
+
+    // avatar path (storage/public)
+    $avatar = $user->avatar
+    ? asset('storage/' . $user->avatar)
+    : null;
+    @endphp
+
+
 
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999;">
         <div id="appToast"
@@ -63,15 +85,35 @@
                 </button>
 
                 <div class="dashboard-right-header">
-                    <div class="profile-box">A</div>
+
+                    @if($avatar)
+                    <div class="profile-img">
+                        <img src="{{ $avatar }}" alt="{{ $name }}">
+                    </div>
+                    @else
+                    <div class="profile-box">
+                        {{ $initials }}
+                    </div>
+                    @endif
+
                     <div class="dropdown-area">
-                        <span>Admin</span>
+                        <span>{{ $name }}</span>
+
                         <ul class="d-none">
-                            <li>Logout</li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}" id="logout-form">
+                                    @csrf
+                                    <button type="submit" class="btn btn-link p-0 text-danger">
+                                        Logout
+                                    </button>
+                                </form>
+
+                            </li>
                         </ul>
                     </div>
-
                 </div>
+
+
             </header>
             @yield('content')
         </div>

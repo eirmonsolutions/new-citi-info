@@ -3,7 +3,7 @@
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-// use App\Http\Controllers\Auth\LogoutController;
+use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\SuperAdmin\CategoryController;
 use App\Http\Controllers\SuperAdmin\FeatureController;
 use App\Http\Controllers\SuperAdmin\SuperadminListingController;
@@ -26,7 +26,8 @@ Route::get('/', [HomeController::class, 'index'])->name('homepage');
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 
-// Route::post('/logout', [LogoutController::class, 'logout'])->name('logout');
+Route::post('/logout', [LogoutController::class, 'destroy'])
+    ->name('logout');
 
 // Route::get('/add-listing', function () {
 //     $features = Feature::all();

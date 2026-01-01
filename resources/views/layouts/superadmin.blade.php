@@ -63,9 +63,9 @@
                 </button>
 
                 <div class="dashboard-right-header">
-                    <div class="profile-box">A</div>
+                    <div class="profile-box">SA</div>
                     <div class="dropdown-area">
-                        <span>Admin</span>
+                        <span>SuperAdmin</span>
                         <ul class="d-none">
                             <li>Logout</li>
                         </ul>
