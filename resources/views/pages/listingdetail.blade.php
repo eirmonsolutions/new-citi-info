@@ -130,6 +130,106 @@
                     </p>
                 </div>
 
+
+
+                @if($listing->events->count())
+                @foreach($listing->events as $event)
+
+                <div class="ann-card ann-preview">
+                    <div class="ann-card-head">Live Preview</div>
+
+                    <div class="ann-card-body" style="display:flex;gap:16px;align-items:center;">
+
+                        {{-- Image --}}
+                        @if(!empty($event->featured_image))
+                        <div class="ann-preview-icon" style="width:160px; height:120px;">
+                            <img src="{{ asset('storage/'.$event->featured_image) }}"
+                                alt="Event image"
+                                style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
+                        </div>
+                        @endif
+
+                        {{-- Texts --}}
+                        <div class="ann-preview-texts" style="flex:1;">
+                            <div class="ann-preview-title">{{ $event->title }}</div>
+                            <div class="ann-preview-desc">{{ $event->description }}</div>
+
+                            {{-- Listing chip --}}
+                            @if(!empty($event->listing_name))
+                            <div style="margin-top:10px;">
+                                <span style="display:inline-block;padding:6px 10px;border-radius:999px;font-size:12px;border:1px solid #e5e7eb;">
+                                    {{ $event->listing_name }}
+                                </span>
+                            </div>
+                            @endif
+
+                            {{-- Location --}}
+                            @if(!empty($event->location))
+                            <div style="margin-top:8px; font-size:13px; opacity:.9; display:flex; flex-wrap:wrap; gap:10px;">
+                                <div>
+                                    📍 <span>{{ $event->location }}</span>
+                                </div>
+                            </div>
+                            @endif
+
+                            {{-- Date + Time --}}
+                            <div style="margin-top:8px; font-size:13px; opacity:.9; display:flex; flex-wrap:wrap; gap:10px;">
+                                <div style="margin-top:6px;font-size:13px;opacity:.85;">
+                                    🕒
+                                    <span>
+                                        {{ \Carbon\Carbon::parse($event->start_date)->format('d M Y') }}
+                                        @if(!empty($event->start_time))
+                                        {{ \Carbon\Carbon::parse($event->start_time)->format('h:i A') }}
+                                        @endif
+
+                                        @if(!empty($event->end_date))
+                                        - {{ \Carbon\Carbon::parse($event->end_date)->format('d M Y') }}
+                                        @endif
+                                        @if(!empty($event->end_time))
+                                        {{ \Carbon\Carbon::parse($event->end_time)->format('h:i A') }}
+                                        @endif
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- CTA (Ticket URL link) --}}
+                        @php $btnLink = !empty($event->ticket_url) ? $event->ticket_url : 'javascript:void(0)'; @endphp
+                        <a href="{{ $btnLink }}"
+                            class="ann-chip"
+                            style="text-decoration:none; cursor:pointer;"
+                            target="_blank" rel="noopener">
+                            View Event
+                        </a>
+
+                    </div>
+
+                    <div class="ann-card-body">
+                        {{-- Map Preview --}}
+                        @if(!empty($event->location))
+                        @php
+                        $mapQuery = urlencode($event->location);
+                        $mapUrl = "https://www.google.com/maps?q={$mapQuery}&output=embed";
+                        @endphp
+
+
+                        <iframe style="border-radius: 10px;"
+                            src="{{ $mapUrl }}"
+                            width="100%"
+                            height="220"
+
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                        @endif
+                    </div>
+
+                </div>
+
+                @endforeach
+                @endif
+
+
                 <div class="listing-feature-show">
                     <h2 class="heading-title">Features</h2>
 
@@ -397,6 +497,53 @@
             </div>
             <div class="col-lg-4">
                 <div class="top-sticky">
+
+
+
+                    @if($listing->coupons->count())
+                    @foreach($listing->coupons as $coupon)
+                    <div class="couponBar">
+
+                        <div class="couponBar__content">
+
+                            <div class="couponBar__text">
+                                <strong>PROMOTION.</strong>
+                                {{ \Illuminate\Support\Str::limit($coupon->details, 90) }}
+                                Use Coupon
+                            </div>
+
+                            <div class="couponBar__right">
+                                <div class="couponCodeText">
+                                    {{ $coupon->code }}
+                                </div>
+
+                                <button type="button" class="copyCouponBtn">
+                                    COPY
+                                </button>
+
+
+                            </div>
+                            <div class="couponTimer"
+                                data-end="{{ \Carbon\Carbon::parse($coupon->end_date)->endOfDay()->timestamp }}">
+                                --
+                            </div>
+
+                        </div>
+
+                        <button type="button" class="closeCouponBar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                    @endforeach
+                    @endif
+
+
+
+
+
                     <div class="listing-details-sidebar">
                         <h3 class="heading-title">Contact Information</h3>
                         <div class="row mt-3">
@@ -560,7 +707,7 @@
 
 
                     <div class="listing-contact-form">
-                        <h3 class="heading-title">Business Hour</h3>
+                        <h3 class="heading-title">Appointment Form</h3>
 
                         <div class="row mt-3">
                             <div class="col-md-12">
@@ -732,6 +879,59 @@
 </div>
 
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // COPY BUTTON
+        document.querySelectorAll('.copyCouponBtn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const code = btn.closest('.couponBar')
+                    .querySelector('.couponCodeText')
+                    .innerText.trim();
+
+                navigator.clipboard.writeText(code).then(() => {
+                    btn.innerText = 'COPIED';
+                    setTimeout(() => btn.innerText = 'COPY', 1200);
+                });
+            });
+        });
+
+        // CLOSE BUTTON
+        document.querySelectorAll('.closeCouponBar').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.closest('.couponBar').style.display = 'none';
+            });
+        });
+
+        // COUNTDOWN TIMER
+        document.querySelectorAll('.couponTimer').forEach(timer => {
+            const endTs = parseInt(timer.dataset.end, 10);
+
+            function updateTimer() {
+                const now = Math.floor(Date.now() / 1000);
+                let diff = endTs - now;
+
+                if (diff <= 0) {
+                    timer.innerText = 'Expired';
+                    return;
+                }
+
+                const d = Math.floor(diff / 86400);
+                diff %= 86400;
+                const h = Math.floor(diff / 3600);
+                diff %= 3600;
+                const m = Math.floor(diff / 60);
+                const s = diff % 60;
+
+                timer.innerText = `${d}d ${h}h ${m}m ${s}s`;
+            }
+
+            updateTimer();
+            setInterval(updateTimer, 1000);
+        });
+
+    });
+</script>
 
 
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>

@@ -683,7 +683,7 @@ input#rememberMe {
 
 .dashboard-wrapper {
     background-color: #f6f9ff;
-    height: 100%;
+    /* height: 100%; */
     display: flex;
     position: relative;
 }
@@ -697,6 +697,7 @@ aside.sidebar-main {
     scrollbar-width: thin;
     scrollbar-color: #aab7cf transparent;
     position: relative;
+    height: 100vh;
 }
 
 .sidebar-heading {
@@ -766,9 +767,11 @@ a.sidebar-list:hover {
 
 
 .dashboard-area {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 0%;
+    /* display: flex; */
+    /* flex-direction: column; */
+    /* flex: 1 1 0%; */
+    /* height: 100vh; */
+    width: 100%;
 }
 
 header.dashboard-header {
@@ -3430,6 +3433,95 @@ ul.pagination li.page-item .page-link {
     top: 20px;
 }
 
+/* Coupon Promo Bar */
+.couponBar {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    background: linear-gradient(90deg, #3b82f6 0%, #8b5cf6 50%, #3b82f6 100%);
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.couponBar__content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.couponBar__text {
+    font-size: 14px;
+}
+
+.couponBar__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.couponCodeText {
+    border: 2px dashed rgba(255, 255, 255, .8);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.copyCouponBtn {
+    background: #fff;
+    color: #e0002a;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.copyCouponBtn:hover {
+    opacity: .92;
+}
+
+.couponTimer {
+    background: rgba(255, 255, 255, .15);
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-weight: 600;
+}
+
+.closeCouponBar {
+    position: absolute;
+    right: 12px;
+    top: 10px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: #fff;
+    color: #e0002a;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.closeCouponBar:hover {
+    opacity: .92;
+}
+
+/* Mobile small improvements */
+@media (max-width:576px) {
+    .couponBar {
+        padding: 12px 12px;
+    }
+
+    .couponBar__right {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
 
 
 

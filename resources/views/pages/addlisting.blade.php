@@ -889,13 +889,13 @@
                                 </div>
 
                                 <div class="review-actions">
-                                    <button type="button" class="btn-edit" onclick="goToStep(1)">
+                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(1)">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M12 20h9" />
                                             <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
                                         </svg>
                                         Edit
-                                    </button>
+                                    </button> -->
 
                                     <span class="chev">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -967,13 +967,13 @@
                                 </div>
 
                                 <div class="review-actions">
-                                    <button type="button" class="btn-edit" onclick="goToStep(2)">
+                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(2)">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M12 20h9" />
                                             <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
                                         </svg>
                                         Edit
-                                    </button>
+                                    </button> -->
                                     <span class="chev">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="m6 9 6 6 6-6" />
@@ -1025,13 +1025,13 @@
                                 </div>
 
                                 <div class="review-actions">
-                                    <button type="button" class="btn-edit" onclick="goToStep(3)">
+                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(3)">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M12 20h9" />
                                             <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
                                         </svg>
                                         Edit
-                                    </button>
+                                    </button> -->
                                     <span class="chev">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="m6 9 6 6 6-6" />
@@ -1091,13 +1091,13 @@
                                 </div>
 
                                 <div class="review-actions">
-                                    <button type="button" class="btn-edit" onclick="goToStep(4)">
+                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(4)">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M12 20h9" />
                                             <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
                                         </svg>
                                         Edit
-                                    </button>
+                                    </button> -->
                                     <span class="chev">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="m6 9 6 6 6-6" />
@@ -1128,13 +1128,13 @@
                                 </div>
 
                                 <div class="review-actions">
-                                    <button type="button" class="btn-edit" onclick="goToStep(5)">
+                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(5)">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M12 20h9" />
                                             <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
                                         </svg>
                                         Edit
-                                    </button>
+                                    </button> -->
                                     <span class="chev">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="m6 9 6 6 6-6" />
@@ -1169,13 +1169,13 @@
                                 </div>
 
                                 <div class="review-actions">
-                                    <button type="button" class="btn-edit" onclick="goToStep(5)">
+                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(5)">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M12 20h9" />
                                             <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
                                         </svg>
                                         Edit
-                                    </button>
+                                    </button> -->
                                     <span class="chev">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="m6 9 6 6 6-6" />

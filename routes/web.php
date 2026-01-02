@@ -15,6 +15,8 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\SuperAdmin\SuperadminUserController;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\CouponController;
 
 Route::get('/add-listing', [ListingController::class, 'create'])->name('listing.create');
 Route::get('/submit-listing', [ListingController::class, 'create'])->name('listing.submit');
@@ -125,6 +127,26 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 
     Route::patch('announcement/{announcement}/toggle', [AnnouncementController::class, 'toggle'])->name('.announcement.toggle');
     Route::delete('/announcement/{announcement}', [AnnouncementController::class, 'destroy'])->name('.announcement.destroy');
+
+    Route::get('/event', [EventController::class, 'index'])->name('.event.index');
+    Route::get('/event/create', [EventController::class, 'create'])->name('.event.create');
+    Route::post('/event', [EventController::class, 'store'])->name('.event.store');
+
+    Route::get('/event/{event}/edit', [EventController::class, 'edit'])->name('.event.edit');
+    Route::put('/event/{event}', [EventController::class, 'update'])->name('.event.update');
+
+    Route::patch('event/{event}/toggle', [EventController::class, 'toggle'])->name('.event.toggle');
+    Route::delete('/event/{event}', [EventController::class, 'destroy'])->name('.event.destroy');
+
+    Route::get('/coupon', [CouponController::class, 'index'])->name('.coupon.index');
+    Route::get('/coupon/create', [CouponController::class, 'create'])->name('.coupon.create');
+    Route::post('/coupon', [CouponController::class, 'store'])->name('.coupon.store');
+
+    Route::get('/coupon/{coupon}/edit', [CouponController::class, 'edit'])->name('.coupon.edit');
+    Route::put('/coupon/{coupon}', [CouponController::class, 'update'])->name('.coupon.update');
+
+    Route::patch('coupon/{coupon}/toggle', [CouponController::class, 'toggle'])->name('.coupon.toggle');
+    Route::delete('/coupon/{coupon}', [CouponController::class, 'destroy'])->name('.coupon.destroy');
 });
 
 

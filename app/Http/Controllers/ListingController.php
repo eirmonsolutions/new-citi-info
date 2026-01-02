@@ -41,16 +41,30 @@ class ListingController extends Controller
             'cityRel',
             'stateRel',
             'countryRel',
+
             'announcements' => function ($q) use ($today) {
                 $q->where('is_active', 1)
                     ->whereDate('start_date', '<=', $today)
                     ->whereDate('end_date', '>=', $today)
                     ->latest();
-            }
-        ])
-            ->where('slug', $slug)
-            ->firstOrFail();
+            },
 
+            'events' => function ($q) use ($today) {
+                $q->where('is_active', 1)
+                    ->whereDate('start_date', '<=', $today)
+                    ->whereDate('end_date', '>=', $today)
+                    ->latest();
+            },
+
+            // ✅ ADD THIS (Coupons)
+            'coupons' => function ($q) use ($today) {
+                $q->where('is_active', 1)
+                    ->whereDate('start_date', '<=', $today)
+                    ->whereDate('end_date', '>=', $today)
+                    ->latest();
+            }
+
+        ])->where('slug', $slug)->firstOrFail();
 
         return view('pages.listingdetail', compact('listing'));
     }

@@ -138,4 +138,14 @@ class BusinessListing extends Model
     {
         return $this->hasMany(\App\Models\Announcement::class, 'listing_id');
     }
+
+    public function events()
+    {
+        return $this->hasMany(\App\Models\Event::class, 'listing_id');
+    }
+
+    public function coupons()
+    {
+        return $this->hasMany(\App\Models\Coupon::class, 'listing_id');
+    }
 }

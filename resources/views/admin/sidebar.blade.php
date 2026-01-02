@@ -28,7 +28,7 @@
 
             <span class="sidebar-link">Announcements</span>
         </a>
-        <a href="" class="sidebar-list">
+        <a href="{{ route('admin.event.index') }}" class="sidebar-list">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
                 <path d="M8 2v4" />
                 <path d="M16 2v4" />
@@ -39,7 +39,7 @@
 
             <span class="sidebar-link">Events</span>
         </a>
-        <a href="" class="sidebar-list">
+        <a href="{{ route('admin.coupon.index') }}" class="sidebar-list">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-tag-icon lucide-tag">
                 <path d="M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z" />
                 <circle cx="7.5" cy="7.5" r=".5" fill="currentColor" />
@@ -58,14 +58,7 @@
 
             <span class="sidebar-link">Listings</span>
         </a>
-        <a href="" class="sidebar-list">
-            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-messages-square-icon lucide-messages-square">
-                <path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                <path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1" />
-            </svg>
 
-            <span class="sidebar-link">Inbox</span>
-        </a>
         <a href="" class="sidebar-list">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
                 <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
@@ -89,7 +82,7 @@
                 <path d="M16 17H8" />
             </svg>
 
-            <span class="sidebar-link">Subscription plans</span>
+            <span class="sidebar-link">Subscribe plans</span>
         </a>
         <a href="" class="sidebar-list">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-radio-icon lucide-radio">
