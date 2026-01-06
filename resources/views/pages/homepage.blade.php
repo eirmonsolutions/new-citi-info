@@ -9,23 +9,48 @@
     <div class="container">
         <div class="banner-text">
             <h1>Explore top-rated certified pros nearby</h1>
-            <form action="">
-                <div class="banner-form ">
+            <form action="{{ route('search.redirect') }}" method="POST" autocomplete="off">
+                @csrf
+
+                <input type="hidden" name="category_id" id="category_id">
+
+                <div class="banner-form">
                     <div class="banner-wrapper">
-                        <div class="banner-form-box">
+
+                        <!-- SERVICE -->
+                        <div class="banner-form-box position-relative">
                             <i class="fi-search"></i>
-                            <input type="search" class="form-control form-control-lg form-icon-start" placeholder="What service do you need?" required>
+                            <input type="search"
+                                id="service_input"
+                                class="form-control form-control-lg form-icon-start"
+                                placeholder="What service do you need?"
+                                required>
+
+                            <div id="service_suggest" class="suggest-box d-none"></div>
                         </div>
-                        <hr class="d-sm-none m-0">
+
                         <hr class="vr d-none d-sm-block my-2">
-                        <div class="banner-form-box zip-form-box">
+
+                        <!-- CITY -->
+                        <div class="banner-form-box zip-form-box position-relative">
                             <i class="fi-map-pin"></i>
-                            <input type="text" class="form-control form-control-lg form-icon-start" placeholder="City" required>
+                            <input type="text"
+                                name="city"
+                                id="city_input"
+                                class="form-control form-control-lg form-icon-start"
+                                placeholder="City"
+                                required>
+
+                            <div id="city_suggest" class="suggest-box d-none"></div>
                         </div>
+
                     </div>
+
                     <button type="submit" class="btn btn-lg btn-primary">Search</button>
                 </div>
             </form>
+
+
             <div class="category-btns">
                 <button class="category-btn-link" type="button">Electrician</button>
                 <button class="category-btn-link" type="button">Plumbing</button>
@@ -59,7 +84,7 @@
                             alt="{{ $category->name }}">
                         <div class="category-overlay">
                             <div class="category-content">
-                                <a href="{{ url('category/'.$category->id) }}">
+                                <a href="{{ route('list.category', ['category' => Str::slug($category->name)]) }}">
                                     <i class="ti-link"></i>
                                 </a>
                             </div>
@@ -70,7 +95,7 @@
                             <i class="{{ $category->icon ?? 'flaticon-government' }}"></i>
                         </div>
                         <h3 class="title">
-                            <a href="{{ url('category/'.$category->id) }}">
+                            <a href="{{ route('list.category', ['category' => Str::slug($category->name)]) }}">
                                 {{ $category->name }}
                             </a>
                         </h3>
@@ -275,5 +300,140 @@
     </div>
 </section>
 
+<script>
+    const serviceInput = document.getElementById('service_input');
+    const serviceBox = document.getElementById('service_suggest');
+    const categoryIdEl = document.getElementById('category_id');
+
+    const cityInput = document.getElementById('city_input');
+    const cityBox = document.getElementById('city_suggest');
+
+    let serviceTimer = null;
+    let cityTimer = null;
+
+    function showBox(box) {
+        box.classList.remove('d-none');
+    }
+
+    function hideBox(box) {
+        box.classList.add('d-none');
+        box.innerHTML = '';
+    }
+
+    serviceInput.addEventListener('input', function() {
+        clearTimeout(serviceTimer);
+        categoryIdEl.value = ''; // reset when typing again
+
+        const term = this.value.trim();
+        if (term.length < 1) {
+            hideBox(serviceBox);
+            return;
+        }
+
+        serviceTimer = setTimeout(async () => {
+            const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(term)}`);
+            const data = await res.json();
+
+            if (!data.length) {
+                hideBox(serviceBox);
+                return;
+            }
+
+            serviceBox.innerHTML = data.map(c =>
+                `<div class="suggest-item" data-id="${c.id}" data-name="${c.name}">${c.name}</div>`
+            ).join('');
+            showBox(serviceBox);
+        }, 250);
+    });
+
+    serviceBox.addEventListener('click', function(e) {
+        const item = e.target.closest('.suggest-item');
+        if (!item) return;
+
+        serviceInput.value = item.dataset.name;
+        categoryIdEl.value = item.dataset.id;
+        hideBox(serviceBox);
+
+        // city suggestions ko optionally refresh kar sakte ho (category filter)
+    });
+
+    cityInput.addEventListener('input', function() {
+        clearTimeout(cityTimer);
+
+        const term = this.value.trim();
+        if (term.length < 1) {
+            hideBox(cityBox);
+            return;
+        }
+
+        const catId = categoryIdEl.value;
+
+        cityTimer = setTimeout(async () => {
+            const url = new URL(`{{ route('ajax.city.suggest') }}`, window.location.origin);
+            url.searchParams.set('term', term);
+            if (catId) url.searchParams.set('category_id', catId);
+
+            const res = await fetch(url);
+            const data = await res.json();
+
+            if (!data.length) {
+                hideBox(cityBox);
+                return;
+            }
+
+            cityBox.innerHTML = data.map(city =>
+                `<div class="suggest-item" data-city="${city}">${city}</div>`
+            ).join('');
+            showBox(cityBox);
+        }, 250);
+    });
+
+    cityBox.addEventListener('click', function(e) {
+        const item = e.target.closest('.suggest-item');
+        if (!item) return;
+
+        cityInput.value = item.dataset.city;
+        hideBox(cityBox);
+    });
+
+    // click outside hide
+    document.addEventListener('click', function(e) {
+        if (!serviceBox.contains(e.target) && e.target !== serviceInput) hideBox(serviceBox);
+        if (!cityBox.contains(e.target) && e.target !== cityInput) hideBox(cityBox);
+    });
+</script>
+
+
+<style>
+    .suggestBox {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin-top: 6px;
+        overflow: hidden;
+        display: none;
+        z-index: 9999;
+        max-height: 260px;
+        overflow-y: auto;
+    }
+
+    .suggestItem {
+        padding: 10px 12px;
+        cursor: pointer;
+        font-size: 14px;
+    }
+
+    .suggestItem:hover {
+        background: #f5f5f5;
+    }
+
+    .banner-form-box {
+        position: relative;
+    }
+</style>
 
 @endsection

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('icon')->nullable();          // like: flaticon-chef
             $table->string('image')->nullable();         // storage path
+            $table->string('categoryimage')->nullable();         // storage path
             $table->boolean('is_active')->default(1); // status
             $table->timestamps();
         });

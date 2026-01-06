@@ -150,11 +150,10 @@ section.banner-area {
 /* Icon inside input */
 .banner-form-box i {
     position: absolute;
-    top: 50%;
-    left: 8px;
-    transform: translateY(-50%);
+    left: 5px;
     color: var(--heading-color);
-    font-size: 20px;
+    font-size: 16px;
+    line-height: 48px;
 }
 
 /* Input */
@@ -3523,50 +3522,170 @@ ul.pagination li.page-item .page-link {
     }
 }
 
+.search-bar {
+    border-top: 1px solid oklch(92.8% 0.006 264.531);
+    /* border-bottom: 1px solid oklch(92.8% 0.006 264.531); */
+    position: relative;
+    padding: 20px 0 0;
+}
+
+.search-bar .form-control-lg.form-icon-start {
+    border: 1px solid oklch(92.8% 0.006 264.531);
+    border-radius: 5px;
+    padding: 6px 18px;
+    padding-left: 41px;
+}
+
+.search-bar .banner-form-box.zip-form-box {
+    max-width: 280px;
+}
+
+.search-bar .banner-form-box i {
+    position: absolute;
+    left: 12px;
+    color: var(--heading-color);
+    font-size: 16px;
+    line-height: 42px;
+}
 
 
+.search-bar .form-control-lg.form-icon-start {
+    font-size: 13px;
+}
 
+.search-bar .banner-form button.btn.btn-lg.btn-primary {
+    padding: 6px 20px;
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border-radius: var(--radius-sm);
+    font-weight: 500;
+    font-size: 16px;
+    border: none;
+    transition: 0.2s ease;
+}
 
+.form-control-lg.form-icon-start::placeholder {
+    font-size: 15px;
+    color: var(--text-color);
+}
 
+.listing-search-area h1 {
+    font-size: 22px;
+    margin-bottom: 25px;
+    color: var(--heading-color);
+    font-weight: 600;
+}
 
+.listing-search-area-box {
+    border-radius: 10px;
+    border: solid 1px #eee;
+    background-color: #fff;
+    padding: 20px;
+    display: inline-flex;
+    width: 100%;
+    position: relative;
+    margin-bottom: 30px;
+}
 
+.wishlist-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+}
 
+.wishlist-icon a {
+    color: #767676;
+}
 
+.listing-search-box-img-area .listing-slider-single {
+    border-radius: 10px;
+    height: 180px !important;
+    width: 180px !important;
+    object-fit: cover;
+}
 
+.listing-search-box-content-area .services-list ul {
+    gap: 12px;
+}
 
+.listing-search-box-img-area {
+    position: relative;
+    height: 180px;
+    width: 180px;
+    overflow: hidden;
+    border-radius: 4px;
+}
 
+.listing-search-box-img-area img {
+    position: relative;
+    height: 100%;
+    width: 100%;
+    border-radius: 4px;
+}
 
+.listing-search-box-content-area {
+    position: relative;
+    padding-left: 20px;
+}
 
+.listing-search-box-content-area h3 a {
+    font-size: 18px;
+    margin-bottom: 5px;
+    color: var(--heading-color);
+    font-weight: 600;
+}
 
+.listing-search-box-content-area .profile-reviews-area {
+    margin-bottom: 5px;
+}
 
+.listing-search-box-social-links ul {
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 0;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 
+.listing-search-box-social-links ul li .call-btn {
+    background-color: #058a07;
+    color: #fff;
+    padding: 8px 12px;
+    position: relative;
+    font-size: 12px;
+    border-radius: 5px;
+    font-weight: 600;
+}
 
+.listing-search-box-social-links ul li .send-enquiry-btn {
+    background-color: #000;
+    color: #fff;
+    padding: 8px 12px;
+    position: relative;
+    font-size: 12px;
+    border-radius: 5px;
+    font-weight: 600;
+}
 
+.listing-search-box-social-links {
+    margin-top: 20px;
+}
 
+.listing-search-box-social-links ul li a svg {
+    width: 16px;
+    margin-right: 4px;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.listing-search-box-social-links ul li .whatsaap-btn {
+    background-color: oklch(96.2% 0.044 156.743);
+    color: oklch(52.7% 0.154 150.069);
+    padding: 8px 12px;
+    position: relative;
+    font-size: 12px;
+    border-radius: 5px;
+    font-weight: 600;
+}
 
 
 

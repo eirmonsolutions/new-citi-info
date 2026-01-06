@@ -72,7 +72,10 @@
                                 data-active="{{ $cat->is_active ? 1 : 0 }}"
                                 data-image="{{ $cat->image ? asset('storage/'.$cat->image) : '' }}">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye">
+                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
                             </button>
 
                             <form method="POST" action="{{ route('superadmin.category.destroy', $cat) }}" class="deleteCategoryForm">
@@ -117,6 +120,21 @@
                 <div class="form-group">
                     <label for="categoryName" class="form-label">Category Name</label>
                     <input type="text" id="categoryName" name="name" class="form-input" placeholder="Enter category name" required="">
+                </div>
+
+                <div class="form-group">
+                    <label for="categoryiconImg" class="form-label">Category Icon Image</label>
+                    <div class="category-img-upload" id="categoryiconImg">
+                        <div class="upload-area">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
+                                <path d="M12 13v8" />
+                                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+                                <path d="m8 17 4-4 4 4" />
+                            </svg>
+                            <p class="upload-text">Drop logo here or click</p>
+                        </div>
+                        <input type="file" id="logoFile" name="logoFile" accept="image/*" hidden="">
+                    </div>
                 </div>
 
 
@@ -255,6 +273,10 @@
 
     // ADD MODAL: image upload click
     document.getElementById('categoryImg')?.addEventListener('click', () => {
+        document.getElementById('logoFile').click();
+    });
+
+    document.getElementById('categoryiconImg')?.addEventListener('click', () => {
         document.getElementById('logoFile').click();
     });
 

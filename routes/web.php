@@ -17,10 +17,16 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\CouponController;
+use App\Http\Controllers\FrontSearchController;
 
 Route::get('/add-listing', [ListingController::class, 'create'])->name('listing.create');
 Route::get('/submit-listing', [ListingController::class, 'create'])->name('listing.submit');
 Route::post('/submit-listing', [ListingController::class, 'store'])->name('listing.store');
+
+
+Route::post('/search', [FrontSearchController::class, 'searchRedirect'])->name('search.redirect');
+
+
 
 
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
@@ -170,3 +176,15 @@ Route::get('/clear-all-cache-now', function () {
 
     return 'All caches cleared! <a href="/">Go Home</a>';
 })->name('clear.all');
+
+Route::get('/category/{category}', [FrontSearchController::class, 'listingCategory'])
+    ->name('list.category');
+
+
+// AJAX suggest
+Route::get('/ajax/category-suggest', [FrontSearchController::class, 'categorySuggest'])->name('ajax.category.suggest');
+Route::get('/ajax/city-suggest', [FrontSearchController::class, 'citySuggest'])->name('ajax.city.suggest');
+
+// Route::get('/{city}/{category}', [FrontSearchController::class, 'listingByCityCategory'])
+//     ->name('city.category');
+

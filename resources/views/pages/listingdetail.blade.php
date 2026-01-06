@@ -14,7 +14,13 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="/">Home</a></li>
-                <li class="breadcrumb-item"><a href="#">Category</a></li>
+                @if(isset($listing->categoryRel))
+                <li class="breadcrumb-item">
+                    <a href="{{ route('list.category', ['category' => Str::slug($listing->categoryRel->name)]) }}">
+                        {{ $listing->categoryRel->name }}
+                    </a>
+                </li>
+                @endif
                 <li class="breadcrumb-item active" aria-current="page">{{ $listing->business_name }}</li>
             </ol>
         </nav>
