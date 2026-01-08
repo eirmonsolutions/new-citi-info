@@ -3943,24 +3943,58 @@ ul.pagination li.page-item .page-link {
     }
 }
 
+section.banner-area-other {
+    background-color: var(--banner-bg);
+    padding: 100px 0;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+section.banner-area-other {
+    background-color: var(--banner-bg);
+    padding: 60px 0;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+section.value-about {
+    position: relative;
+    padding: 60px 0;
+}
+
+section.value-about .section-title {
+    text-align: start;
+    margin-bottom: 40px;
+}
 
 
+.about-value-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
+.about-value-wrapper .about-value-content {
+    padding-left: 20px;
+}
 
+.about-value-wrapper .about-value-content h3 {
+    font-size: 25px;
+    font-weight: 600;
+    color: var(--heading-color);
+}
 
+.about-value-wrapper .about-value-content p {
+    color: var(--text-color);
+    line-height: 25px;
+    font-weight: 400;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+.about-value-wrapper img {
+    width: 160px;
+}
 
 
 

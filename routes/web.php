@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListingPageController;
+use App\Http\Controllers\AboutPageController;
 use App\Http\Controllers\CategoryPageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
@@ -32,6 +33,8 @@ Route::post('/search', [FrontSearchController::class, 'searchRedirect'])->name('
 
 
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
+
+Route::get('/about', [AboutPageController::class, 'index'])->name('aboutpage');
 
 Route::get('/listing', [ListingPageController::class, 'index'])->name('listingpage');
 Route::get('/category', [CategoryPageController::class, 'index'])->name('categorypage');
@@ -161,13 +164,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 });
 
 
-
 // Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
 //     ->name('admin.dashboard');
 
 Route::get('listing/{slug}', [ListingController::class, 'show'])->name('listingdetail');
-
-
 
 
 Route::get('/clear-all-cache-now', function () {
