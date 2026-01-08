@@ -92,8 +92,16 @@
                     </div>
                     <div class="info">
                         <div class="icon">
-                            <i class="{{ $category->icon ?? 'flaticon-government' }}"></i>
+                            @if(!empty($category->categoryimage))
+                            <img
+                                src="{{ asset('storage/'.$category->categoryimage) }}"
+                                alt="{{ $category->name }}"
+                                style="width:40px;height:40px;object-fit:contain;filter: brightness(0);filter: brightness(0);">
+                            @else
+                            <span>-</span>
+                            @endif
                         </div>
+
                         <h3 class="title">
                             <a href="{{ route('list.category', ['category' => Str::slug($category->name)]) }}">
                                 {{ $category->name }}
@@ -268,10 +276,10 @@
                         {{-- DESCRIPTION --}}
                         <div class="testimonial">
                             <div class="testimonial-content">
-                                <img src="" alt="{{ $listing->business_name }}" class="testimonial-avatar">
+                                <img src="{{ $listing->logo ? asset('storage/'.$listing->logo) : 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&h=500' }}" alt="{{ $listing->business_name }}" class="testimonial-avatar">
                                 <div class="testimonial-text">
-                                    <p>{{ \Illuminate\Support\Str::limit(strip_tags($listing->description ?? ''), 40, '...') }}</p>
-                                    <span class="testimonial-author">—</span>
+                                    <p>From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes. </p>
+                                    <!-- <span class="testimonial-author">—</span> -->
                                 </div>
                             </div>
                         </div>

@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ListingPageController;
+use App\Http\Controllers\CategoryPageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
@@ -30,6 +32,9 @@ Route::post('/search', [FrontSearchController::class, 'searchRedirect'])->name('
 
 
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
+
+Route::get('/listing', [ListingPageController::class, 'index'])->name('listingpage');
+Route::get('/category', [CategoryPageController::class, 'index'])->name('categorypage');
 
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
@@ -187,4 +192,3 @@ Route::get('/ajax/city-suggest', [FrontSearchController::class, 'citySuggest'])-
 
 // Route::get('/{city}/{category}', [FrontSearchController::class, 'listingByCityCategory'])
 //     ->name('city.category');
-

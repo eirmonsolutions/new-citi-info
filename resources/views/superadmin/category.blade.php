@@ -27,7 +27,7 @@
                     <th>#</th>
                     <th>Category Image</th>
                     <th>Category Name</th>
-                    <th>Icon</th>
+                    <th>Category Image Icon</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -44,12 +44,16 @@
                     <td>{{ $cat->name }}</td>
                     <td>
                         <div class="category-icon">
-                            @if($cat->icon)
-                            <i class="{{ $cat->icon }}"></i>
+                            @if($cat->categoryimage)
+                            <img
+                                src="{{ asset('storage/'.$cat->categoryimage) }}"
+                                alt="{{ $cat->name }}"
+                                style="width:32px;height:32px;object-fit:contain;filter: brightness(0);">
                             @else
-                            -
+                            <span>-</span>
                             @endif
                         </div>
+
                     </td>
                     <td>
                         <form method="POST" action="{{ route('superadmin.category.toggle-status', $cat->id) }}">
@@ -68,13 +72,16 @@
                                 data-bs-target="#editCategoryModal"
                                 data-id="{{ $cat->id }}"
                                 data-name="{{ $cat->name }}"
-                                data-icon="{{ $cat->icon }}"
                                 data-active="{{ $cat->is_active ? 1 : 0 }}"
-                                data-image="{{ $cat->image ? asset('storage/'.$cat->image) : '' }}">
+                                data-image="{{ $cat->image ? asset('storage/'.$cat->image) : '' }}"
+                                data-categoryimage="{{ $cat->categoryimage ? asset('storage/'.$cat->categoryimage) : '' }}">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-eye-icon lucide-eye">
-                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                    <circle cx="12" cy="12" r="3" />
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-pencil">
+                                    <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
+                                    <path d="m15 5 4 4" />
                                 </svg>
                             </button>
 
@@ -115,59 +122,58 @@
                 <h1 class="modal-title fs-5" id="categoryModalLabel">Add New Category</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="categoryForm" method="POST" action="{{ route('superadmin.category.store') }}" enctype="multipart/form-data" class="modal-body">
+
+            <form id="categoryForm" method="POST" action="{{ route('superadmin.category.store') }}"
+                enctype="multipart/form-data" class="modal-body">
                 @csrf
+
                 <div class="form-group">
                     <label for="categoryName" class="form-label">Category Name</label>
-                    <input type="text" id="categoryName" name="name" class="form-input" placeholder="Enter category name" required="">
+                    <input type="text" id="categoryName" name="name" class="form-input"
+                        placeholder="Enter category name" required>
                 </div>
 
+                {{-- ✅ Category Icon Image --}}
                 <div class="form-group">
-                    <label for="categoryiconImg" class="form-label">Category Icon Image</label>
-                    <div class="category-img-upload" id="categoryiconImg">
+                    <label class="form-label">Category Icon Image</label>
+                    <div class="category-img-upload" id="categoryIconUpload" style="cursor:pointer;">
                         <div class="upload-area">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
+                            <img id="addIconPreview" src="" style="display:none;max-height:60px;margin-bottom:8px;filter: brightness(0);">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
                                 <path d="M12 13v8" />
                                 <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
                                 <path d="m8 17 4-4 4 4" />
                             </svg>
-                            <p class="upload-text">Drop logo here or click</p>
+                            <p class="upload-text">Drop icon image here or click</p>
                         </div>
-                        <input type="file" id="logoFile" name="logoFile" accept="image/*" hidden="">
+
+                        <input type="file" id="categoryIconFile" name="categoryimage" accept="image/*" hidden>
                     </div>
                 </div>
 
-
+                {{-- ✅ Category Image --}}
                 <div class="form-group">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle w-100 d-flex align-items-center justify-content-between"
-                            type="button" id="iconDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="selectedIcon"><i class="fa-solid fa-icons me-2"></i>Select Icon</span>
-                        </button>
-                        <ul class="dropdown-menu w-100" aria-labelledby="iconDropdown" style="max-height: 250px; overflow-y: auto;">
-                            <li><a class="dropdown-item icon-option" data-value="flaticon-government" href="#"><i class="flaticon-government me-2"></i> Home</a></li>
-                            <li><a class="dropdown-item icon-option" data-value="flaticon-chef" href="#"><i class="flaticon-chef me-2"></i> User</a></li>
-                        </ul>
-                        <input type="hidden" name="icon" id="iconInput">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="categoryImg" class="form-label">Category Image</label>
-                    <div class="category-img-upload" id="categoryImg">
+                    <label class="form-label">Category Image</label>
+                    <div class="category-img-upload" id="categoryImg" style="cursor:pointer;">
                         <div class="upload-area">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
+                            <img id="addImagePreview" src="" style="display:none;max-height:60px;margin-bottom:8px;filter: brightness(0);">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
                                 <path d="M12 13v8" />
                                 <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
                                 <path d="m8 17 4-4 4 4" />
                             </svg>
-                            <p class="upload-text">Drop logo here or click</p>
+                            <p class="upload-text">Drop image here or click</p>
                         </div>
-                        <input type="file" id="logoFile" name="logoFile" accept="image/*" hidden="">
+
+                        <input type="file" id="categoryImageFile" name="image" accept="image/*" hidden>
                     </div>
                 </div>
-
-
 
                 <div class="form-group-inline">
                     <div>
@@ -176,10 +182,11 @@
                     </div>
                     <label class="switch">
                         <input type="hidden" name="is_active" value="0">
-                        <input type="checkbox" id="categoryStatus" name="is_active" value="1" checked="">
+                        <input type="checkbox" id="categoryStatus" name="is_active" value="1" checked>
                         <span class="slider"></span>
                     </label>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Category</button>
@@ -189,54 +196,68 @@
     </div>
 </div>
 
+
+
 <!-- Modal for editing categories -->
 
 <div class="modal fade CategoryModal" id="editCategoryModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h1 class="modal-title fs-5" id="categoryModalLabel">Edit Category</h1>
+                <h1 class="modal-title fs-5">Edit Category</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <form id="editCategoryForm" method="POST" enctype="multipart/form-data" class="modal-body">
                 @csrf
+
                 <div class="form-group">
                     <label class="form-label">Category Name</label>
-                    <input type="text" name="name" id="editName" class="form-input" placeholder="Enter category name" required="">
+                    <input type="text" name="name" id="editName" class="form-input"
+                        placeholder="Enter category name" required>
                 </div>
 
-
+                {{-- ✅ Edit Category Icon Image --}}
                 <div class="form-group">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle w-100 d-flex align-items-center justify-content-between"
-                            type="button" id="iconDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="editSelectedIcon"><i class="fa-solid fa-icons me-2"></i>Select Icon</span>
-                        </button>
-                        <ul class="dropdown-menu w-100" aria-labelledby="iconDropdown" style="max-height: 250px; overflow-y: auto;">
-                            <li><a class="dropdown-item edit-icon-option" data-value="flaticon-government" href="#"><i class="flaticon-government me-2"></i> Home</a></li>
-                            <li><a class="dropdown-item edit-icon-option" data-value="flaticon-chef" href="#"><i class="flaticon-chef me-2"></i> User</a></li>
-                        </ul>
-                        <input type="hidden" name="icon" id="editIconInput">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="categoryImg" class="form-label">Category Image</label>
-                    <div class="category-img-upload" id="editUploadBox">
+                    <label class="form-label">Category Icon Image</label>
+                    <div class="category-img-upload" id="editIconUploadBox" style="cursor:pointer;">
                         <div class="upload-area">
-                            <img id="editPreview" src="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
+                            <img id="editIconPreview" src="" style="display:none;max-height:60px;margin-bottom:8px;filter: brightness(0);">
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
                                 <path d="M12 13v8" />
                                 <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
                                 <path d="m8 17 4-4 4 4" />
                             </svg>
-                            <p class="upload-text">Drop logo here or click</p>
+                            <p class="upload-text">Drop icon image here or click</p>
                         </div>
-                        <input type="file" id="editImage" name="image" accept="image/*" hidden>
+
+                        <input type="file" id="editCategoryIconFile" name="categoryimage" accept="image/*" hidden>
                     </div>
                 </div>
 
+                {{-- ✅ Edit Category Image --}}
+                <div class="form-group">
+                    <label class="form-label">Category Image</label>
+                    <div class="category-img-upload" id="editUploadBox" style="cursor:pointer;">
+                        <div class="upload-area">
+                            <img id="editPreview" src="" style="display:none;height: 160px;margin-bottom:8px;filter: brightness(0);">
 
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
+                                <path d="M12 13v8" />
+                                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+                                <path d="m8 17 4-4 4 4" />
+                            </svg>
+                            <p class="upload-text">Drop image here or click</p>
+                        </div>
+
+                        <input type="file" id="editImage" name="image" accept="image/*" hidden>
+                    </div>
+                </div>
 
                 <div class="form-group-inline">
                     <div>
@@ -245,10 +266,11 @@
                     </div>
                     <label class="switch">
                         <input type="hidden" name="is_active" value="0">
-                        <input type="checkbox" id="editActive" name="is_active" value="1" checked="">
+                        <input type="checkbox" id="editActive" name="is_active" value="1">
                         <span class="slider"></span>
                     </label>
                 </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-primary">Update Category</button>
@@ -260,79 +282,125 @@
 
 
 
+
+
 <script>
-    // ADD MODAL: icon select
-    document.querySelectorAll('.icon-option').forEach(el => {
-        el.addEventListener('click', function(e) {
-            e.preventDefault();
-            const val = this.dataset.value;
-            document.getElementById('iconInput').value = val;
-            document.getElementById('selectedIcon').innerHTML = this.innerHTML;
-        });
+    // =========================
+    // ✅ ADD MODAL: open file dialogs
+    // =========================
+    document.getElementById('categoryIconUpload')?.addEventListener('click', () => {
+        document.getElementById('categoryIconFile').click();
     });
 
-    // ADD MODAL: image upload click
     document.getElementById('categoryImg')?.addEventListener('click', () => {
-        document.getElementById('logoFile').click();
+        document.getElementById('categoryImageFile').click();
     });
 
-    document.getElementById('categoryiconImg')?.addEventListener('click', () => {
-        document.getElementById('logoFile').click();
+    // ✅ ADD MODAL: icon preview
+    document.getElementById('categoryIconFile')?.addEventListener('change', function() {
+        const file = this.files?.[0];
+        if (!file) return;
+        const preview = document.getElementById('addIconPreview');
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'inline-block';
     });
 
-    // EDIT: open modal fill data + set action url
+    // ✅ ADD MODAL: image preview
+    document.getElementById('categoryImageFile')?.addEventListener('change', function() {
+        const file = this.files?.[0];
+        if (!file) return;
+        const preview = document.getElementById('addImagePreview');
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'inline-block';
+    });
+
+    // ✅ Reset add modal when closed
+    document.getElementById('CategoryModal')?.addEventListener('hidden.bs.modal', function() {
+        const iconInput = document.getElementById('categoryIconFile');
+        const imgInput = document.getElementById('categoryImageFile');
+
+        const iconPreview = document.getElementById('addIconPreview');
+        const imgPreview = document.getElementById('addImagePreview');
+
+        if (iconInput) iconInput.value = '';
+        if (imgInput) imgInput.value = '';
+
+        if (iconPreview) {
+            iconPreview.src = '';
+            iconPreview.style.display = 'none';
+        }
+        if (imgPreview) {
+            imgPreview.src = '';
+            imgPreview.style.display = 'none';
+        }
+    });
+
+    // =========================
+    // ✅ EDIT MODAL: fill modal + set action + previews
+    // =========================
     document.querySelectorAll('.btn-edit').forEach(btn => {
         btn.addEventListener('click', function() {
             const id = this.dataset.id;
-            const name = this.dataset.name;
-            const icon = this.dataset.icon || '';
+            const name = this.dataset.name || '';
             const active = this.dataset.active === '1';
+
             const image = this.dataset.image || '';
+            const categoryimage = this.dataset.categoryimage || '';
 
             document.getElementById('editName').value = name;
-            document.getElementById('editIconInput').value = icon;
             document.getElementById('editActive').checked = active;
 
-            // show selected icon text
-            if (icon) {
-                document.getElementById('editSelectedIcon').innerHTML = `<i class="${icon} me-2"></i>${icon}`;
-            } else {
-                document.getElementById('editSelectedIcon').innerHTML = `<i class="fa-solid fa-icons me-2"></i>Select Icon`;
-            }
-
-            // preview
-            const preview = document.getElementById('editPreview');
+            // category image preview (existing)
+            const imgPreview = document.getElementById('editPreview');
             if (image) {
-                preview.src = image;
-                preview.style.display = 'inline-block';
+                imgPreview.src = image;
+                imgPreview.style.display = 'inline-block';
             } else {
-                preview.style.display = 'none';
+                imgPreview.src = '';
+                imgPreview.style.display = 'none';
             }
 
-            // set form action
+            // icon image preview (existing)
+            const iconPreview = document.getElementById('editIconPreview');
+            if (categoryimage) {
+                iconPreview.src = categoryimage;
+                iconPreview.style.display = 'inline-block';
+            } else {
+                iconPreview.src = '';
+                iconPreview.style.display = 'none';
+            }
+
+            // set action
             let url = `{{ route('superadmin.category.update', ':id') }}`;
             url = url.replace(':id', id);
-
             document.getElementById('editCategoryForm').action = url;
+
+
+            // reset file inputs (optional)
+            document.getElementById('editImage').value = '';
+            document.getElementById('editCategoryIconFile').value = '';
         });
     });
 
-    // EDIT modal icon select
-    document.querySelectorAll('.edit-icon-option').forEach(el => {
-        el.addEventListener('click', function(e) {
-            e.preventDefault();
-            const val = this.dataset.value;
-            document.getElementById('editIconInput').value = val;
-            document.getElementById('editSelectedIcon').innerHTML = this.innerHTML;
-        });
+    // ✅ EDIT: open uploads
+    document.getElementById('editIconUploadBox')?.addEventListener('click', () => {
+        document.getElementById('editCategoryIconFile').click();
     });
 
-    // EDIT image click
     document.getElementById('editUploadBox')?.addEventListener('click', () => {
         document.getElementById('editImage').click();
     });
 
-    // EDIT preview on change
+    // ✅ EDIT: icon preview on change
+    document.getElementById('editCategoryIconFile')?.addEventListener('change', function() {
+        const file = this.files?.[0];
+        if (!file) return;
+        const preview = document.getElementById('editIconPreview');
+        preview.src = URL.createObjectURL(file);
+        preview.style.display = 'inline-block';
+    });
+
+    // ✅ EDIT: category image preview on change
     document.getElementById('editImage')?.addEventListener('change', function() {
         const file = this.files?.[0];
         if (!file) return;
@@ -341,6 +409,8 @@
         preview.style.display = 'inline-block';
     });
 </script>
+
+
 
 
 

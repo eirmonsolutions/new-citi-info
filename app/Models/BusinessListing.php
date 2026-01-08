@@ -81,6 +81,7 @@ class BusinessListing extends Model
         return $this->belongsTo(\App\Models\Category::class, 'category_id');
     }
 
+
     public function contacts()
     {
         return $this->hasMany(\App\Models\BusinessContact::class, 'business_id');

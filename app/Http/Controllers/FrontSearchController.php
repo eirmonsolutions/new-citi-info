@@ -49,7 +49,7 @@ class FrontSearchController extends Controller
     }
 
 
-
+    
 
     public function searchRedirect(Request $request)
     {

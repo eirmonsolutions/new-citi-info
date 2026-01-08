@@ -1176,6 +1176,8 @@ main.main-dashboard .category-img img {
     text-align: center;
     cursor: pointer;
     transition: all 0.3s ease;
+    height: 200px;
+    align-content: center;
 }
 
 div#editUploadBox img#editPreview {
@@ -3689,11 +3691,257 @@ ul.pagination li.page-item .page-link {
 
 
 
+/*  */
 
 
 
 
+.filter-section {
+    padding: 22px 0;
+}
 
+.filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.filter-left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.filter-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid #e6ebf2;
+    border-radius: 10px;
+    background: #fff;
+}
+
+.fi {
+    display: flex;
+    align-items: center;
+    color: #6b7280;
+}
+
+.filter-input {
+    border: 0;
+    outline: 0;
+    min-width: 240px;
+    font-size: 14px;
+    color: #111827;
+}
+
+.filter-select {
+    position: relative;
+    cursor: pointer;
+}
+
+.pill-wrap {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border-radius: 999px;
+    padding: 6px 10px;
+    font-size: 13px;
+    color: #111827;
+}
+
+.pill-x {
+    border: 0;
+    background: transparent;
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.caret {
+    border: 0;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.dropdown {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    width: 100%;
+    min-width: 180px;
+    background: #fff;
+    border: 1px solid #e6ebf2;
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .08);
+    padding: 8px;
+    display: none;
+    z-index: 99;
+}
+
+.filter-select.open .dropdown {
+    display: block;
+}
+
+.dd-item {
+    width: 100%;
+    text-align: left;
+    padding: 10px 10px;
+    border: 0;
+    background: transparent;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #111827;
+}
+
+.dd-item:hover {
+    background: #f3f4f6;
+}
+
+.toggle-group {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-left: 6px;
+}
+
+.toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+    cursor: pointer;
+}
+
+.toggle input {
+    display: none;
+}
+
+.track {
+    width: 44px;
+    height: 24px;
+    background: #e5e7eb;
+    border-radius: 999px;
+    position: relative;
+    transition: .2s;
+}
+
+.track::after {
+    content: "";
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    transition: .2s;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+}
+
+.toggle input:checked+.track {
+    background: #111827;
+}
+
+.toggle input:checked+.track::after {
+    left: 23px;
+}
+
+.tlabel {
+    font-size: 14px;
+    color: #111827;
+}
+
+.filter-right {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.results {
+    font-size: 14px;
+    color: #6b7280;
+    padding-right: 8px;
+}
+
+.sort-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+}
+
+.sort-label {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.sort-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 10px;
+    border: 1px solid #e6ebf2;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    color: #111827;
+    font-size: 14px;
+}
+
+.view-icons {
+    display: flex;
+    gap: 8px;
+}
+
+.view-btn {
+    height: 40px;
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e6ebf2;
+    border-radius: 10px;
+    background: #fff;
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.view-btn.active {
+    color: #111827;
+    border-color: #cfd6e1;
+}
+
+@media (max-width: 768px) {
+    .filter-input {
+        min-width: 170px;
+    }
+
+    .filter-right {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
 
 
 
