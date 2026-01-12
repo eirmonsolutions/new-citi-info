@@ -2483,7 +2483,7 @@ section.listing-area-front {
 }
 
 .front-listing-title h3 {
-    font-size: 1.3rem;
+    font-size: 18px;
     font-weight: 600;
     margin-bottom: 0;
 }
@@ -2522,6 +2522,7 @@ section.listing-area-front {
 .rating span {
     font-weight: 600;
     color: #374151;
+    font-size: 12px;
 }
 
 .category-badge {
@@ -2537,10 +2538,10 @@ section.listing-area-front {
 .location {
     display: flex;
     align-items: center;
-    gap: 8px;
-    color: var(--heading-color);
-    font-size: 16px;
-    font-weight: 600;
+    gap: 5px;
+    color: #6b7280;
+    font-size: 14px;
+    font-weight: 400;
 }
 
 .testimonial {
@@ -2564,11 +2565,12 @@ section.listing-area-front {
 }
 
 .testimonial-text p {
-    font-size: 14px;
-    color: var(--heading-color);
     font-style: italic;
-    margin-bottom: 4px;
-    line-height: 1.4;
+    font-size: 12px;
+    line-height: 19px;
+    font-weight: 500;
+    color: #344054;
+    margin-bottom: 5px;
 }
 
 .testimonial-author {
@@ -3873,12 +3875,15 @@ ul.pagination li.page-item .page-link {
     align-items: center;
     gap: 14px;
     flex-wrap: wrap;
+    float: right;
+    margin-left: auto;
 }
 
 .results {
     font-size: 14px;
     color: #6b7280;
     padding-right: 8px;
+    margin-top: 10px;
 }
 
 .sort-wrap {
@@ -3959,82 +3964,147 @@ section.banner-area-other {
     z-index: 1;
 }
 
-section.value-about {
+
+section.about-deatil-section {
     position: relative;
     padding: 60px 0;
 }
 
-section.value-about .section-title {
-    text-align: start;
-    margin-bottom: 40px;
-}
-
-
-.about-value-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-}
-
-.about-value-wrapper .about-value-content {
-    padding-left: 20px;
-}
-
-.about-value-wrapper .about-value-content h3 {
-    font-size: 25px;
+.left-side-about h4 {
+    font-size: 40px;
     font-weight: 600;
     color: var(--heading-color);
 }
 
-.about-value-wrapper .about-value-content p {
+.left-side-about p {
     color: var(--text-color);
-    line-height: 25px;
+    line-height: 30px;
     font-weight: 400;
 }
 
-.about-value-wrapper img {
-    width: 160px;
+.right-side-about {
+    text-align: center;
 }
 
+.right-side-about img {
+    width: 100%;
+    max-width: 310px;
+}
 
+.footer-top-wrap {
+    background-color: #1a1a1a;
+    padding: 4.6875rem 0 2.875rem;
+}
 
+.footer-box-layout1 {
+    margin-bottom: 1.875rem;
+}
 
+.footer-box-layout1 .footer-logo {
+    margin-bottom: 25px;
+}
 
+.footer-logo img {
+    filter: brightness(0) invert(1);
+    max-width: 130px;
+}
 
+.footer-box-layout1 p {
+    font-size: 12px;
+    color: #a5a5a5;
+    line-height: 25px;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
 
+.footer-box-layout1 .footer-social li {
+    display: inline-block;
+    margin-right: 0.25rem;
+    margin-bottom: 0.3125rem;
+}
 
+.footer-box-layout1 .footer-social li a {
+    display: flex;
+    text-align: center;
+    height: 2.375rem;
+    width: 2.375rem;
+    line-height: 2.375rem;
+    background-color: rgba(255, 255, 255, 0.19);
+    border-radius: 50%;
+    color: #a5a5a5;
+    font-size: 1rem;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    align-items: center;
+    justify-content: center;
+}
 
+.footer-box-layout1 .footer-title {
+    margin-bottom: 25px;
+    padding-bottom: 10px;
+    position: relative;
+}
 
+.footer-box-layout1 .footer-title h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    color: #ffffff;
+}
 
+.footer-box-layout1 .footer-title:after {
+    content: "";
+    height: 0.1875rem;
+    width: 2.5rem;
+    background-color: #017eff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
 
+.footer-box-layout1 .footer-menu-box ul li a {
+    font-size: 12px;
+    color: #a5a5a5;
+    padding: 0.3125rem 0;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+    font-weight: 500;
+}
 
+.footer-box-layout1 .footer-menu-box ul li {
+    margin-bottom: 0.375rem;
+}
 
+ul {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
 
+.footer-bottom-wrap {
+    background-color: #111212;
+    padding: 1.5625rem 0;
+}
 
+.footer-bottom-wrap .copyright-text {
+    color: #ababab;
+    text-align: center;
+}
 
+.footer-bottom-wrap .copyright-text a {
+    color: #f5f5f5;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
 
+.footer-box-layout1 .footer-menu-box ul li a:hover {
+    color: #ffffff;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+section.listing-details-area {
+    margin-bottom: 60px;
+}
 
 
 

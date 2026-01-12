@@ -32,17 +32,27 @@
                         <hr class="vr d-none d-sm-block my-2">
 
                         <!-- CITY -->
-                        <div class="banner-form-box zip-form-box position-relative">
-                            <i class="fi-map-pin"></i>
-                            <input type="text"
-                                name="city"
-                                id="city_input"
-                                class="form-control form-control-lg form-icon-start"
-                                placeholder="City"
-                                required>
+<div class="banner-form-box zip-form-box position-relative">
+    <i class="fi-map-pin"></i>
 
-                            <div id="city_suggest" class="suggest-box d-none"></div>
-                        </div>
+    <input type="text"
+        name="city"
+        id="city_input"
+        class="form-control form-control-lg form-icon-start"
+        placeholder="City"
+        required>
+
+    <!-- Detect button (right side) -->
+    <button type="button" id="detect_city_btn" class="detect-btn" title="Detect my location">
+        Use my location
+    </button>
+
+    <div id="city_suggest" class="suggest-box d-none"></div>
+
+    <!-- optional message -->
+    <small id="geo_msg" class="geo-msg d-none"></small>
+</div>
+
 
                     </div>
 
@@ -249,14 +259,14 @@
                             <div class="front-listing-info">
                                 <div class="front-listing-meta">
                                     <div class="rating">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star-icon lucide-star">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star-icon lucide-star">
                                             <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
                                         </svg>
-                                        <span>New</span>
+                                        <span>4.5</span>
                                     </div>
 
                                     <div class="reviews">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users">
                                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                                             <path d="M16 3.128a4 4 0 0 1 0 7.744" />
                                             <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
@@ -278,15 +288,15 @@
                             <div class="testimonial-content">
                                 <img src="{{ $listing->logo ? asset('storage/'.$listing->logo) : 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&h=500' }}" alt="{{ $listing->business_name }}" class="testimonial-avatar">
                                 <div class="testimonial-text">
-                                    <p>From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes. </p>
-                                    <!-- <span class="testimonial-author">—</span> -->
+                                    <p>"I haven't had pizza in like 5 minutes!! talking with my colleague after our office lunch"</p>
+                                    <span class="testimonial-author">Mike Johnson</span>
                                 </div>
                             </div>
                         </div>
 
                         {{-- CITY --}}
                         <div class="location">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
                                 <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                                 <circle cx="12" cy="10" r="3" />
                             </svg>
@@ -307,6 +317,106 @@
         </div>
     </div>
 </section>
+
+
+
+<script>
+    // ---------- GEOLOCATION AUTO-DETECT ----------
+    const detectBtn = document.getElementById('detect_city_btn');
+    const geoMsg = document.getElementById('geo_msg');
+
+    function showGeoMsg(text){
+        if(!geoMsg) return;
+        geoMsg.textContent = text;
+        geoMsg.classList.remove('d-none');
+    }
+    function hideGeoMsg(){
+        if(!geoMsg) return;
+        geoMsg.classList.add('d-none');
+        geoMsg.textContent = '';
+    }
+
+    async function reverseGeocodeCity(lat, lng){
+        // ✅ Option A (NO API KEY): OpenStreetMap Nominatim (free, but rate-limited)
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+        const res = await fetch(url, {
+            headers: {
+                // Nominatim friendly header (some servers expect it)
+                "Accept": "application/json"
+            }
+        });
+        const data = await res.json();
+
+        const addr = data.address || {};
+        // city may appear in different fields
+        return addr.city || addr.town || addr.village || addr.county || '';
+    }
+
+    async function detectAndFillCity(){
+        hideGeoMsg();
+
+        if(!navigator.geolocation){
+            showGeoMsg("Geolocation is not supported in this browser.");
+            return;
+        }
+
+        // if Permissions API available, optionally check state
+        try{
+            if(navigator.permissions){
+                const p = await navigator.permissions.query({ name: 'geolocation' });
+                if(p.state === 'denied'){
+                    showGeoMsg("Location permission denied. Please enable it in browser settings.");
+                    return;
+                }
+            }
+        }catch(e){ /* ignore */ }
+
+        showGeoMsg("Detecting your location...");
+
+        navigator.geolocation.getCurrentPosition(async (pos) => {
+            try{
+                const lat = pos.coords.latitude;
+                const lng = pos.coords.longitude;
+
+                showGeoMsg("Finding your city...");
+                const cityName = await reverseGeocodeCity(lat, lng);
+
+                if(cityName){
+                    cityInput.value = cityName;     // ✅ your existing cityInput variable
+                    hideBox(cityBox);               // ✅ your existing function
+                    showGeoMsg(`Detected: ${cityName}`);
+                    setTimeout(hideGeoMsg, 2500);
+                }else{
+                    showGeoMsg("Could not detect city. Please type manually.");
+                }
+            }catch(err){
+                showGeoMsg("Reverse geocoding failed. Please type manually.");
+            }
+        }, (err) => {
+            // permission denied or error
+            if(err.code === 1){
+                showGeoMsg("Permission denied. Please allow location access.");
+            }else{
+                showGeoMsg("Unable to detect location. Please type city manually.");
+            }
+        }, {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 300000
+        });
+    }
+
+    // Button click
+    if(detectBtn){
+        detectBtn.addEventListener('click', detectAndFillCity);
+    }
+
+    // OPTIONAL: auto prompt on page load (agar aap chahte ho)
+    // window.addEventListener('load', () => {
+    //     detectAndFillCity();
+    // });
+</script>
+
 
 <script>
     const serviceInput = document.getElementById('service_input');

@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\AnnouncementController;
 use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\FrontSearchController;
+use App\Http\Controllers\AjaxLocationController;
 
 Route::get('/add-listing', [ListingController::class, 'create'])->name('listing.create');
 Route::get('/submit-listing', [ListingController::class, 'create'])->name('listing.submit');
@@ -170,6 +171,8 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 Route::get('listing/{slug}', [ListingController::class, 'show'])->name('listingdetail');
 
 
+
+
 Route::get('/clear-all-cache-now', function () {
     Artisan::call('optimize:clear');
     Artisan::call('cache:clear');
@@ -192,3 +195,6 @@ Route::get('/ajax/city-suggest', [FrontSearchController::class, 'citySuggest'])-
 
 // Route::get('/{city}/{category}', [FrontSearchController::class, 'listingByCityCategory'])
 //     ->name('city.category');
+
+Route::get('/ajax/city/by-coords', [AjaxLocationController::class, 'cityByCoords'])
+    ->name('ajax.city.by-coords');

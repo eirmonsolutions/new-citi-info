@@ -38,7 +38,7 @@
 
 
     {{-- 🔹 Footer --}}
-
+    @include('partials.footer')
 
     <!-- Bootstrap JS -->
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>

@@ -30,6 +30,10 @@ use Carbon\Carbon;
 class ListingController extends Controller
 {
 
+
+
+    
+
     public function show($slug)
     {
         $today = Carbon::today()->toDateString();
