@@ -68,7 +68,7 @@
                                 <ul>
                                     @forelse($listing->services as $service)
                                     <li>
-                                        <div class="services-name">✓ {{ $service->name }}</div>
+                                        <div class="services-name"> {{ $service->name }}</div>
                                     </li>
                                     @empty
                                     <li>

@@ -32,26 +32,21 @@
                         <hr class="vr d-none d-sm-block my-2">
 
                         <!-- CITY -->
-<div class="banner-form-box zip-form-box position-relative">
-    <i class="fi-map-pin"></i>
+                        <div class="banner-form-box zip-form-box position-relative">
+                            <i class="fi-map-pin"></i>
 
-    <input type="text"
-        name="city"
-        id="city_input"
-        class="form-control form-control-lg form-icon-start"
-        placeholder="City"
-        required>
+                            <input type="text"
+                                name="city"
+                                id="city_input"
+                                class="form-control form-control-lg form-icon-start"
+                                placeholder="City"
+                                required>
 
-    <!-- Detect button (right side) -->
-    <button type="button" id="detect_city_btn" class="detect-btn" title="Detect my location">
-        Use my location
-    </button>
+                            <div id="city_suggest" class="suggest-box d-none"></div>
 
-    <div id="city_suggest" class="suggest-box d-none"></div>
+                            <small id="geo_msg" class="geo-msg d-none"></small>
+                        </div>
 
-    <!-- optional message -->
-    <small id="geo_msg" class="geo-msg d-none"></small>
-</div>
 
 
                     </div>
@@ -321,205 +316,186 @@
 
 
 <script>
-    // ---------- GEOLOCATION AUTO-DETECT ----------
-    const detectBtn = document.getElementById('detect_city_btn');
-    const geoMsg = document.getElementById('geo_msg');
+    document.addEventListener('DOMContentLoaded', () => {
 
-    function showGeoMsg(text){
-        if(!geoMsg) return;
-        geoMsg.textContent = text;
-        geoMsg.classList.remove('d-none');
-    }
-    function hideGeoMsg(){
-        if(!geoMsg) return;
-        geoMsg.classList.add('d-none');
-        geoMsg.textContent = '';
-    }
+        // ---------------- ELEMENTS ----------------
+        const serviceInput = document.getElementById('service_input');
+        const serviceBox = document.getElementById('service_suggest');
+        const categoryIdEl = document.getElementById('category_id');
 
-    async function reverseGeocodeCity(lat, lng){
-        // ✅ Option A (NO API KEY): OpenStreetMap Nominatim (free, but rate-limited)
-        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
-        const res = await fetch(url, {
-            headers: {
-                // Nominatim friendly header (some servers expect it)
-                "Accept": "application/json"
-            }
-        });
-        const data = await res.json();
+        const cityInput = document.getElementById('city_input');
+        const cityBox = document.getElementById('city_suggest');
 
-        const addr = data.address || {};
-        // city may appear in different fields
-        return addr.city || addr.town || addr.village || addr.county || '';
-    }
+        const geoMsg = document.getElementById('geo_msg');
 
-    async function detectAndFillCity(){
-        hideGeoMsg();
+        let serviceTimer = null;
+        let cityTimer = null;
 
-        if(!navigator.geolocation){
-            showGeoMsg("Geolocation is not supported in this browser.");
-            return;
+        // ---------------- HELPERS ----------------
+        function showBox(box) {
+            box.classList.remove('d-none');
         }
 
-        // if Permissions API available, optionally check state
-        try{
-            if(navigator.permissions){
-                const p = await navigator.permissions.query({ name: 'geolocation' });
-                if(p.state === 'denied'){
-                    showGeoMsg("Location permission denied. Please enable it in browser settings.");
-                    return;
-                }
-            }
-        }catch(e){ /* ignore */ }
-
-        showGeoMsg("Detecting your location...");
-
-        navigator.geolocation.getCurrentPosition(async (pos) => {
-            try{
-                const lat = pos.coords.latitude;
-                const lng = pos.coords.longitude;
-
-                showGeoMsg("Finding your city...");
-                const cityName = await reverseGeocodeCity(lat, lng);
-
-                if(cityName){
-                    cityInput.value = cityName;     // ✅ your existing cityInput variable
-                    hideBox(cityBox);               // ✅ your existing function
-                    showGeoMsg(`Detected: ${cityName}`);
-                    setTimeout(hideGeoMsg, 2500);
-                }else{
-                    showGeoMsg("Could not detect city. Please type manually.");
-                }
-            }catch(err){
-                showGeoMsg("Reverse geocoding failed. Please type manually.");
-            }
-        }, (err) => {
-            // permission denied or error
-            if(err.code === 1){
-                showGeoMsg("Permission denied. Please allow location access.");
-            }else{
-                showGeoMsg("Unable to detect location. Please type city manually.");
-            }
-        }, {
-            enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 300000
-        });
-    }
-
-    // Button click
-    if(detectBtn){
-        detectBtn.addEventListener('click', detectAndFillCity);
-    }
-
-    // OPTIONAL: auto prompt on page load (agar aap chahte ho)
-    // window.addEventListener('load', () => {
-    //     detectAndFillCity();
-    // });
-</script>
-
-
-<script>
-    const serviceInput = document.getElementById('service_input');
-    const serviceBox = document.getElementById('service_suggest');
-    const categoryIdEl = document.getElementById('category_id');
-
-    const cityInput = document.getElementById('city_input');
-    const cityBox = document.getElementById('city_suggest');
-
-    let serviceTimer = null;
-    let cityTimer = null;
-
-    function showBox(box) {
-        box.classList.remove('d-none');
-    }
-
-    function hideBox(box) {
-        box.classList.add('d-none');
-        box.innerHTML = '';
-    }
-
-    serviceInput.addEventListener('input', function() {
-        clearTimeout(serviceTimer);
-        categoryIdEl.value = ''; // reset when typing again
-
-        const term = this.value.trim();
-        if (term.length < 1) {
-            hideBox(serviceBox);
-            return;
+        function hideBox(box) {
+            box.classList.add('d-none');
+            box.innerHTML = '';
         }
 
-        serviceTimer = setTimeout(async () => {
-            const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(term)}`);
-            const data = await res.json();
+        function showGeoMsg(text) {
+            if (!geoMsg) return;
+            geoMsg.textContent = text;
+            geoMsg.classList.remove('d-none');
+        }
 
-            if (!data.length) {
+        function hideGeoMsg() {
+            if (!geoMsg) return;
+            geoMsg.classList.add('d-none');
+            geoMsg.textContent = '';
+        }
+
+        // ---------------- SERVICE SUGGEST ----------------
+        serviceInput.addEventListener('input', function() {
+            clearTimeout(serviceTimer);
+            categoryIdEl.value = '';
+
+            const term = this.value.trim();
+            if (term.length < 1) {
                 hideBox(serviceBox);
                 return;
             }
 
-            serviceBox.innerHTML = data.map(c =>
-                `<div class="suggest-item" data-id="${c.id}" data-name="${c.name}">${c.name}</div>`
-            ).join('');
-            showBox(serviceBox);
-        }, 250);
-    });
+            serviceTimer = setTimeout(async () => {
+                const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(term)}`);
+                const data = await res.json();
 
-    serviceBox.addEventListener('click', function(e) {
-        const item = e.target.closest('.suggest-item');
-        if (!item) return;
+                if (!data.length) {
+                    hideBox(serviceBox);
+                    return;
+                }
 
-        serviceInput.value = item.dataset.name;
-        categoryIdEl.value = item.dataset.id;
-        hideBox(serviceBox);
+                serviceBox.innerHTML = data.map(c =>
+                    `<div class="suggest-item" data-id="${c.id}" data-name="${c.name}">${c.name}</div>`
+                ).join('');
 
-        // city suggestions ko optionally refresh kar sakte ho (category filter)
-    });
+                showBox(serviceBox);
+            }, 250);
+        });
 
-    cityInput.addEventListener('input', function() {
-        clearTimeout(cityTimer);
+        serviceBox.addEventListener('click', function(e) {
+            const item = e.target.closest('.suggest-item');
+            if (!item) return;
 
-        const term = this.value.trim();
-        if (term.length < 1) {
-            hideBox(cityBox);
-            return;
-        }
+            serviceInput.value = item.dataset.name;
+            categoryIdEl.value = item.dataset.id;
+            hideBox(serviceBox);
+        });
 
-        const catId = categoryIdEl.value;
+        // ---------------- CITY SUGGEST ----------------
+        cityInput.addEventListener('input', function() {
+            clearTimeout(cityTimer);
 
-        cityTimer = setTimeout(async () => {
-            const url = new URL(`{{ route('ajax.city.suggest') }}`, window.location.origin);
-            url.searchParams.set('term', term);
-            if (catId) url.searchParams.set('category_id', catId);
-
-            const res = await fetch(url);
-            const data = await res.json();
-
-            if (!data.length) {
+            const term = this.value.trim();
+            if (term.length < 1) {
                 hideBox(cityBox);
                 return;
             }
 
-            cityBox.innerHTML = data.map(city =>
-                `<div class="suggest-item" data-city="${city}">${city}</div>`
-            ).join('');
-            showBox(cityBox);
-        }, 250);
-    });
+            const catId = categoryIdEl.value;
 
-    cityBox.addEventListener('click', function(e) {
-        const item = e.target.closest('.suggest-item');
-        if (!item) return;
+            cityTimer = setTimeout(async () => {
+                const url = new URL(`{{ route('ajax.city.suggest') }}`, window.location.origin);
+                url.searchParams.set('term', term);
+                if (catId) url.searchParams.set('category_id', catId);
 
-        cityInput.value = item.dataset.city;
-        hideBox(cityBox);
-    });
+                const res = await fetch(url);
+                const data = await res.json();
 
-    // click outside hide
-    document.addEventListener('click', function(e) {
-        if (!serviceBox.contains(e.target) && e.target !== serviceInput) hideBox(serviceBox);
-        if (!cityBox.contains(e.target) && e.target !== cityInput) hideBox(cityBox);
+                if (!data.length) {
+                    hideBox(cityBox);
+                    return;
+                }
+
+                cityBox.innerHTML = data.map(city =>
+                    `<div class="suggest-item" data-city="${city}">${city}</div>`
+                ).join('');
+
+                showBox(cityBox);
+            }, 250);
+        });
+
+        cityBox.addEventListener('click', function(e) {
+            const item = e.target.closest('.suggest-item');
+            if (!item) return;
+
+            cityInput.value = item.dataset.city;
+            hideBox(cityBox);
+        });
+
+        // ---------------- CLICK OUTSIDE HIDE ----------------
+        document.addEventListener('click', function(e) {
+            if (!serviceBox.contains(e.target) && e.target !== serviceInput) hideBox(serviceBox);
+            if (!cityBox.contains(e.target) && e.target !== cityInput) hideBox(cityBox);
+        });
+
+        // ---------------- GEOLOCATION AUTO DETECT ----------------
+        async function reverseGeocodeCity(lat, lng) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
+            const res = await fetch(url, {
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+            const data = await res.json();
+            const a = data.address || {};
+            return a.city || a.town || a.village || a.county || '';
+        }
+
+        function autoDetectCity() {
+            if (!navigator.geolocation) return;
+
+            // ⚠️ HTTP + IP pe browser block kar deta hai
+            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
+                // yahan silently skip - aapka IP (192.168...) par kaam nahi karega
+                // test ke liye localhost ya https use karo
+                return;
+            }
+
+            showGeoMsg("Detecting your city...");
+
+            navigator.geolocation.getCurrentPosition(async (pos) => {
+                try {
+                    const city = await reverseGeocodeCity(pos.coords.latitude, pos.coords.longitude);
+                    if (city) {
+                        cityInput.value = city;
+                        hideBox(cityBox);
+                        showGeoMsg(`Detected: ${city}`);
+                        setTimeout(hideGeoMsg, 2500);
+                    } else {
+                        showGeoMsg("Could not detect city. Please type manually.");
+                    }
+                } catch (e) {
+                    showGeoMsg("City detection failed. Please type manually.");
+                }
+            }, (err) => {
+                // Permission denied etc.
+                // popup nahi aayega agar http + ip hai
+                hideGeoMsg();
+            }, {
+                enableHighAccuracy: true,
+                timeout: 8000,
+                maximumAge: 300000
+            });
+        }
+
+        // ✅ AUTO RUN ON PAGE LOAD
+        autoDetectCity();
+
     });
 </script>
+
+
+
+
 
 
 <style>

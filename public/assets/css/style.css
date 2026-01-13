@@ -4106,6 +4106,16 @@ section.listing-details-area {
     margin-bottom: 60px;
 }
 
+.pill-input{
+    border:0;
+    outline:none;
+    background:transparent;
+    font-size:14px;
+    min-width:120px;
+    padding:6px 4px;
+}
+.pill-input::placeholder{ color:#9aa3af; }
+.dd-item.d-none{ display:none !important; }
 
 
 
