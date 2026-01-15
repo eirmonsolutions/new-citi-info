@@ -4,6 +4,9 @@
 
 @section('content')
 
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
 
 <section class="banner-area">
     <div class="container">
@@ -29,7 +32,7 @@
                             <div id="service_suggest" class="suggest-box d-none"></div>
                         </div>
 
-                        <hr class="vr d-none d-sm-block my-2">
+                        <hr class="vr d-sm-block">
 
                         <!-- CITY -->
                         <div class="banner-form-box zip-form-box position-relative">
@@ -80,8 +83,9 @@
 
         <div class="row">
 
-            @foreach($categories as $category)
-            <div class="col-lg-3 col-md-6 col-sm-12">
+
+            <div class="category-item-grid">
+                @foreach($categories as $category)
                 <div class="category-item category-item-two">
                     <div class="category-img">
                         <img
@@ -115,9 +119,8 @@
                         <span class="listing">15 Listing</span>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
-
         </div>
     </div>
 </section>
@@ -132,29 +135,31 @@
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-4">
+        <div class="row g-0">
+            <div class="col-md-6 col-lg-4">
                 <a href="cities.html">
-                    <div class="city-grid">
+                </a>
+                <div class="city-grid"><a href="cities.html">
                         <div class="city-img">
-                            <img src="{{ asset('assets/images/img-1.jpg') }}" alt="">
+                            <img src="http://192.168.1.12:8000/assets/images/img-1.jpg" alt="">
                         </div>
-                        <div class="city-title">
+                    </a>
+                    <div class="city-title"><a href="cities.html">
                             <div class="listings-count">
                                 <span class="count-number">3</span>
                                 <p class="count-text">LISTINGS</p>
                             </div>
-                            <h3><a href="#">Chicago</a></h3>
-                        </div>
+                        </a>
+                        <h3><a href="cities.html"></a><a href="#">Chicago</a></h3>
                     </div>
-                </a>
+                </div>
+
 
             </div>
-            <div class="col-md-4 p-0">
+            <div class="col-md-6 col-lg-4">
                 <div class="city-grid city-grid-normal-height">
                     <div class="city-img">
-                        <img src="https://images.unsplash.com/photo-1494522358652-f30e61a60313?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500"
-                            alt="Chicago skyline with Willis Tower">
+                        <img src="https://images.unsplash.com/photo-1494522358652-f30e61a60313?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=800&amp;h=500" alt="Chicago skyline with Willis Tower">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
@@ -164,10 +169,10 @@
                         <h3><a href="#">Chicago</a></h3>
                     </div>
                 </div>
-                <div class="city-grid city-grid-normal-height">
+
+                <div class="city-grid city-grid-normal-height d-sm-none d-lg-block">
                     <div class="city-img">
-                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500"
-                            alt="Times Square in New York City">
+                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=800&amp;h=500" alt="Times Square in New York City">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
@@ -179,10 +184,25 @@
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-6 col-lg-4 d-lg-none d-sm-block">
+
+                <div class="city-grid city-grid-normal-height ">
+                    <div class="city-img">
+                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=800&amp;h=500" alt="Times Square in New York City">
+                    </div>
+                    <div class="city-title">
+                        <div class="listings-count">
+                            <span class="count-number">3</span>
+                            <p class="count-text">LISTINGS</p>
+                        </div>
+                        <h3><a href="#">Chicago</a></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4">
                 <div class="city-grid">
                     <div class="city-img">
-                        <img src="{{ asset('assets/images/img-1.jpg') }}" alt="">
+                        <img src="http://192.168.1.12:8000/assets/images/img-1.jpg" alt="">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
@@ -211,15 +231,24 @@
 
         <div class="row">
             @forelse($listings as $listing)
-            <div class="col-md-6 col-lg-4">
+            <div class="col-md-6 col-lg-6 col-xl-4">
                 <div class="front-listing-box">
                     <div class="front-listing-img">
+                        <div class="listing-slider-wrapper mySwiper mb-5">
+                            <div class="swiper-wrapper">
+                                @foreach($listing->gallery as $img)
+                                <div class="swiper-slide listing-slider-single">
+                                    <img
+                                        loading="lazy"
+                                        src="{{ asset('storage/'.$img->image_path) }}"
+                                        alt="{{ $img->alt_text ?? $listing->business_name }}">
+                                </div>
+                                @endforeach
 
-                        {{-- IMAGE --}}
-                        <img
-                            src="{{ $listing->logo ? asset('storage/'.$listing->logo) : 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&h=500' }}"
-                            alt="{{ $listing->business_name }}">
-
+                            </div>
+                            <!-- scrollbar -->
+                            <div class="swiper-scrollbar"></div>
+                        </div>
                         <div class="image-overlay"></div>
 
                         <div class="action-buttons">
@@ -493,7 +522,69 @@
     });
 </script>
 
+<script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
+<script>
+    // var swiperThumbs = new Swiper(".mySwiperThumbs", {
+    //     spaceBetween: 10,
+    //     slidesPerView: 5,
+    //     freeMode: true,
+    //     watchSlidesProgress: true,
+    //     grabCursor: true,
+
+    //     breakpoints: {
+    //         0: {
+    //             slidesPerView: 3
+    //         },
+    //         576: {
+    //             slidesPerView: 4
+    //         },
+    //         992: {
+    //             slidesPerView: 5
+    //         },
+    //     },
+    // });
+
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 1,
+        spaceBetween: 12,
+        loop: true,
+
+        speed: 900,
+
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+
+        grabCursor: true,
+        simulateTouch: true,
+
+        scrollbar: {
+            el: ".swiper-scrollbar",
+            draggable: true,
+            hide: false,
+        },
+
+        effect: "slide",
+
+        // thumbs: {
+        //     swiper: swiperThumbs,
+        // },
+
+        breakpoints: {
+            0: {
+                slidesPerView: 1
+            },
+            768: {
+                slidesPerView: 1
+            },
+            1024: {
+                slidesPerView: 1
+            },
+        },
+    });
+</script>
 
 
 

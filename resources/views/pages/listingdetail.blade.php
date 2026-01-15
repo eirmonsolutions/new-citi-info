@@ -4,6 +4,36 @@
 
 @section('content')
 
+<style>
+    .listing-slider-wrapper {
+        height: auto;
+    }
+
+    @media (min-width: 320px) and (max-width: 767px) {
+
+        .listing-slider-wrapper {
+            height: auto;
+        }
+
+        .listing-slider-single {
+            height: 300px !important;
+        }
+
+        .services-list ul li {
+            flex-basis: 25px;
+        }
+
+        .services-list ul {
+            flex-direction: column;
+        }
+
+        .services-list {
+            margin-bottom: 20px;
+        }
+
+    }
+</style>
+
 <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
@@ -91,7 +121,48 @@
 <section class="listing-details-area">
     <div class="container">
         <div class="row g-5">
-            <div class="col-lg-8">
+            <div class="col-lg-12 col-xl-8">
+
+                @if($listing->coupons->count())
+                @foreach($listing->coupons as $coupon)
+                <div class="couponBar d-xl-none d-lg-block">
+
+                    <div class="couponBar__content">
+
+                        <div class="couponBar__text">
+                            <strong>PROMOTION.</strong>
+                            {{ \Illuminate\Support\Str::limit($coupon->details, 90) }}
+                            Use Coupon
+                        </div>
+
+                        <div class="couponBar__right">
+                            <div class="couponCodeText">
+                                {{ $coupon->code }}
+                            </div>
+
+                            <button type="button" class="copyCouponBtn">
+                                COPY
+                            </button>
+
+
+                        </div>
+                        <div class="couponTimer"
+                            data-end="{{ \Carbon\Carbon::parse($coupon->end_date)->endOfDay()->timestamp }}">
+                            --
+                        </div>
+
+                    </div>
+
+                    <button type="button" class="closeCouponBar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+                @endforeach
+                @endif
+
 
                 <div class="listing-slider-wrapper mySwiper mb-5">
                     <div class="swiper-wrapper">
@@ -112,7 +183,7 @@
                 @if($listing->announcements->count())
                 @foreach($listing->announcements as $ad)
                 <div class="ann-card ann-preview">
-                    <div class="ann-card-head">Live Preview</div>
+                    <div class="ann-card-head">Latest Announcements</div>
                     <div class="ann-card-body">
                         <div class="ann-preview-icon" id="pvIconWrap">
                             <i data-lucide="{{ $ad->icon }}"></i>
@@ -141,14 +212,14 @@
                 @if($listing->events->count())
                 @foreach($listing->events as $event)
 
-                <div class="ann-card ann-preview">
-                    <div class="ann-card-head">Live Preview</div>
+                <div class="ann-card ann-preview event-type-box">
+                    <div class="ann-card-head">Latest Event</div>
 
-                    <div class="ann-card-body" style="display:flex;gap:16px;align-items:center;">
+                    <div class="ann-card-body">
 
                         {{-- Image --}}
                         @if(!empty($event->featured_image))
-                        <div class="ann-preview-icon" style="width:160px; height:120px;">
+                        <div class="ann-preview-icon">
                             <img src="{{ asset('storage/'.$event->featured_image) }}"
                                 alt="Event image"
                                 style="width:100%;height:100%;object-fit:cover;border-radius:12px;">
@@ -239,21 +310,21 @@
                 <div class="listing-feature-show">
                     <h2 class="heading-title">Features</h2>
 
-                    <div class="row mt-4">
+                    <div class="features-box-grid mt-4">
                         @forelse($listing->features as $feat)
-                        <div class="col-lg-4 col-md-6 col-sm-12">
-                            <div class="icon-box icon-box-one">
-                                <div class="icon">
-                                    <i class="{{ $feat->feature->icon ?? $feat->feature_icon ?? 'flaticon-tag' }}"></i>
-                                    <!-- <i class="{{ $feat->feature_icon }}"></i> -->
-                                    <!-- <i data-lucide="{{ $feat->feature_icon }}"></i> -->
 
-                                </div>
-                                <div class="info">
-                                    <h6>{{ $feat->feature_name }}</h6>
-                                </div>
+                        <div class="icon-box icon-box-one">
+                            <div class="icon">
+                                <i class="{{ $feat->feature->icon ?? $feat->feature_icon ?? 'flaticon-tag' }}"></i>
+                                <!-- <i class="{{ $feat->feature_icon }}"></i> -->
+                                <!-- <i data-lucide="{{ $feat->feature_icon }}"></i> -->
+
+                            </div>
+                            <div class="info">
+                                <h6>{{ $feat->feature_name }}</h6>
                             </div>
                         </div>
+
                         @empty
                         <div class="col-12">
                             <p class="muted-sm">No features available.</p>
@@ -532,14 +603,14 @@
 
 
             </div>
-            <div class="col-lg-4">
+            <div class="col-lg-12 col-xl-4">
                 <div class="top-sticky">
 
 
 
                     @if($listing->coupons->count())
                     @foreach($listing->coupons as $coupon)
-                    <div class="couponBar">
+                    <div class="couponBar d-none d-xl-block ">
 
                         <div class="couponBar__content">
 

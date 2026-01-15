@@ -351,6 +351,13 @@ h3.title {
 
 .category-item.category-item-two {
     margin-bottom: 35px;
+    flex-basis: 260px;
+}
+
+.category-item-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 50px;
 }
 
 /* explore cities */
@@ -369,7 +376,7 @@ h3.title {
     background-color: rgba(0, 0, 0, 0.4);
     position: absolute;
     width: 100%;
-    height: 500px;
+    height: 100%;
     top: 0;
     z-index: 1;
     border-radius: 6px;
@@ -2413,8 +2420,9 @@ section.listing-area-front {
 
 .front-listing-img img {
     width: 100%;
-    height: 100%;
+    height: 250px !important;
     object-fit: cover;
+    border-radius: 0 !important;
     transition: transform 0.3s ease;
 }
 
@@ -2422,6 +2430,7 @@ section.listing-area-front {
     position: absolute;
     inset: 0;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+    z-index: 1;
 }
 
 .front-listing-img .action-buttons {
@@ -2430,6 +2439,7 @@ section.listing-area-front {
     right: 16px;
     display: flex;
     gap: 8px;
+    z-index: 2;
 }
 
 .front-listing-img .action-btn {
@@ -2465,6 +2475,7 @@ section.listing-area-front {
     display: flex;
     align-items: center;
     gap: 6px;
+    z-index: 2;
 }
 
 .front-listing-content {
@@ -2636,7 +2647,7 @@ section.listing-area-front {
     background: #fff;
     border: 1px solid #ddd;
     border-radius: 6px;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .ann-card-head {
@@ -2811,6 +2822,7 @@ section.listing-slider {
 .listing-slider-wrapper {
     overflow: hidden;
     position: relative;
+    height: 100%;
 }
 
 .swiper-scrollbar-drag {
@@ -3123,7 +3135,7 @@ span.profile-review-count {
 
 .listing-services-show {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 30px;
 }
 
 .listing-details-sidebar {
@@ -3696,7 +3708,28 @@ ul.pagination li.page-item .page-link {
 
 /*  */
 
+.day-row .day-flex {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
 
+.event-type-box .ann-preview-icon {
+    width: 180px;
+    height: 150px;
+}
+
+.features-box-grid {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    row-gap: 0;
+}
+
+.features-box-grid .icon-box.icon-box-one {
+    flex-basis: 203px;
+}
 
 
 .filter-section {
@@ -3709,6 +3742,7 @@ ul.pagination li.page-item .page-link {
     justify-content: space-between;
     gap: 18px;
     flex-wrap: wrap;
+    margin-top: 16px;
 }
 
 .filter-left {
@@ -3884,7 +3918,6 @@ ul.pagination li.page-item .page-link {
     font-size: 14px;
     color: #6b7280;
     padding-right: 8px;
-    margin-top: 10px;
 }
 
 .sort-wrap {
@@ -3939,9 +3972,7 @@ ul.pagination li.page-item .page-link {
 }
 
 @media (max-width: 768px) {
-    .filter-input {
-        min-width: 170px;
-    }
+
 
     .filter-right {
         width: 100%;
@@ -4107,16 +4138,22 @@ section.listing-details-area {
     margin-bottom: 60px;
 }
 
-.pill-input{
-    border:0;
-    outline:none;
-    background:transparent;
-    font-size:14px;
-    min-width:120px;
-    padding:6px 4px;
+.pill-input {
+    border: 0;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    min-width: 120px;
+    padding: 6px 4px;
 }
-.pill-input::placeholder{ color:#9aa3af; }
-.dd-item.d-none{ display:none !important; }
+
+.pill-input::placeholder {
+    color: #9aa3af;
+}
+
+.dd-item.d-none {
+    display: none !important;
+}
 
 .faq-item {
     border: 1px solid #e2e8f0;

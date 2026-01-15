@@ -173,10 +173,12 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 
     Route::delete('/faq/{faq}', [FAQController::class, 'destroy'])->name('.faq.destroy');
 
+    // Admin Branch Listing
+
     Route::get('/listing', [AdminListingController::class, 'index'])->name('.listing.index');
     Route::get('/listing/{listing}/edit', [AdminListingController::class, 'edit'])->name('.listing.edit');
     Route::put('/listing/{listing}', [AdminListingController::class, 'update'])->name('.listing.update');
-
+    Route::delete('/listing/{listing}', [AdminListingController::class, 'destroy'])->name('.listing.destroy');
     Route::get('/listings/create', [AdminListingController::class, 'create'])->name('.listings.create');
     Route::post('/listings', [AdminListingController::class, 'store'])->name('.listings.store');
 });

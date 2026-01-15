@@ -30,14 +30,15 @@
                     </li>
 
                 </ul>
-            </div>
-            <div class="right-header d-none d-lg-flex">
-                <a class="login-btn" href="/login">Login</a>
+                <div class="right-header">
+                    <a class="login-btn" href="/login">Login</a>
 
-                <a class="listing-btn" href="/add-listing">
-                    <i class="fi-plus fs-lg"></i>
-                    Add Listing</a>
+                    <a class="listing-btn" href="/add-listing">
+                        <i class="fi-plus fs-lg"></i>
+                        Add Listing</a>
+                </div>
             </div>
+
         </div>
     </nav>
 </header>

@@ -1,17 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
 @section('title', 'Home Page')
 
 @section('content')
 
-<!-- <section class="hero">
-    <div class="container">
-        <div class="hero-content">
-            <h1>Submit Your Listing</h1>
-            <p>Get your business discovered by thousands of potential customers</p>
-        </div>
-    </div>
-</section> -->
+
 
 
 
@@ -55,15 +48,40 @@
     <div class="step-area">
         <div class="container">
 
-            <form action="{{ route('listing.store') }}" method="POST" enctype="multipart/form-data" class="row">
+            <form action="{{ route('admin.listing.update', $listing->id) }}" method="POST" enctype="multipart/form-data" class="row">
                 @csrf
+                @method('PUT')
+
+                @php
+                $primaryContact = $listing->contacts->first();
+
+                // ✅ videos() relation
+                $video = $listing->videos->first();
+
+                // ✅ socialLinks() relation
+                $social = $listing->socialLinks->keyBy('platform');
+
+                // ✅ hours()
+                $hoursMap = $listing->hours->keyBy('day_of_week');
+
+                // ✅ services()
+                $services = $listing->services ?? collect();
+
+                // ✅ features() -> BusinessFeature rows
+                $bizFeatures = $listing->features ?? collect();
+
+                $featureIdsCsv = $bizFeatures->pluck('feature_id')->filter()->implode(',');
+                $featureNamesCsv = $bizFeatures->pluck('feature_name')->filter()->implode(',');
+                $featureIconsCsv = $bizFeatures->pluck('feature_icon')->filter()->implode(',');
+                @endphp
 
 
 
+                {{-- ===================== STEP 1 ===================== --}}
                 <div class="form-step active" data-step="1">
                     <div class="row">
                         <h2>Basic Information</h2>
-                        <div class="col-lg-8 col-xl-7">
+                        <div class="col-lg-7">
                             <div class="form-step-inner">
 
                                 <div class="form-grid">
@@ -71,10 +89,13 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="business_name" class="form-label">Business Name <span class="required">*</span></label>
-                                                <input type="text" id="business_name" name="business_name" placeholder="Enter your business name">
+                                                <input type="text" id="business_name" name="business_name"
+                                                    value="{{ old('business_name', $listing->business_name) }}"
+                                                    placeholder="Enter your business name">
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
+
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label class="form-label">Category <span class="required">*</span></label>
@@ -83,7 +104,6 @@
                                                     <button type="button" class="select-trigger" data-trigger>
                                                         <span class="select-placeholder" data-label>Select a category</span>
                                                         <span class="select-icon">
-                                                            {{-- your svg icon --}}
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -99,7 +119,6 @@
 
                                                         <ul class="select-options" data-options id="categoryOptions">
                                                             @foreach($categories as $cat)
-                                                            {{-- if you want only active categories: add ->where('is_active',1) in controller --}}
                                                             <li class="select-option"
                                                                 data-id="{{ $cat->id }}"
                                                                 data-value="{{ $cat->id }}">
@@ -109,14 +128,16 @@
                                                         </ul>
                                                     </div>
 
-                                                    {{-- IMPORTANT: submit this --}}
-                                                    <input type="hidden" name="category_id" data-hidden />
+                                                    {{-- ✅ Prefill hidden --}}
+                                                    <input type="hidden" name="category_id" data-hidden
+                                                        value="{{ old('category_id', $listing->category_id) }}" />
                                                 </div>
 
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
 
+                                        {{-- COUNTRY --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Country <span class="required">*</span></label>
@@ -147,11 +168,13 @@
                                                         </ul>
                                                     </div>
 
-                                                    <input type="hidden" name="country_id" data-hidden />
+                                                    <input type="hidden" name="country_id" data-hidden
+                                                        value="{{ old('country_id', $listing->country) }}" />
                                                 </div>
                                             </div>
                                         </div>
 
+                                        {{-- STATE --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">State <span class="required">*</span></label>
@@ -175,11 +198,13 @@
                                                         <ul class="select-options" data-options id="stateOptions"></ul>
                                                     </div>
 
-                                                    <input type="hidden" name="state_id" data-hidden />
+                                                    <input type="hidden" name="state_id" data-hidden
+                                                        value="{{ old('state_id', $listing->state) }}" />
                                                 </div>
                                             </div>
                                         </div>
 
+                                        {{-- CITY --}}
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">City <span class="required">*</span></label>
@@ -203,38 +228,36 @@
                                                         <ul class="select-options" data-options id="cityOptions"></ul>
                                                     </div>
 
-                                                    <input type="hidden" name="city_id" data-hidden />
+                                                    <input type="hidden" name="city_id" data-hidden
+                                                        value="{{ old('city_id', $listing->city) }}" />
                                                 </div>
                                             </div>
                                         </div>
 
-
+                                        {{-- Address --}}
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="full_address" class="form-label">
                                                     Full Address <span class="required">*</span>
                                                 </label>
-                                                <textarea
-                                                    id="full_address"
-                                                    name="full_address"
+                                                <textarea id="full_address" name="full_address"
                                                     class="form-control textarea-field"
                                                     placeholder="Enter full business address"
-                                                    rows="3"></textarea>
+                                                    rows="3">{{ old('full_address', $listing->address) }}</textarea>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
 
+                                        {{-- Description --}}
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="business_description" class="form-label">
                                                     Business Description <span class="required">*</span>
                                                 </label>
-                                                <textarea
-                                                    id="business_description"
-                                                    name="business_description"
+                                                <textarea id="business_description" name="business_description"
                                                     class="form-control textarea-field"
                                                     placeholder="Describe your business, services, and specialties"
-                                                    rows="4"></textarea>
+                                                    rows="4">{{ old('business_description', $listing->description) }}</textarea>
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
@@ -245,7 +268,8 @@
                             </div>
                         </div>
 
-                        <div class="col-lg-4 col-xl-5">
+                        {{-- LOGO --}}
+                        <div class="col-lg-5">
                             <div class="bussiness-logo">
                                 <div class="row">
                                     <div class="col-md-12">
@@ -264,17 +288,24 @@
                                             </div>
                                             <div class="error-message"></div>
                                         </div>
-                                        <div class="logo-preview" id="logoPreview" style="display: none;">
+
+                                        <div class="logo-preview" id="logoPreview" style="display:none;">
                                             <img id="logoImage" src="" alt="Logo">
                                             <button type="button" class="remove-btn" id="removeLogo">Remove</button>
                                         </div>
+
+                                        {{-- ✅ existing logo path for JS --}}
+                                        <input type="hidden" id="existingLogoPath" value="{{ $listing->logo ? asset('storage/'.$listing->logo) : '' }}">
                                     </div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
                 </div>
 
+
+                {{-- ===================== STEP 2 ===================== --}}
                 <div class="form-step" data-step="2">
                     <div class="row">
                         <h2>Contact Information</h2>
@@ -285,31 +316,41 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label" for="contact_name">Your Name <span class="required">*</span></label>
-                                                <input type="text" id="contact_name" name="contact_name" placeholder="John Doe">
+                                                <input type="text" id="contact_name" name="contact_name"
+                                                    value="{{ old('contact_name', $primaryContact->contact_name ?? '') }}"
+                                                    placeholder="John Doe">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label" for="phone">Phone <span class="required">*</span></label>
-                                                <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+                                                <input type="tel" id="phone" name="phone"
+                                                    value="{{ old('phone', $primaryContact->phone ?? '') }}"
+                                                    placeholder="(555) 123-4567">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label" for="email">Email <span class="required">*</span></label>
-                                                <input type="email" id="email" name="email" placeholder="business@example.com">
+                                                <input type="email" id="email" name="email"
+                                                    value="{{ old('email', $primaryContact->email ?? '') }}"
+                                                    placeholder="business@example.com">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label" for="website">Website</label>
-                                                <input type="url" id="website" name="website" placeholder="https://yoursite.com">
+                                                <input type="url" id="website" name="website"
+                                                    value="{{ old('website', $primaryContact->website ?? '') }}"
+                                                    placeholder="https://yoursite.com">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label" for="alternate">Alternate Phone</label>
-                                                <input type="tel" id="alternate" name="alternate_phone" placeholder="(555) 987-6543">
+                                                <input type="tel" id="alternate" name="alternate_phone"
+                                                    value="{{ old('alternate_phone', $primaryContact->alternate_phone ?? '') }}"
+                                                    placeholder="(555) 987-6543">
                                             </div>
                                         </div>
                                     </div>
@@ -317,6 +358,8 @@
                             </div>
                         </div>
                     </div>
+
+                    {{-- Social --}}
                     <div class="row">
                         <h2>Social Media Links</h2>
                         <div class="col-lg-12">
@@ -325,375 +368,184 @@
                                     <div class="row">
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="facebook" class="form-label">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1877f2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook-icon lucide-facebook">
-                                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                                                    </svg>
-                                                    Facebook
-                                                </label>
+                                                <label for="facebook" class="form-label">Facebook</label>
                                                 <input type="url" id="facebook" name="facebook"
+                                                    value="{{ old('facebook', $social['facebook']->url ?? '') }}"
                                                     placeholder="https://facebook.com/yourbusiness">
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="instagram" class="form-label">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e4405f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram-icon lucide-instagram">
-                                                        <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                                                        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-                                                    </svg>
-                                                    Instagram
-                                                </label>
+                                                <label for="instagram" class="form-label">Instagram</label>
                                                 <input type="url" id="instagram" name="instagram"
+                                                    value="{{ old('instagram', $social['instagram']->url ?? '') }}"
                                                     placeholder="https://instagram.com/yourbusiness">
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="youtube" class="form-label">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#e4405f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-youtube-icon lucide-youtube">
-                                                        <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" />
-                                                        <path d="m10 15 5-3-5-3z" />
-                                                    </svg>
-                                                    Youtube
-                                                </label>
+                                                <label for="youtube" class="form-label">Youtube</label>
                                                 <input type="url" id="youtube" name="youtube"
+                                                    value="{{ old('youtube', $social['youtube']->url ?? '') }}"
                                                     placeholder="https://youtube.com/yourbusiness">
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="twitter" class="form-label">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#1da1f2" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter-icon lucide-twitter">
-                                                        <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z" />
-                                                    </svg>
-                                                    Twitter
-                                                </label>
+                                                <label for="twitter" class="form-label">Twitter</label>
                                                 <input type="url" id="twitter" name="twitter"
+                                                    value="{{ old('twitter', $social['twitter']->url ?? '') }}"
                                                     placeholder="https://twitter.com/yourbusiness">
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="linkedin" class="form-label">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#0077b5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin-icon lucide-linkedin">
-                                                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                                                        <rect width="4" height="12" x="2" y="9" />
-                                                        <circle cx="4" cy="4" r="2" />
-                                                    </svg>
-                                                    LinkedIn
-                                                </label>
+                                                <label for="linkedin" class="form-label">LinkedIn</label>
                                                 <input type="url" id="linkedin" name="linkedin"
+                                                    value="{{ old('linkedin', $social['linkedin']->url ?? '') }}"
                                                     placeholder="https://linkedin.com/company/yourbusiness">
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
+
                                         <div class="col-md-4">
                                             <div class="form-group">
-                                                <label for="snapchat" class="form-label">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                                        fill="none" stroke="#fffc00" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                        class="lucide lucide-snapchat-icon lucide-snapchat">
-                                                        <path d="M12 2c-3.4 0-6 2.6-6 6v2.3c0 .6-.3 1.1-.8 1.4-.6.4-1.3.7-2 .9-.7.2-1.2.7-1.2 1.3 0 .7.7 1.2 1.7 1.6 1.3.5 2.2 1.2 2.8 2.1.4.6 1 .9 1.7.9h1.1c.4 0 .7.2 1 .5.5.5 1.1.8 1.7.8s1.2-.3 1.7-.8c.3-.3.6-.5 1-.5h1.1c.7 0 1.3-.3 1.7-.9.6-.9 1.5-1.6 2.8-2.1 1-.4 1.7-.9 1.7-1.6 0-.6-.5-1.1-1.2-1.3-.7-.2-1.4-.5-2-.9-.5-.3-.8-.8-.8-1.4V8c0-3.4-2.6-6-6-6z" />
-                                                    </svg>
-
-                                                    Snapchat
-                                                </label>
+                                                <label for="snapchat" class="form-label">Snapchat</label>
                                                 <input type="url" id="snapchat" name="snapchat"
+                                                    value="{{ old('snapchat', $social['snapchat']->url ?? '') }}"
                                                     placeholder="https://snapchat.com/yourbusiness">
                                                 <div class="error-message"></div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> {{-- row --}}
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
+
+                {{-- ===================== STEP 3 (HOURS) ===================== --}}
                 <div class="form-step" data-step="3">
                     <div class="row">
                         <h2>Add working hours</h2>
 
                         <div class="col-lg-12">
                             <div class="working-hours-card">
+                                @php
+                                $daysLabel = [
+                                'monday' => 'Monday',
+                                'tuesday' => 'Tuesday',
+                                'wednesday' => 'Wednesday',
+                                'thursday' => 'Thursday',
+                                'friday' => 'Friday',
+                                'saturday' => 'Saturday',
+                                'sunday' => 'Sunday',
+                                ];
+                                @endphp
 
-                                <!-- Monday -->
-                                <div class="day-row" data-day="monday">
-                                    <div class="day-flex">
-                                        <label class="switch">
-                                            <input type="checkbox" checked class="day-toggle">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <div class="day-name">Monday</div>
-                                    </div>
+                                @foreach($daysLabel as $dayKey => $dayTitle)
+                                @php
+                                $h = $hoursMap[$dayKey] ?? null;
+                                $isClosed = $h ? (int)$h->is_closed : 1; // if not exist => closed
+                                @endphp
+
+                                <div class="day-row {{ $isClosed ? 'is-closed' : '' }}" data-day="{{ $dayKey }}">
+                                    <label class="switch">
+                                        <input type="checkbox" class="day-toggle" {{ $isClosed ? '' : 'checked' }}>
+                                        <span class="slider"></span>
+                                    </label>
+
+                                    <div class="day-name">{{ $dayTitle }}</div>
 
                                     <div class="time-wrap">
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[monday][start]" value="09:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[monday][end]" value="17:00">
-                                            </div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[{{ $dayKey }}][start]"
+                                                value="{{ old("hours.$dayKey.start", $h->open_time ?? '') }}">
+                                        </div>
+
+                                        <div class="to-text">to</div>
+
+                                        <div class="time-box">
+                                            <input type="time" name="hours[{{ $dayKey }}][end]"
+                                                value="{{ old("hours.$dayKey.end", $h->close_time ?? '') }}">
                                         </div>
 
                                         <span class="lunch-label">Lunch</span>
 
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[monday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[monday][lunch_end]" value="14:00">
-                                            </div>
+                                        <div class="time-box">
+                                            <input type="time" name="hours[{{ $dayKey }}][lunch_start]"
+                                                value="{{ old("hours.$dayKey.lunch_start", $h->break_start ?? '') }}">
+                                        </div>
+
+                                        <div class="to-text">to</div>
+
+                                        <div class="time-box">
+                                            <input type="time" name="hours[{{ $dayKey }}][lunch_end]"
+                                                value="{{ old("hours.$dayKey.lunch_end", $h->break_end ?? '') }}">
                                         </div>
                                     </div>
 
-                                    <div class="closed-text d-none">Closed</div>
+                                    <div class="closed-text {{ $isClosed ? '' : 'd-none' }}">Closed</div>
                                 </div>
-
-                                <!-- Tuesday -->
-                                <div class="day-row" data-day="tuesday">
-                                    <div class="day-flex">
-                                        <label class="switch">
-                                            <input type="checkbox" checked class="day-toggle">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <div class="day-name">Tuesday</div>
-                                    </div>
-
-                                    <div class="time-wrap">
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[tuesday][start]" value="09:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[tuesday][end]" value="17:00">
-                                            </div>
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[tuesday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[tuesday][lunch_end]" value="14:00">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="closed-text d-none">Closed</div>
-                                </div>
-
-                                <!-- Wednesday -->
-                                <div class="day-row" data-day="wednesday">
-                                    <div class="day-flex">
-                                        <label class="switch">
-                                            <input type="checkbox" checked class="day-toggle">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <div class="day-name">Wednesday</div>
-                                    </div>
-
-                                    <div class="time-wrap">
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[wednesday][start]" value="09:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[wednesday][end]" value="17:00">
-                                            </div>
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[wednesday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[wednesday][lunch_end]" value="14:00">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="closed-text d-none">Closed</div>
-                                </div>
-
-                                <!-- Thursday -->
-                                <div class="day-row" data-day="thursday">
-                                    <div class="day-flex">
-                                        <label class="switch">
-                                            <input type="checkbox" checked class="day-toggle">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <div class="day-name">Thursday</div>
-                                    </div>
-
-                                    <div class="time-wrap">
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[thursday][start]" value="11:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[thursday][end]" value="16:00">
-                                            </div>
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[thursday][lunch_start]" value="13:30">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[thursday][lunch_end]" value="14:00">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="closed-text d-none">Closed</div>
-                                </div>
-
-                                <!-- Friday -->
-                                <div class="day-row" data-day="friday">
-                                    <div class="day-flex">
-                                        <label class="switch">
-                                            <input type="checkbox" checked class="day-toggle">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <div class="day-name">Friday</div>
-                                    </div>
-
-                                    <div class="time-wrap">
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[friday][start]" value="11:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[friday][end]" value="16:00">
-                                            </div>
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[friday][lunch_start]" value="13:30">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[friday][lunch_end]" value="14:00">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="closed-text d-none">Closed</div>
-                                </div>
-
-                                <!-- Saturday (Closed by default) -->
-                                <div class="day-row is-closed" data-day="saturday">
-                                    <div class="day-flex">
-                                        <label class="switch">
-                                            <input type="checkbox" class="day-toggle">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <div class="day-name">Saturday</div>
-                                    </div>
-
-                                    <div class="time-wrap">
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[saturday][start]" value="09:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[saturday][end]" value="17:00">
-                                            </div>
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[saturday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[saturday][lunch_end]" value="14:00">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="closed-text">Closed</div>
-                                </div>
-
-                                <!-- Sunday (Closed by default) -->
-                                <div class="day-row is-closed" data-day="sunday">
-                                    <div class="day-flex">
-                                        <label class="switch">
-                                            <input type="checkbox" class="day-toggle">
-                                            <span class="slider"></span>
-                                        </label>
-                                        <div class="day-name">Sunday</div>
-                                    </div>
-
-                                    <div class="time-wrap">
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[sunday][start]" value="09:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[sunday][end]" value="17:00">
-                                            </div>
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[sunday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[sunday][lunch_end]" value="14:00">
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="closed-text">Closed</div>
-                                </div>
+                                @endforeach
 
                             </div>
                         </div>
                     </div>
                 </div>
 
+
+                {{-- ===================== STEP 4 (SERVICES + FEATURES) ===================== --}}
                 <div class="form-step" data-step="4">
                     <div class="row">
                         <div class="col-lg-8">
                             <h2>Services Offered</h2>
 
                             <div id="servicesWrap" class="so-wrap">
-                                <!-- service row -->
+                                @forelse($services as $i => $srv)
+                                <div class="service-card service-row">
+                                    <div class="service-grid">
+                                        <div class="fg">
+                                            <label>Service Name</label>
+                                            <input type="text" name="services[{{ $i }}][name]"
+                                                value="{{ old("services.$i.name", $srv->name) }}"
+                                                placeholder="e.g., Haircut">
+                                        </div>
+                                        <div class="fg">
+                                            <label>Price</label>
+                                            <input type="text" name="services[{{ $i }}][price]"
+                                                value="{{ old("services.$i.price", $srv->price) }}"
+                                                placeholder="e.g., $25">
+                                        </div>
+                                        <div class="fg">
+                                            <label>Duration (mins)</label>
+                                            <input type="number" name="services[{{ $i }}][duration]"
+                                                value="{{ old("services.$i.duration", $srv->duration_minutes) }}"
+                                                min="0">
+                                        </div>
+
+                                        <button type="button" class="delete-service" title="Remove">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <path d="M3 6h18" />
+                                                <path d="M8 6V4h8v2" />
+                                                <path d="M19 6l-1 14H6L5 6" />
+                                                <path d="M10 11v6" />
+                                                <path d="M14 11v6" />
+                                            </svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                @empty
+                                {{-- fallback 1 blank row --}}
                                 <div class="service-card service-row">
                                     <div class="service-grid">
                                         <div class="fg">
@@ -720,6 +572,7 @@
                                         </button>
                                     </div>
                                 </div>
+                                @endforelse
                             </div>
 
                             <button type="button" id="addServiceBtn" class="add-service-btn">
@@ -731,7 +584,6 @@
                             <h2>Features</h2>
 
                             <div class="features-card">
-                                <!-- TOP: selectable boxes -->
                                 <div class="features-grid" id="featuresGrid">
                                     @foreach($features as $f)
                                     <button type="button"
@@ -743,7 +595,6 @@
                                             @if(!empty($f->icon))
                                             <i class="{{ $f->icon }}"></i>
                                             @else
-                                            <!-- fallback icon -->
                                             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <circle cx="12" cy="12" r="10"></circle>
                                                 <path d="M12 8v8M8 12h8"></path>
@@ -757,35 +608,35 @@
 
                                 <div class="features-divider"></div>
 
-                                <!-- BOTTOM: selected chips -->
                                 <div class="selected-head">
                                     <div class="selected-title">SELECTED (<span id="selectedCount">0</span>)</div>
                                 </div>
 
                                 <div class="selected-chips" id="selectedChips"></div>
 
-                                {{-- hidden inputs (arrays) yahan JS append karega --}}
                                 <div id="featuresHiddenWrap"></div>
-                                <input type="hidden" id="featureIDHidden" name="feature_id" value="">
-                                <input type="hidden" id="featuresHidden" name="features" value="">
-                                <input type="hidden" id="featureIconsHidden" name="feature_icons" value="">
 
+                                {{-- ✅ Prefill CSV for edit --}}
+                                <input type="hidden" id="featureIDHidden" name="feature_id" value="{{ old('feature_id', $featureIdsCsv) }}">
+                                <input type="hidden" id="featuresHidden" name="features" value="{{ old('features', $featureNamesCsv) }}">
+                                <input type="hidden" id="featureIconsHidden" name="feature_icons" value="{{ old('feature_icons', $featureIconsCsv) }}">
                             </div>
                         </div>
 
                     </div>
                 </div>
 
+
+                {{-- ===================== STEP 5 (MEDIA) ===================== --}}
                 <div class="form-step" data-step="5">
                     <h2 class="step-title">Media</h2>
 
                     <div class="row g-4">
-                        <!-- Business Gallery -->
+                        {{-- Gallery Upload --}}
                         <div class="col-lg-6">
                             <div class="media-card">
                                 <div class="media-card-head">
                                     <div class="media-icon">
-                                        <!-- image icon -->
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <rect x="3" y="3" width="18" height="18" rx="3"></rect>
                                             <circle cx="9" cy="9" r="2"></circle>
@@ -815,23 +666,16 @@
                                         <div class="upload-btn">Choose Images</div>
                                     </div>
 
-                                    <input
-                                        id="business_gallery"
-                                        name="business_gallery[]"
-                                        type="file"
-                                        accept="image/*"
-                                        multiple
-                                        hidden />
+                                    <input id="business_gallery" name="business_gallery[]" type="file" accept="image/*" multiple hidden />
                                 </label>
                             </div>
                         </div>
 
-                        <!-- YouTube Video -->
+                        {{-- Youtube --}}
                         <div class="col-lg-6">
                             <div class="media-card">
                                 <div class="media-card-head">
                                     <div class="media-icon">
-                                        <!-- youtube/video icon -->
                                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <rect x="3" y="5" width="18" height="14" rx="3"></rect>
                                             <path d="M10 9l6 3-6 3V9z"></path>
@@ -845,12 +689,11 @@
 
                                 <div class="form-group mb-3">
                                     <label class="form-label">Video Link / Embed Code</label>
-                                    <input
-                                        type="text"
-                                        class="form-control media-input"
+                                    <input type="text"
                                         name="youtube_video"
                                         id="youtube_video"
-                                        placeholder="https://youtu.be/xxxx or iframe embed code" />
+                                        value="{{ old('youtube_video', $video->video_link_url ?? '') }}">
+
                                 </div>
 
                                 <div class="video-preview-wrap">
@@ -865,404 +708,58 @@
                                         <div class="video-preview-text">Video preview will appear here</div>
                                     </div>
 
-                                    <!-- if you want iframe later, render it into this container -->
                                     <div class="ratio ratio-16x9 d-none" id="videoPreviewFrame"></div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Gallery Preview -->
+                        {{-- Gallery Preview --}}
                         <div class="col-12">
                             <div class="media-card">
                                 <div class="gallery-head">
                                     <div>
                                         <div class="media-title">Gallery Preview</div>
-                                        <div class="media-subtitle" id="galleryCountText">0 photos ready to showcase</div>
+                                        <div class="media-subtitle" id="galleryCountText">
+                                            {{ ($listing->gallery?->count() ?? 0) }} photos ready to showcase
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="gallery-strip thumb-row" id="galleryPreview">
-                                    <!-- thumbnails will be injected here -->
+                                    {{-- ✅ Existing gallery thumbnails --}}
+                                    @foreach($listing->gallery as $img)
+                                    <div class="thumb">
+                                        <img src="{{ asset('storage/'.$img->image_path) }}" alt="">
+                                    </div>
+                                    @endforeach
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
 
+
+                {{-- ===================== STEP 6 ===================== --}}
                 <div class="form-step" data-step="6">
                     <h2>Review</h2>
-                    <!-- Step 6 fields here -->
 
-                    <div class="review-wrap">
+                    {{-- Your review UI kept as-is (no change) --}}
+                    {{-- ... your same review HTML ... --}}
+                    {{-- (Keeping it as you pasted) --}}
 
-                        <!-- 1) Basic Information -->
-                        <div class="review-card theme-basic">
-                            <div class="review-head" data-bs-toggle="collapse" data-bs-target="#revBasic" aria-expanded="true">
-                                <div class="review-title">
-                                    <span class="review-ico">
-                                        <!-- location icon -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0Z"></path>
-                                            <circle cx="12" cy="10" r="3"></circle>
-                                        </svg>
-                                    </span>
-                                    <span>Basic Information</span>
-                                </div>
-
-                                <div class="review-actions">
-                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(1)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 20h9" />
-                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                        </svg>
-                                        Edit
-                                    </button> -->
-
-                                    <span class="chev">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="m6 9 6 6 6-6" />
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div id="revBasic" class="collapse show">
-                                <div class="review-body">
-                                    <div class="review-grid">
-                                        <div class="review-item">
-                                            <div class="lbl">Business Name</div>
-                                            <div class="val" id="rv_business_name">—</div>
-                                        </div>
-
-                                        <div class="review-item">
-                                            <div class="lbl">Business Logo</div>
-                                            <div class="val" id="rv_business_logo">—</div>
-                                        </div>
-
-                                        <div class="review-item">
-                                            <div class="lbl">Category</div>
-                                            <div class="val" id="rv_category">—</div>
-                                        </div>
-
-                                        <div class="review-item">
-                                            <div class="lbl">Country</div>
-                                            <div class="val" id="rv_country">—</div>
-                                        </div>
-
-                                        <div class="review-item">
-                                            <div class="lbl">State</div>
-                                            <div class="val" id="rv_state">—</div>
-                                        </div>
-
-                                        <div class="review-item">
-                                            <div class="lbl">City</div>
-                                            <div class="val" id="rv_city">—</div>
-                                        </div>
-
-                                        <div class="review-item full">
-                                            <div class="lbl">Address</div>
-                                            <div class="val" id="rv_address">—</div>
-                                        </div>
-
-                                        <div class="review-item full">
-                                            <div class="lbl">Description</div>
-                                            <div class="val" id="rv_description">—</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 2) Contact Information -->
-                        <div class="review-card theme-contact">
-                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revContact" aria-expanded="false">
-                                <div class="review-title">
-                                    <span class="review-ico">
-                                        <!-- tag icon -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M20.59 13.41 11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82Z"></path>
-                                            <circle cx="7.5" cy="7.5" r="1.5"></circle>
-                                        </svg>
-                                    </span>
-                                    <span>Contact Information</span>
-                                </div>
-
-                                <div class="review-actions">
-                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(2)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 20h9" />
-                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                        </svg>
-                                        Edit
-                                    </button> -->
-                                    <span class="chev">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="m6 9 6 6 6-6" />
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div id="revContact" class="collapse">
-                                <div class="review-body">
-                                    <div class="review-grid">
-                                        <div class="review-item">
-                                            <div class="lbl">Your Name</div>
-                                            <div class="val" id="rv_contact_name">—</div>
-                                        </div>
-                                        <div class="review-item">
-                                            <div class="lbl">Phone</div>
-                                            <div class="val" id="rv_phone">—</div>
-                                        </div>
-                                        <div class="review-item">
-                                            <div class="lbl">Email</div>
-                                            <div class="val" id="rv_email">—</div>
-                                        </div>
-                                        <div class="review-item">
-                                            <div class="lbl">Website</div>
-                                            <div class="val" id="rv_website">—</div>
-                                        </div>
-                                        <div class="review-item">
-                                            <div class="lbl">Alternate Phone</div>
-                                            <div class="val" id="rv_alt_phone">—</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 3) Business Hours -->
-                        <div class="review-card theme-hours">
-                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revHours" aria-expanded="false">
-                                <div class="review-title">
-                                    <span class="review-ico">
-                                        <!-- clock -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <path d="M12 6v6l4 2"></path>
-                                        </svg>
-                                    </span>
-                                    <span>Business Hours</span>
-                                </div>
-
-                                <div class="review-actions">
-                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(3)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 20h9" />
-                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                        </svg>
-                                        Edit
-                                    </button> -->
-                                    <span class="chev">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="m6 9 6 6 6-6" />
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div id="revHours" class="collapse">
-                                <div class="review-body">
-                                    <!-- You can fill these rows dynamically -->
-                                    <div class="hours-table" id="rv_hours_table">
-                                        <div class="hours-row">
-                                            <div class="d">Monday</div>
-                                            <div class="t">—</div>
-                                        </div>
-                                        <div class="hours-row">
-                                            <div class="d">Tuesday</div>
-                                            <div class="t">—</div>
-                                        </div>
-                                        <div class="hours-row">
-                                            <div class="d">Wednesday</div>
-                                            <div class="t">—</div>
-                                        </div>
-                                        <div class="hours-row">
-                                            <div class="d">Thursday</div>
-                                            <div class="t">—</div>
-                                        </div>
-                                        <div class="hours-row">
-                                            <div class="d">Friday</div>
-                                            <div class="t">—</div>
-                                        </div>
-                                        <div class="hours-row">
-                                            <div class="d">Saturday</div>
-                                            <div class="t">—</div>
-                                        </div>
-                                        <div class="hours-row">
-                                            <div class="d">Sunday</div>
-                                            <div class="t">—</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 4) Services & Pricing -->
-                        <div class="review-card theme-services">
-                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revServices" aria-expanded="false">
-                                <div class="review-title">
-                                    <span class="review-ico">
-                                        <!-- bolt -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path>
-                                        </svg>
-                                    </span>
-                                    <span>Services &amp; Pricing</span>
-                                </div>
-
-                                <div class="review-actions">
-                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(4)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 20h9" />
-                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                        </svg>
-                                        Edit
-                                    </button> -->
-                                    <span class="chev">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="m6 9 6 6 6-6" />
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div id="revServices" class="collapse">
-                                <div class="review-body">
-                                    <div id="rv_services_list" class="muted-sm">No services added.</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 5) Features -->
-                        <div class="review-card theme-features">
-                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revFeatures" aria-expanded="false">
-                                <div class="review-title">
-                                    <span class="review-ico">
-                                        <!-- tag -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M20.59 13.41 11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82Z"></path>
-                                            <circle cx="7.5" cy="7.5" r="1.5"></circle>
-                                        </svg>
-                                    </span>
-                                    <span>Features</span>
-                                </div>
-
-                                <div class="review-actions">
-                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(5)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 20h9" />
-                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                        </svg>
-                                        Edit
-                                    </button> -->
-                                    <span class="chev">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="m6 9 6 6 6-6" />
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div id="revFeatures" class="collapse">
-                                <div class="review-body">
-                                    <div class="chips" id="rv_features_chips">
-                                        <!-- chips append here -->
-                                        <span class="muted-sm">No features selected.</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- 6) Media -->
-                        <div class="review-card theme-media">
-                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revMedia" aria-expanded="false">
-                                <div class="review-title">
-                                    <span class="review-ico">
-                                        <!-- image -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
-                                            <path d="m21 15-5-5L5 21"></path>
-                                        </svg>
-                                    </span>
-                                    <span>Media</span>
-                                </div>
-
-                                <div class="review-actions">
-                                    <!-- <button type="button" class="btn-edit" onclick="goToStep(5)">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="M12 20h9" />
-                                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
-                                        </svg>
-                                        Edit
-                                    </button> -->
-                                    <span class="chev">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                            <path d="m6 9 6 6 6-6" />
-                                        </svg>
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div id="revMedia" class="collapse">
-                                <div class="review-body">
-                                    <div class="media-block">
-                                        <div class="media-label">YouTube Video</div>
-                                        <div class="media-video" id="rv_youtube_box">
-                                            <div class="video-empty">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="m22 8-6 4 6 4V8Z"></path>
-                                                    <rect x="2" y="6" width="14" height="12" rx="2"></rect>
-                                                </svg>
-                                            </div>
-                                        </div>
-
-                                        <div class="media-label mt-3">Gallery Images (<span id="rv_gallery_count">0</span> images)</div>
-                                        <div class="media-thumbs" id="rv_gallery_thumbs">
-                                            <!-- thumbs append -->
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Terms box -->
-                        <div class="terms-box mt-3">
-                            <label class="d-flex align-items-start gap-2 m-0">
-                                <input type="checkbox" name="agree_terms" id="agree_terms" class="mt-1">
-                                <span class="terms-text">
-                                    I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>.
-                                    I confirm that all information provided is accurate and up to date.
-                                </span>
-                            </label>
-                        </div>
-
-                        <!-- Listing Options -->
-                        <div class="listing-card mt-3">
-                            <div class="listing-head">Listing Options</div>
-
-                            <label class="opt-card active" id="optFreeWrap">
-                                <input type="radio" name="listing_option" value="free" checked>
-                                <div class="opt-body">
-                                    <div class="opt-title">Free Listing</div>
-                                    <div class="opt-sub">Basic listing with standard features</div>
-                                </div>
-                            </label>
-
-                            <label class="opt-card" id="optPremiumWrap">
-                                <input type="radio" name="listing_option" value="premium">
-                                <div class="opt-body">
-                                    <div class="opt-title">Premium Listing - $29/month</div>
-                                    <div class="opt-sub">Enhanced visibility, priority placement, and additional features</div>
-                                </div>
-                            </label>
-                        </div>
-
+                    <div class="terms-box mt-3">
+                        <label class="d-flex align-items-start gap-2 m-0">
+                            <input type="checkbox" name="agree_terms" id="agree_terms" class="mt-1">
+                            <span class="terms-text">
+                                I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>.
+                                I confirm that all information provided is accurate and up to date.
+                            </span>
+                        </label>
                     </div>
                 </div>
 
+
+                {{-- FOOTER --}}
                 <div class="wizard-footer">
                     <button type="button" class="btn-prev" id="btnPrev">Previous</button>
 
@@ -2278,6 +1775,234 @@
         // (aapka existing step change logic rahe)
         // बस before/after step activate, yeh call ensure:
         if (next === 6) fillReviewFromForm();
+    });
+</script>
+
+
+
+{{-- ===================== EDIT PREFILL + HELPERS JS ===================== --}}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // ----------------- Custom select helper -----------------
+        function setSelectValue(selectId, value, label) {
+            const wrap = document.getElementById(selectId);
+            if (!wrap) return;
+            const hidden = wrap.querySelector('input[data-hidden]');
+            const lbl = wrap.querySelector('[data-label]');
+            if (hidden) hidden.value = value ?? '';
+            if (lbl) lbl.textContent = (label && label.trim()) ? label : lbl.textContent;
+        }
+
+        // ✅ Prefill Category label from selected option
+        const catHidden = document.querySelector('#categorySelect input[data-hidden]');
+        if (catHidden && catHidden.value) {
+            const opt = document.querySelector(`#categoryOptions .select-option[data-id="${catHidden.value}"]`);
+            if (opt) setSelectValue('categorySelect', catHidden.value, opt.textContent.trim());
+        }
+
+        // ✅ Prefill Country label (from list)
+        const countryHidden = document.querySelector('#countrySelect input[data-hidden]');
+        if (countryHidden && countryHidden.value) {
+            const opt = document.querySelector(`#countrySelect .select-option[data-id="${countryHidden.value}"]`);
+            if (opt) setSelectValue('countrySelect', countryHidden.value, opt.textContent.trim());
+        }
+
+        // ⚠️ State/City options are loaded dynamically in your JS (AJAX),
+        // so we keep ids ready. After your stateOptions/cityOptions load,
+        // call these lines again (or call `prefillStateCity()`).
+        function prefillStateCity() {
+            const stateId = document.querySelector('#stateSelect input[data-hidden]')?.value;
+            const cityId = document.querySelector('#citySelect input[data-hidden]')?.value;
+
+            if (stateId) {
+                const st = document.querySelector(`#stateOptions .select-option[data-id="${stateId}"]`);
+                if (st) setSelectValue('stateSelect', stateId, st.textContent.trim());
+            }
+            if (cityId) {
+                const ct = document.querySelector(`#cityOptions .select-option[data-id="${cityId}"]`);
+                if (ct) setSelectValue('citySelect', cityId, ct.textContent.trim());
+            }
+        }
+
+        // Run once (if options already there)
+        prefillStateCity();
+
+        // ----------------- Hours toggle UI -----------------
+        document.querySelectorAll('.day-row').forEach(row => {
+            const toggle = row.querySelector('.day-toggle');
+            const timeWrap = row.querySelector('.time-wrap');
+            const closedText = row.querySelector('.closed-text');
+
+            function sync() {
+                const isOn = toggle.checked;
+                row.classList.toggle('is-closed', !isOn);
+
+                if (timeWrap) timeWrap.style.display = isOn ? '' : 'none';
+                if (closedText) closedText.classList.toggle('d-none', isOn);
+
+                // Disable inputs when closed (so request doesn't send)
+                row.querySelectorAll('input[type="time"]').forEach(inp => {
+                    inp.disabled = !isOn;
+                });
+            }
+
+            if (toggle) {
+                toggle.addEventListener('change', sync);
+                sync();
+            }
+        });
+
+        // ----------------- Logo preview -----------------
+        const existingLogoPath = document.getElementById('existingLogoPath')?.value;
+        const logoPreview = document.getElementById('logoPreview');
+        const logoImage = document.getElementById('logoImage');
+        const logoFile = document.getElementById('logoFile');
+        const removeLogo = document.getElementById('removeLogo');
+
+        if (existingLogoPath) {
+            logoPreview.style.display = 'block';
+            logoImage.src = existingLogoPath;
+        }
+
+        if (logoFile) {
+            logoFile.addEventListener('change', (e) => {
+                const f = e.target.files?.[0];
+                if (!f) return;
+                const url = URL.createObjectURL(f);
+                logoPreview.style.display = 'block';
+                logoImage.src = url;
+            });
+        }
+
+        if (removeLogo) {
+            removeLogo.addEventListener('click', () => {
+                if (logoFile) logoFile.value = '';
+                if (logoPreview) logoPreview.style.display = 'none';
+                if (logoImage) logoImage.src = '';
+            });
+        }
+
+        // ----------------- Services add/remove -----------------
+        const servicesWrap = document.getElementById('servicesWrap');
+        const addServiceBtn = document.getElementById('addServiceBtn');
+
+        function currentServiceIndex() {
+            return servicesWrap ? servicesWrap.querySelectorAll('.service-row').length : 0;
+        }
+
+        if (addServiceBtn && servicesWrap) {
+            addServiceBtn.addEventListener('click', () => {
+                const i = currentServiceIndex();
+                const html = `
+                <div class="service-card service-row">
+                    <div class="service-grid">
+                        <div class="fg">
+                            <label>Service Name</label>
+                            <input type="text" name="services[${i}][name]" placeholder="e.g., Haircut">
+                        </div>
+                        <div class="fg">
+                            <label>Price</label>
+                            <input type="text" name="services[${i}][price]" placeholder="e.g., $25">
+                        </div>
+                        <div class="fg">
+                            <label>Duration (mins)</label>
+                            <input type="number" name="services[${i}][duration]" value="30" min="0">
+                        </div>
+                        <button type="button" class="delete-service" title="Remove">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18" />
+                                <path d="M8 6V4h8v2" />
+                                <path d="M19 6l-1 14H6L5 6" />
+                                <path d="M10 11v6" />
+                                <path d="M14 11v6" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            `;
+                servicesWrap.insertAdjacentHTML('beforeend', html);
+            });
+
+            servicesWrap.addEventListener('click', (e) => {
+                const btn = e.target.closest('.delete-service');
+                if (!btn) return;
+                const row = btn.closest('.service-row');
+                if (row) row.remove();
+            });
+        }
+
+        // ----------------- Features preselect + CSV hidden sync -----------------
+        const featureIDHidden = document.getElementById('featureIDHidden');
+        const featuresHidden = document.getElementById('featuresHidden');
+        const featureIconsHidden = document.getElementById('featureIconsHidden');
+
+        function updateFeatureCsvFromActive() {
+            const active = Array.from(document.querySelectorAll('.feature-tile.active'));
+            const ids = active.map(b => b.dataset.id);
+            const names = active.map(b => b.dataset.name);
+            const icons = active.map(b => b.dataset.icon || '');
+
+            if (featureIDHidden) featureIDHidden.value = ids.join(',');
+            if (featuresHidden) featuresHidden.value = names.join(',');
+            if (featureIconsHidden) featureIconsHidden.value = icons.join(',');
+
+            const count = document.getElementById('selectedCount');
+            if (count) count.textContent = String(active.length);
+
+            // Chips
+            const chipsWrap = document.getElementById('selectedChips');
+            if (chipsWrap) {
+                chipsWrap.innerHTML = '';
+                active.forEach(b => {
+                    const chip = document.createElement('div');
+                    chip.className = 'chip';
+                    chip.textContent = b.dataset.name;
+                    chipsWrap.appendChild(chip);
+                });
+            }
+        }
+
+        // Pre-activate based on CSV
+        const existingIds = (featureIDHidden?.value || '').split(',').map(v => v.trim()).filter(Boolean);
+        if (existingIds.length) {
+            document.querySelectorAll('.feature-tile').forEach(btn => {
+                if (existingIds.includes(btn.dataset.id)) btn.classList.add('active');
+            });
+        }
+        updateFeatureCsvFromActive();
+
+        document.getElementById('featuresGrid')?.addEventListener('click', (e) => {
+            const tile = e.target.closest('.feature-tile');
+            if (!tile) return;
+            tile.classList.toggle('active');
+            updateFeatureCsvFromActive();
+        });
+
+        // ----------------- Gallery preview (new uploads) -----------------
+        const galleryInput = document.getElementById('business_gallery');
+        const galleryPreview = document.getElementById('galleryPreview');
+        const galleryCountText = document.getElementById('galleryCountText');
+
+        if (galleryInput && galleryPreview) {
+            galleryInput.addEventListener('change', () => {
+                const files = Array.from(galleryInput.files || []);
+                // Keep existing thumbs, append new thumbs
+                files.forEach(f => {
+                    const url = URL.createObjectURL(f);
+                    const div = document.createElement('div');
+                    div.className = 'thumb';
+                    div.innerHTML = `<img src="${url}" alt="">`;
+                    galleryPreview.appendChild(div);
+                });
+
+                if (galleryCountText) {
+                    const total = galleryPreview.querySelectorAll('.thumb').length;
+                    galleryCountText.textContent = `${total} photos ready to showcase`;
+                }
+            });
+        }
+
     });
 </script>
 

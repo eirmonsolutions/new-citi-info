@@ -331,23 +331,323 @@ class AdminListingController extends Controller
 
     public function edit(BusinessListing $listing)
     {
-        // ✅ security: sirf apni listing edit kar sake
         abort_if($listing->user_id !== auth()->id(), 403);
 
-        return view('admin.listing.edit', compact('listing'));
+        $categories = Category::orderBy('name')->get();
+        $countries  = Country::orderBy('name')->get();
+        $features   = Feature::orderBy('name')->get();
+
+        // ✅ relations load (model ke exact names)
+        $listing->load([
+            'categoryRel',
+            'countryRel',
+            'stateRel',
+            'cityRel',
+            'contacts',
+            'hours',
+            'socialLinks',
+            'features',     // ✅ BusinessFeature rows
+            'services',
+            'gallery',
+            'videos',       // ✅ BusinessVideoLink rows
+        ]);
+
+        return view('admin.listing.edit', compact('listing', 'categories', 'countries', 'features'));
     }
+
+
 
     public function update(Request $request, BusinessListing $listing)
     {
         abort_if($listing->user_id !== auth()->id(), 403);
 
+        Log::info('Admin Listing Update Data:', $request->all());
+
+        $businessName = $request->input('business_name');
+        $categoryId   = $request->input('category_id');
+
+        $countryId = $request->input('country_id');
+        $stateVal  = $request->input('state') ?? $request->input('state_id');
+        $cityVal   = $request->input('city')  ?? $request->input('city_id');
+
+        $addressVal = $request->input('address') ?? $request->input('full_address');
+        $descVal    = $request->input('description') ?? $request->input('business_description');
+
+        $listingType = $request->input('listing_type') ?? $request->input('listing_option') ?? ($listing->listing_type ?? 'free');
+
         $request->validate([
             'business_name' => 'required|string|max:255',
-            'status' => 'nullable|string',
+            'category_id'   => 'required',
+            'business_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'business_gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'email' => 'nullable|email',
         ]);
 
-        $listing->update($request->only('business_name', 'status'));
+        return DB::transaction(function () use (
+            $request,
+            $listing,
+            $businessName,
+            $categoryId,
+            $countryId,
+            $stateVal,
+            $cityVal,
+            $addressVal,
+            $descVal,
+            $listingType
+        ) {
 
-        return redirect()->route('admin.listing.index')->with('success', 'Listing updated successfully!');
+            // ✅ slug (only if you want to change on edit)
+            // If you want to keep old slug, comment this block
+            if ($request->filled('slug')) {
+                $baseSlug = Str::slug($request->input('slug'));
+            } else {
+                $baseSlug = Str::slug($businessName);
+            }
+
+            $slug = $baseSlug;
+            $i = 1;
+            while (BusinessListing::where('slug', $slug)->where('id', '!=', $listing->id)->exists()) {
+                $slug = $baseSlug . '-' . $i;
+                $i++;
+            }
+
+            // ✅ logo upload (if new)
+            $logoPath = $listing->logo;
+            if ($request->hasFile('business_logo')) {
+                $logoPath = $request->file('business_logo')->store('business/logo', 'public');
+            }
+
+            // ✅ update listing main
+            $listing->update([
+                'business_name' => $businessName,
+                'category_id'   => $categoryId,
+                'category'      => $request->input('category') ?? $listing->category,
+                'slug'          => $slug,
+
+                'country'       => $countryId,
+                'state'         => $stateVal,
+                'city'          => $cityVal,
+                'address'       => $addressVal,
+
+                'latitude'      => $request->input('latitude'),
+                'longitude'     => $request->input('longitude'),
+
+                'description'   => $descVal,
+                'logo'          => $logoPath,
+
+                'listing_type'  => $listingType,
+                'is_featured'   => (bool)($request->input('is_featured') ?? $listing->is_featured),
+
+                // edit pe status generally same rehna chahiye
+                // 'status' => $listing->status,
+            ]);
+
+            // ✅ CONTACT (updateOrCreate)
+            if ($request->filled('contact_name') || $request->filled('phone') || $request->filled('email')) {
+                BusinessContact::updateOrCreate(
+                    ['business_id' => $listing->id, 'is_primary' => true],
+                    [
+                        'contact_name'    => $request->input('contact_name'),
+                        'phone'           => $request->input('phone'),
+                        'email'           => $request->input('email'),
+                        'alternate_phone' => $request->input('alternate_phone'),
+                        'website'         => $request->input('website'),
+                    ]
+                );
+            }
+
+            // ✅ HOURS (delete + reinsert)
+            BusinessHour::where('business_id', $listing->id)->delete();
+
+            $hours = $request->input('hours', []);
+            $daysOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+            foreach ($daysOrder as $day) {
+                $d = $hours[$day] ?? null;
+
+                // If checkbox OFF => inputs disabled => keys won't come => treat closed
+                $isClosed = empty($d) ? 1 : 0;
+
+                BusinessHour::create([
+                    'business_id' => $listing->id,
+                    'day_of_week' => $day,
+                    'is_closed'   => $isClosed,
+                    'open_time'   => $d['start'] ?? null,
+                    'close_time'  => $d['end'] ?? null,
+                    'break_start' => $d['lunch_start'] ?? null,
+                    'break_end'   => $d['lunch_end'] ?? null,
+                ]);
+            }
+
+            // ✅ SOCIAL LINKS (delete + reinsert)
+            BusinessSocialLink::where('business_id', $listing->id)->delete();
+
+            $platforms = $request->input('social_platform', []);
+            $urls      = $request->input('social_url', []);
+
+            if (is_array($platforms) && count($platforms)) {
+                foreach ($platforms as $k => $p) {
+                    $u = $urls[$k] ?? null;
+                    if ($p && $u) {
+                        BusinessSocialLink::create([
+                            'business_id' => $listing->id,
+                            'platform'    => $p,
+                            'url'         => $u,
+                        ]);
+                    }
+                }
+            } else {
+                $directSocial = [
+                    'facebook'  => $request->input('facebook'),
+                    'instagram' => $request->input('instagram'),
+                    'youtube'   => $request->input('youtube'),
+                    'twitter'   => $request->input('twitter'),
+                    'linkedin'  => $request->input('linkedin'),
+                    'snapchat'  => $request->input('snapchat'),
+                ];
+
+                foreach ($directSocial as $platform => $url) {
+                    if (!empty($url)) {
+                        BusinessSocialLink::create([
+                            'business_id' => $listing->id,
+                            'platform'    => $platform,
+                            'url'         => $url,
+                        ]);
+                    }
+                }
+            }
+
+            // ✅ FEATURES (delete + reinsert from CSV)
+            BusinessFeature::where('business_id', $listing->id)->delete();
+
+            $featuresStr   = $request->input('features');
+            $featureIcons  = $request->input('feature_icons');
+            $featureIdsStr = $request->input('feature_id');
+
+            if (!empty($featuresStr)) {
+                $names = array_values(array_filter(array_map('trim', explode(',', $featuresStr))));
+                $icons = !empty($featureIcons) ? array_values(array_map('trim', explode(',', $featureIcons))) : [];
+                $ids   = !empty($featureIdsStr) ? array_values(array_map('trim', explode(',', $featureIdsStr))) : [];
+
+                foreach ($names as $i => $fname) {
+                    BusinessFeature::create([
+                        'business_id'  => $listing->id,
+                        'feature_id'   => $ids[$i] ?? null,
+                        'feature_name' => $fname,
+                        'feature_icon' => $icons[$i] ?? null,
+                    ]);
+                }
+            }
+
+            // ✅ SERVICES (delete + reinsert)
+            BusinessService::where('business_id', $listing->id)->delete();
+
+            // Your form uses services[0][name]...
+            $services = $request->input('services', []);
+            if (is_array($services)) {
+                foreach ($services as $k => $svc) {
+                    if (!is_array($svc)) continue;
+                    $name = $svc['name'] ?? null;
+                    if (!$name) continue;
+
+                    BusinessService::create([
+                        'business_id'      => $listing->id,
+                        'name'             => $name,
+                        'description'      => $svc['description'] ?? null,
+                        'price'            => $svc['price'] ?? null,
+                        'currency'         => $svc['currency'] ?? null,
+                        'duration_minutes' => $svc['duration'] ?? null,
+                        'is_popular'       => (bool)($svc['popular'] ?? false),
+                        'sort_order'       => $k,
+                    ]);
+                }
+            }
+
+            // ✅ GALLERY (only add new uploads)
+            if ($request->hasFile('business_gallery')) {
+                $startIndex = (int) BusinessGallery::where('business_id', $listing->id)->count();
+
+                foreach ($request->file('business_gallery') as $index => $img) {
+                    $path = $img->store('business/gallery', 'public');
+
+                    BusinessGallery::create([
+                        'business_id' => $listing->id,
+                        'image_path'  => $path,
+                        'caption'     => null,
+                        'alt_text'    => null,
+                        'is_cover'    => ($startIndex + $index) === 0,
+                        'sort_order'  => ($startIndex + $index),
+                        'uploaded_at' => now(),
+                    ]);
+                }
+            }
+
+            // ✅ VIDEO (updateOrCreate)
+            $videoUrl = $request->input('video_link_url') ?? $request->input('youtube_video');
+
+            if (!empty($videoUrl) || $request->filled('embed_code')) {
+                BusinessVideoLink::updateOrCreate(
+                    ['business_id' => $listing->id],
+                    [
+                        'video_link_url' => $videoUrl,
+                        'embed_code'     => $request->input('embed_code'),
+                        'provider'       => $request->input('provider'),
+                    ]
+                );
+            } else {
+                // if user cleared video, optional: delete record
+                BusinessVideoLink::where('business_id', $listing->id)->delete();
+            }
+
+            return redirect()->route('admin.listing.index')
+                ->with('success', 'Listing updated successfully!');
+        });
+    }
+
+    public function destroy(BusinessListing $listing)
+    {
+        // ✅ security: sirf apni listing delete kar sake
+        abort_if($listing->user_id !== auth()->id(), 403);
+
+        DB::transaction(function () use ($listing) {
+
+            // ✅ Contacts
+            \App\Models\BusinessContact::where('business_id', $listing->id)->delete();
+
+            // ✅ Hours
+            \App\Models\BusinessHour::where('business_id', $listing->id)->delete();
+
+            // ✅ Social links
+            \App\Models\BusinessSocialLink::where('business_id', $listing->id)->delete();
+
+            // ✅ Features
+            \App\Models\BusinessFeature::where('business_id', $listing->id)->delete();
+
+            // ✅ Services
+            \App\Models\BusinessService::where('business_id', $listing->id)->delete();
+
+            // ✅ Gallery (files + DB)
+            $galleries = \App\Models\BusinessGallery::where('business_id', $listing->id)->get();
+            foreach ($galleries as $img) {
+                if ($img->image_path && \Storage::disk('public')->exists($img->image_path)) {
+                    \Storage::disk('public')->delete($img->image_path);
+                }
+                $img->delete();
+            }
+
+            // ✅ Video links
+            \App\Models\BusinessVideoLink::where('business_id', $listing->id)->delete();
+
+            // ✅ Logo delete
+            if ($listing->logo && \Storage::disk('public')->exists($listing->logo)) {
+                \Storage::disk('public')->delete($listing->logo);
+            }
+
+            // ✅ Finally delete listing
+            $listing->delete();
+        });
+
+        return redirect()->route('admin.listing.index')
+            ->with('success', 'Listing deleted successfully!');
     }
 }

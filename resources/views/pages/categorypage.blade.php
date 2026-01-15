@@ -26,8 +26,9 @@
 
         <div class="row">
 
-            @foreach($categories as $category)
-            <div class="col-lg-3 col-md-6 col-sm-12">
+
+            <div class="category-item-grid">
+                @foreach($categories as $category)
                 <div class="category-item category-item-two">
                     <div class="category-img">
                         <img
@@ -61,9 +62,8 @@
                         <span class="listing">15 Listing</span>
                     </div>
                 </div>
+                @endforeach
             </div>
-            @endforeach
-
         </div>
     </div>
 </section>
