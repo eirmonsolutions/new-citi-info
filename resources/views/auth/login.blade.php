@@ -71,6 +71,15 @@
                             <div class="form-group mb-0">
                                 <button type="submit" class="btn-md btn-theme w-100">Login</button>
                             </div>
+                            <div class="form-group mt-3">
+                                <a href="" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center">
+                                    <img src="https://developers.google.com/identity/images/g-logo.png"
+                                        alt="Google"
+                                        style="width:18px; margin-right:10px;">
+                                    Login with Google
+                                </a>
+                            </div>
+
                         </form>
 
                     </div>

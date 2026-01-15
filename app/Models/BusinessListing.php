@@ -75,6 +75,12 @@ class BusinessListing extends Model
         });
     }
 
+    public function faqs()
+    {
+        return $this->hasMany(\App\Models\FAQ::class, 'listing_id')->latest();
+    }
+
+
     // Optional relationship if you have Category model/table
     public function categoryRel()
     {

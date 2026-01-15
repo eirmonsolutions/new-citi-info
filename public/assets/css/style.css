@@ -2780,8 +2780,9 @@ section.listing-area-front {
     border-radius: 6px;
     text-decoration: none;
     border: none;
-    height: 40px;
-    width: 80px;
+    /* height: 40px; */
+    /* width: 80px; */
+    padding: 10px 30px;
 }
 
 
@@ -4117,20 +4118,55 @@ section.listing-details-area {
 .pill-input::placeholder{ color:#9aa3af; }
 .dd-item.d-none{ display:none !important; }
 
+.faq-item {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    overflow: hidden;
+}
+
+.faq-question {
+    padding: 1rem;
+    background: #f8fafc;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.3s ease;
+    color: var(--heading-color);
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.faq-question svg {
+    transition: transform 0.3s ease;
+}
 
 
+.faq-item.active .faq-question svg {
+    transform: rotate(180deg);
+}
 
+.faq-item.active .faq-answer {
+    padding: 1rem;
+    max-height: 200px;
+}
 
+.faq-answer {
+    padding: 0 1rem;
+    background: white;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
 
-
-
-
-
-
-
-
-
-
+.faq-answer p {
+    font-size: 14px;
+    line-height: 25px;
+    font-weight: 400;
+    color: #344054;
+    margin-bottom: 0;
+}
 
 
 

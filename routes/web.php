@@ -18,10 +18,13 @@ use Illuminate\Support\Facades\Artisan;
 use App\Http\Controllers\SuperAdmin\SuperadminUserController;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Admin\AnnouncementController;
+use App\Http\Controllers\Admin\AdminListingController;
 use App\Http\Controllers\Admin\EventController;
+use App\Http\Controllers\Admin\FAQController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\FrontSearchController;
 use App\Http\Controllers\AjaxLocationController;
+// use App\Http\Controllers\Auth\GoogleAuthController;
 
 Route::get('/add-listing', [ListingController::class, 'create'])->name('listing.create');
 Route::get('/submit-listing', [ListingController::class, 'create'])->name('listing.submit');
@@ -30,7 +33,8 @@ Route::post('/submit-listing', [ListingController::class, 'store'])->name('listi
 
 Route::post('/search', [FrontSearchController::class, 'searchRedirect'])->name('search.redirect');
 
-
+// Route::get('/auth/google', [GoogleAuthController::class, 'redirect'])->name('login.google');
+// Route::get('/auth/google/callback', [GoogleAuthController::class, 'callback']);
 
 
 Route::get('/', [HomeController::class, 'index'])->name('homepage');
@@ -126,13 +130,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
         return view('admin.dashboard');
     })->name('.dashboard');
 
-
-    // Route::get('/announcement', [AnnouncementController::class, 'index'])->name('.announcement.index');
-    // Route::get('/announcement/create', [AnnouncementController::class, 'create'])->name('.announcement.create');
-    // Route::post('/announcement', [AnnouncementController::class, 'store'])->name('.announcement.store');
-
-
-
+    //   Announcement Routes
     Route::get('/announcement', [AnnouncementController::class, 'index'])->name('.announcement.index');
     Route::get('/announcement/create', [AnnouncementController::class, 'create'])->name('.announcement.create');
     Route::post('/announcement', [AnnouncementController::class, 'store'])->name('.announcement.store');
@@ -143,6 +141,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
     Route::patch('announcement/{announcement}/toggle', [AnnouncementController::class, 'toggle'])->name('.announcement.toggle');
     Route::delete('/announcement/{announcement}', [AnnouncementController::class, 'destroy'])->name('.announcement.destroy');
 
+    // Event Routes
     Route::get('/event', [EventController::class, 'index'])->name('.event.index');
     Route::get('/event/create', [EventController::class, 'create'])->name('.event.create');
     Route::post('/event', [EventController::class, 'store'])->name('.event.store');
@@ -153,6 +152,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
     Route::patch('event/{event}/toggle', [EventController::class, 'toggle'])->name('.event.toggle');
     Route::delete('/event/{event}', [EventController::class, 'destroy'])->name('.event.destroy');
 
+    // Coupon Routes    
     Route::get('/coupon', [CouponController::class, 'index'])->name('.coupon.index');
     Route::get('/coupon/create', [CouponController::class, 'create'])->name('.coupon.create');
     Route::post('/coupon', [CouponController::class, 'store'])->name('.coupon.store');
@@ -162,6 +162,23 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 
     Route::patch('coupon/{coupon}/toggle', [CouponController::class, 'toggle'])->name('.coupon.toggle');
     Route::delete('/coupon/{coupon}', [CouponController::class, 'destroy'])->name('.coupon.destroy');
+
+    // FAQ Routes
+    Route::get('/faq', [FAQController::class, 'index'])->name('.faq.index');
+    Route::get('/faq/create', [FAQController::class, 'create'])->name('.faq.create');
+    Route::post('/faq', [FAQController::class, 'store'])->name('.faq.store');
+
+    Route::get('/faq/{faq}/edit', [FAQController::class, 'edit'])->name('.faq.edit');
+    Route::put('/faq/{faq}', [FAQController::class, 'update'])->name('.faq.update');
+
+    Route::delete('/faq/{faq}', [FAQController::class, 'destroy'])->name('.faq.destroy');
+
+    Route::get('/listing', [AdminListingController::class, 'index'])->name('.listing.index');
+    Route::get('/listing/{listing}/edit', [AdminListingController::class, 'edit'])->name('.listing.edit');
+    Route::put('/listing/{listing}', [AdminListingController::class, 'update'])->name('.listing.update');
+
+    Route::get('/listings/create', [AdminListingController::class, 'create'])->name('.listings.create');
+    Route::post('/listings', [AdminListingController::class, 'store'])->name('.listings.store');
 });
 
 

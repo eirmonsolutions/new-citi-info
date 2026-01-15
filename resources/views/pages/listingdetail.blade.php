@@ -294,6 +294,37 @@
                     </div>
                 </div>
 
+                @if($listing->faqs->count())
+                <div class="faq ">
+                    <h2 class="heading-title">Frequently Asked Questions</h2>
+
+                    <div class="faq-list mt-4">
+
+                        @php
+                        // multiple FAQ records ho sakte hain, items combine kar lete hain
+                        $allItems = $listing->faqs->flatMap->items;
+                        @endphp
+
+                        @foreach($allItems as $item)
+                        <div class="faq-item">
+                            <div class="faq-question">
+                                <span>{{ $item->question }}</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down-icon lucide-chevron-down">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </div>
+
+                            <div class="faq-answer">
+                                <p>{!! nl2br(e($item->answer)) !!}</p>
+                            </div>
+                        </div>
+                        @endforeach
+
+                    </div>
+                </div>
+                @endif
+
+
 
                 <div class="listing-review-area">
                     <div class="heading-flex">
@@ -883,6 +914,36 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.faq-question').forEach(q => {
+            q.addEventListener('click', () => {
+                const item = q.closest('.faq-item');
+                const ans = item.querySelector('.faq-answer');
+
+                // close others (optional)
+                document.querySelectorAll('.faq-item').forEach(i => {
+                    if (i !== item) {
+                        i.classList.remove('active');
+                        const a = i.querySelector('.faq-answer');
+                        if (a) a.style.display = 'none';
+                    }
+                });
+
+                // toggle current
+                const isOpen = item.classList.contains('active');
+                item.classList.toggle('active', !isOpen);
+                ans.style.display = isOpen ? 'none' : 'block';
+            });
+        });
+
+        // start hidden
+        document.querySelectorAll('.faq-answer').forEach(a => a.style.display = 'none');
+    });
+</script>
+
 
 
 <script>
