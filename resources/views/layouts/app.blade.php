@@ -22,6 +22,7 @@
     <!-- Custom CSS -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/responsive.css') }}" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/images/favicon.jpg') }}">
 
     @stack('styles')
 </head>
