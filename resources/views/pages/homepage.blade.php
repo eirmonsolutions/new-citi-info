@@ -143,7 +143,7 @@
             <div class="col-md-6 col-lg-4">
                 <div class="city-grid">
                     <div class="city-img">
-                        <img src="http://192.168.1.12:8000/assets/images/img-1.jpg" alt="">
+                        <img src="{{ asset('assets/images/img-1.jpg') }}" alt="">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
@@ -201,7 +201,7 @@
             <div class="col-md-6 col-lg-4">
                 <div class="city-grid">
                     <div class="city-img">
-                        <img src="http://192.168.1.12:8000/assets/images/img-1.jpg" alt="">
+                        <img src="{{ asset('assets/images/img-1.jpg') }}" alt="">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
@@ -336,7 +336,7 @@
     <div class="container">
         <div class="pricing-wrapper">
             <div class="section-title">
-                <h2>Choose Your Product.</h2>
+                <h2>Choose Your Product</h2>
             </div>
             <div class="tpprice-shape">
                 <div class="tppricing-shape-one">
