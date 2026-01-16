@@ -449,6 +449,141 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
 
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // ── DOM Elements ───────────────────────────────────────────────
+    const serviceInput = document.getElementById('service_input');
+    const serviceBox = document.getElementById('service_suggest');
+    const cityInput = document.getElementById('city_input');
+    const cityBox = document.getElementById('city_suggest');
+    const geoMsg = document.getElementById('geo_msg');
+    const form = serviceInput.closest('form');
+
+    const suggestUrl = "{{ route('ajax.category.suggest') }}";
+
+    // ── Auto-detect location on page load ──────────────────────────
+    function autoDetectLocation() {
+        if (!navigator.geolocation) {
+            geoMsg.textContent = "Geolocation is not supported by your browser.";
+            geoMsg.classList.remove('d-none');
+            return;
+        }
+
+        geoMsg.textContent = "Detecting your location...";
+        geoMsg.classList.remove('d-none');
+
+        navigator.geolocation.getCurrentPosition(
+            async (position) => {
+                const { latitude, longitude } = position.coords;
+
+                try {
+                    const response = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`
+                    );
+
+                    if (!response.ok) throw new Error('Reverse geocoding failed');
+
+                    const data = await response.json();
+
+                    let city = data?.address?.city ||
+                               data?.address?.town ||
+                               data?.address?.city_district ||
+                               data?.address?.suburb ||
+                               data?.address?.county ||
+                               data?.address?.state ||
+                               '';
+
+                    if (city) {
+                        cityInput.value = city;
+                        geoMsg.textContent = `Detected: ${city}`;
+                        setTimeout(() => geoMsg.classList.add('d-none'), 3500);
+                    } else {
+                        geoMsg.textContent = "Could not determine city name";
+                    }
+                } catch (err) {
+                    console.error('Location detection error:', err);
+                    geoMsg.textContent = "Failed to detect location";
+                }
+            },
+            (error) => {
+                let message = "Location access denied";
+                if (error.code === error.PERMISSION_DENIED) {
+                    message = "Please allow location access to auto-detect city";
+                } else if (error.code === error.TIMEOUT) {
+                    message = "Location detection timed out";
+                }
+                geoMsg.textContent = message;
+            },
+            {
+                enableHighAccuracy: false,
+                timeout: 7000,
+                maximumAge: 60000
+            }
+        );
+    }
+
+    // Run location detection immediately
+    autoDetectLocation();
+
+    // ── Rest of your original code ─────────────────────────────────
+    let debounceTimer;
+
+    function show(box) { box.style.display = 'block'; }
+    function hide(box) { box.style.display = 'none'; box.innerHTML = ''; }
+
+    // Service autocomplete
+    serviceInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        const term = this.value.trim();
+
+        if (term.length < 2) return hide(serviceBox);
+
+        debounceTimer = setTimeout(async () => {
+            try {
+                const res = await fetch(`${suggestUrl}?term=${encodeURIComponent(term)}`);
+                const { categories = [], businesses = [] } = await res.json();
+
+                let html = '';
+
+                if (categories.length) {
+                    html += `<div class="suggest-heading">Categories</div>`;
+                    html += categories.map(c => `
+                        <div class="suggest-item category-item" data-slug="${c.slug}">
+                            🏷 ${c.name}
+                        </div>
+                    `).join('');
+                }
+
+                if (businesses.length) {
+                    html += `<div class="suggest-heading">Businesses</div>`;
+                    html += businesses.map(b => `
+                        <div class="suggest-item business-item" data-name="${b.business_name}">
+                            🏢 ${b.business_name}
+                        </div>
+                    `).join('');
+                }
+
+                if (!html) html = `<div class="suggest-item text-muted">No results found</div>`;
+
+                serviceBox.innerHTML = html;
+                show(serviceBox);
+            } catch (err) {
+                console.error('Suggest error:', err);
+            }
+        }, 300);
+    });
+
+    // ... rest of your event listeners (suggestion click, category buttons, form submit, click outside) ...
+    // Copy them from your original code if needed
+
+    // Hide suggestions on outside click
+    document.addEventListener('click', e => {
+        if (!serviceBox.contains(e.target) && e.target !== serviceInput) hide(serviceBox);
+        if (!cityBox.contains(e.target) && e.target !== cityInput) hide(cityBox);
+    });
+});
+</script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const serviceInput = document.getElementById('service_input');
@@ -456,6 +591,8 @@
         const cityInput = document.getElementById('city_input');
         const cityBox = document.getElementById('city_suggest');
         const form = serviceInput.closest('form');
+
+        
 
         const suggestUrl = "{{ route('ajax.category.suggest') }}"; // ✅ Blade route as string
 
