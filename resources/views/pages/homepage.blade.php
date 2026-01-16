@@ -22,13 +22,25 @@
                         <!-- SERVICE -->
                         <div class="banner-form-box position-relative">
                             <i class="fi-search"></i>
+
                             <input type="search"
                                 id="service_input"
                                 class="form-control form-control-lg form-icon-start"
                                 placeholder="What service do you need?"
                                 required>
-                            <div id="service_suggest" class="suggest-box"></div>
+
+                            <!-- ✅ Dropdown panel -->
+                            <div id="service_suggest" class="suggest-box">
+
+                                <div class="select-search">
+                                    <input type="text" placeholder="Search..." id="service_search" autocomplete="off" />
+                                </div>
+
+                                <ul class="select-options" id="serviceOptions"></ul>
+
+                            </div>
                         </div>
+
 
                         <hr class="vr d-sm-block">
 
@@ -449,154 +461,25 @@
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
 
-
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    // ── DOM Elements ───────────────────────────────────────────────
-    const serviceInput = document.getElementById('service_input');
-    const serviceBox = document.getElementById('service_suggest');
-    const cityInput = document.getElementById('city_input');
-    const cityBox = document.getElementById('city_suggest');
-    const geoMsg = document.getElementById('geo_msg');
-    const form = serviceInput.closest('form');
+    document.addEventListener('DOMContentLoaded', function() {
 
-    const suggestUrl = "{{ route('ajax.category.suggest') }}";
-
-    // ── Auto-detect location on page load ──────────────────────────
-    function autoDetectLocation() {
-        if (!navigator.geolocation) {
-            geoMsg.textContent = "Geolocation is not supported by your browser.";
-            geoMsg.classList.remove('d-none');
-            return;
-        }
-
-        geoMsg.textContent = "Detecting your location...";
-        geoMsg.classList.remove('d-none');
-
-        navigator.geolocation.getCurrentPosition(
-            async (position) => {
-                const { latitude, longitude } = position.coords;
-
-                try {
-                    const response = await fetch(
-                        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`
-                    );
-
-                    if (!response.ok) throw new Error('Reverse geocoding failed');
-
-                    const data = await response.json();
-
-                    let city = data?.address?.city ||
-                               data?.address?.town ||
-                               data?.address?.city_district ||
-                               data?.address?.suburb ||
-                               data?.address?.county ||
-                               data?.address?.state ||
-                               '';
-
-                    if (city) {
-                        cityInput.value = city;
-                        geoMsg.textContent = `Detected: ${city}`;
-                        setTimeout(() => geoMsg.classList.add('d-none'), 3500);
-                    } else {
-                        geoMsg.textContent = "Could not determine city name";
-                    }
-                } catch (err) {
-                    console.error('Location detection error:', err);
-                    geoMsg.textContent = "Failed to detect location";
-                }
-            },
-            (error) => {
-                let message = "Location access denied";
-                if (error.code === error.PERMISSION_DENIED) {
-                    message = "Please allow location access to auto-detect city";
-                } else if (error.code === error.TIMEOUT) {
-                    message = "Location detection timed out";
-                }
-                geoMsg.textContent = message;
-            },
-            {
-                enableHighAccuracy: false,
-                timeout: 7000,
-                maximumAge: 60000
-            }
-        );
-    }
-
-    // Run location detection immediately
-    autoDetectLocation();
-
-    // ── Rest of your original code ─────────────────────────────────
-    let debounceTimer;
-
-    function show(box) { box.style.display = 'block'; }
-    function hide(box) { box.style.display = 'none'; box.innerHTML = ''; }
-
-    // Service autocomplete
-    serviceInput.addEventListener('input', function () {
-        clearTimeout(debounceTimer);
-        const term = this.value.trim();
-
-        if (term.length < 2) return hide(serviceBox);
-
-        debounceTimer = setTimeout(async () => {
-            try {
-                const res = await fetch(`${suggestUrl}?term=${encodeURIComponent(term)}`);
-                const { categories = [], businesses = [] } = await res.json();
-
-                let html = '';
-
-                if (categories.length) {
-                    html += `<div class="suggest-heading">Categories</div>`;
-                    html += categories.map(c => `
-                        <div class="suggest-item category-item" data-slug="${c.slug}">
-                            🏷 ${c.name}
-                        </div>
-                    `).join('');
-                }
-
-                if (businesses.length) {
-                    html += `<div class="suggest-heading">Businesses</div>`;
-                    html += businesses.map(b => `
-                        <div class="suggest-item business-item" data-name="${b.business_name}">
-                            🏢 ${b.business_name}
-                        </div>
-                    `).join('');
-                }
-
-                if (!html) html = `<div class="suggest-item text-muted">No results found</div>`;
-
-                serviceBox.innerHTML = html;
-                show(serviceBox);
-            } catch (err) {
-                console.error('Suggest error:', err);
-            }
-        }, 300);
-    });
-
-    // ... rest of your event listeners (suggestion click, category buttons, form submit, click outside) ...
-    // Copy them from your original code if needed
-
-    // Hide suggestions on outside click
-    document.addEventListener('click', e => {
-        if (!serviceBox.contains(e.target) && e.target !== serviceInput) hide(serviceBox);
-        if (!cityBox.contains(e.target) && e.target !== cityInput) hide(cityBox);
-    });
-});
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
+        // ── DOM Elements ───────────────────────────────────────────────
         const serviceInput = document.getElementById('service_input');
         const serviceBox = document.getElementById('service_suggest');
+        const serviceSearch = document.getElementById('service_search');
+        const serviceOptions = document.getElementById('serviceOptions');
+
         const cityInput = document.getElementById('city_input');
         const cityBox = document.getElementById('city_suggest');
+        const geoMsg = document.getElementById('geo_msg');
+
         const form = serviceInput.closest('form');
-
-        
-
-        const suggestUrl = "{{ route('ajax.category.suggest') }}"; // ✅ Blade route as string
+        const suggestUrl = "{{ route('ajax.category.suggest') }}";
 
         let debounceTimer;
+        let lastCategories = [];
+        let lastBusinesses = [];
 
         function show(box) {
             box.style.display = 'block';
@@ -604,15 +487,112 @@ document.addEventListener('DOMContentLoaded', function () {
 
         function hide(box) {
             box.style.display = 'none';
-            box.innerHTML = '';
         }
 
-        // 1. Service autocomplete
+        // ── Auto-detect location on page load ──────────────────────────
+        function autoDetectLocation() {
+            if (!navigator.geolocation) {
+                geoMsg.textContent = "Geolocation is not supported by your browser.";
+                geoMsg.classList.remove('d-none');
+                return;
+            }
+
+            geoMsg.textContent = "Detecting your location...";
+            geoMsg.classList.remove('d-none');
+
+            navigator.geolocation.getCurrentPosition(
+                async (position) => {
+                        const {
+                            latitude,
+                            longitude
+                        } = position.coords;
+
+                        try {
+                            const response = await fetch(
+                                `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`
+                            );
+                            if (!response.ok) throw new Error('Reverse geocoding failed');
+                            const data = await response.json();
+
+                            let city = data?.address?.city ||
+                                data?.address?.town ||
+                                data?.address?.city_district ||
+                                data?.address?.suburb ||
+                                data?.address?.county ||
+                                data?.address?.state || '';
+
+                            if (city) {
+                                cityInput.value = city;
+                                geoMsg.textContent = `Detected: ${city}`;
+                                setTimeout(() => geoMsg.classList.add('d-none'), 3500);
+                            } else {
+                                geoMsg.textContent = "Could not determine city name";
+                            }
+                        } catch (err) {
+                            console.error('Location detection error:', err);
+                            geoMsg.textContent = "Failed to detect location";
+                        }
+                    },
+                    (error) => {
+                        let message = "";
+                        if (error.code === error.TIMEOUT) message = "Location detection timed out";
+                        geoMsg.textContent = message;
+                    }, {
+                        enableHighAccuracy: false,
+                        timeout: 7000,
+                        maximumAge: 60000
+                    }
+            );
+        }
+        autoDetectLocation();
+
+        // ── Render dropdown options (Categories + Businesses) ───────────
+        function renderDropdown(categories = [], businesses = [], filterTerm = '') {
+            lastCategories = categories;
+            lastBusinesses = businesses;
+
+            const term = (filterTerm || '').toLowerCase();
+
+            const filteredCats = categories.filter(c => !term || (c.name || '').toLowerCase().includes(term));
+            const filteredBiz = businesses.filter(b => !term || (b.business_name || '').toLowerCase().includes(term));
+
+            let html = '';
+
+            if (filteredCats.length) {
+
+                html += filteredCats.map(c => `
+                <li class="select-option category-option" data-slug="${c.slug}">
+                    ${c.name}
+                </li>
+            `).join('');
+            }
+
+            if (filteredBiz.length) {
+                html += filteredBiz.map(b => `
+                <li class="select-option business-option" data-name="${b.business_name}">
+                    ${b.business_name}
+                </li>
+            `).join('');
+            }
+
+            if (!html) {
+                html = `<li class="select-option text-muted" style="cursor:default;">No results found</li>`;
+            }
+
+            serviceOptions.innerHTML = html;
+            show(serviceBox);
+        }
+
+        // ── Service input -> API suggest ───────────────────────────────
         serviceInput.addEventListener('input', function() {
             clearTimeout(debounceTimer);
             const term = this.value.trim();
 
-            if (term.length < 2) return hide(serviceBox);
+            if (term.length < 2) {
+                hide(serviceBox);
+                serviceOptions.innerHTML = '';
+                return;
+            }
 
             debounceTimer = setTimeout(async () => {
                 try {
@@ -621,52 +601,37 @@ document.addEventListener('DOMContentLoaded', function () {
                         categories = [], businesses = []
                     } = await res.json();
 
-                    let html = '';
-
-                    if (categories.length) {
-                        html += `<div class="suggest-heading">Categories</div>`;
-                        html += categories.map(c => `
-                        <div class="suggest-item category-item" data-slug="${c.slug}">
-                            🏷 ${c.name}
-                        </div>
-                    `).join('');
-                    }
-
-                    if (businesses.length) {
-                        html += `<div class="suggest-heading">Businesses</div>`;
-                        html += businesses.map(b => `
-                        <div class="suggest-item business-item" data-name="${b.business_name}">
-                            🏢 ${b.business_name}
-                        </div>
-                    `).join('');
-                    }
-
-                    if (!html) html = `<div class="suggest-item text-muted">No results found</div>`;
-
-                    serviceBox.innerHTML = html;
-                    show(serviceBox);
+                    // dropdown open + focus to inside search (optional)
+                    serviceSearch.value = '';
+                    renderDropdown(categories, businesses);
                 } catch (err) {
                     console.error('Suggest error:', err);
                 }
             }, 300);
         });
 
-        // Suggestion click
-        serviceBox.addEventListener('click', e => {
-            const item = e.target.closest('.category-item');
-            if (item) {
-                window.location.href = `/category/${item.dataset.slug}`;
+        // ── Inside dropdown search filter (client side) ─────────────────
+        serviceSearch.addEventListener('input', function() {
+            renderDropdown(lastCategories, lastBusinesses, this.value.trim());
+        });
+
+        // ── Click on dropdown option ───────────────────────────────────
+        serviceOptions.addEventListener('click', (e) => {
+            const cat = e.target.closest('.category-option');
+            if (cat) {
+                window.location.href = `/category/${cat.dataset.slug}`;
                 return;
             }
 
-            const bizItem = e.target.closest('.business-item');
-            if (bizItem) {
-                serviceInput.value = bizItem.dataset.name;
+            const biz = e.target.closest('.business-option');
+            if (biz) {
+                serviceInput.value = biz.dataset.name;
                 hide(serviceBox);
+                return;
             }
         });
 
-        // 2. Quick category buttons
+        // ── Quick category buttons ─────────────────────────────────────
         document.querySelectorAll('.category-btn-link').forEach(btn => {
             btn.addEventListener('click', async () => {
                 const term = btn.dataset.service;
@@ -688,7 +653,7 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // 3. Form submit
+        // ── Form submit logic ──────────────────────────────────────────
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -713,21 +678,44 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             } catch (err) {
                 console.error('Search error:', err);
-                window.location.href = `/search?service=${encodeURIComponent(service)}`;
+                window.location.href = `/search?service=${encodeURIComponent(service)}&city=${encodeURIComponent(city)}`;
             }
         });
 
-        // Hide suggestions when clicking outside
-        document.addEventListener('click', e => {
-            if (!serviceBox.contains(e.target) && e.target !== serviceInput) hide(serviceBox);
-            if (!cityBox.contains(e.target) && e.target !== cityInput) hide(cityBox);
+        // ── Hide on outside click ──────────────────────────────────────
+        document.addEventListener('click', (e) => {
+            const clickedInsideService = serviceBox.contains(e.target) || e.target === serviceInput;
+            if (!clickedInsideService) hide(serviceBox);
+
+            const clickedInsideCity = cityBox.contains(e.target) || e.target === cityInput;
+            if (!clickedInsideCity) {
+                cityBox.style.display = 'none';
+                cityBox.innerHTML = '';
+            }
         });
+
     });
 </script>
 
-
-
 <style>
+    .select-option:hover {
+        background: #f8f9fa;
+    }
+
+    .select-option {
+        text-align: start;
+    }
+
+    .select-heading {
+        padding: 10px 14px;
+        font-size: 12px;
+        font-weight: 600;
+        color: #6c757d;
+        text-transform: uppercase;
+        cursor: default;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
     .suggest-box {
         position: absolute;
         top: 100%;
