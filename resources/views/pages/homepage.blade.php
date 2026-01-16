@@ -23,10 +23,10 @@
                         <div class="banner-form-box position-relative">
                             <i class="fi-search"></i>
                             <input type="search"
-                                   id="service_input"
-                                   class="form-control form-control-lg form-icon-start"
-                                   placeholder="What service do you need? (e.g. electrician, plumber)"
-                                   required>
+                                id="service_input"
+                                class="form-control form-control-lg form-icon-start"
+                                placeholder="What service do you need?"
+                                required>
                             <div id="service_suggest" class="suggest-box"></div>
                         </div>
 
@@ -36,11 +36,11 @@
                         <div class="banner-form-box zip-form-box position-relative">
                             <i class="fi-map-pin"></i>
                             <input type="text"
-                                   name="city"
-                                   id="city_input"
-                                   class="form-control form-control-lg form-icon-start"
-                                   placeholder="City"
-                                   required>
+                                name="city"
+                                id="city_input"
+                                class="form-control form-control-lg form-icon-start"
+                                placeholder="City"
+                                required>
                             {{-- <button type="button" id="use-my-location" class="btn btn-sm btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2" style="font-size:0.85rem; padding:0.35rem 0.7rem; z-index:10;">
                                 📍 My location
                             </button> --}}
@@ -318,139 +318,278 @@
     </div>
 </section>
 
+<section class="pricing-area">
+    <div class="price-shape-one d-none d-xl-block">
+        <!-- <img src="{{ asset('assets/images/pricing-shape-1.png') }}" alt=""> -->
+    </div>
+    <div class="container">
+        <div class="pricing-wrapper">
+            <div class="section-title">
+                <h2>Choose Your Product.</h2>
+            </div>
+            <div class="tpprice-shape">
+                <div class="tppricing-shape-one">
+                    <img src="" alt="">
+                </div>
+            </div>
+            <div class="row g-0 justify-content-center">
+
+                <div class="col-md-8">
+                    <div class="tp-price-toggle">
+                        <div class="wrapper-full ">
+                            <div class="tpprice">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="tppricing">
+                                            <div class="tppricing-head">
+                                                <div class="tppricing-icon tppricing-icon-1">
+                                                    <img src="{{ asset('assets/images/pricing-icon-1.webp') }}" alt="">
+                                                </div>
+                                                <h3 class="tppricing-title">Diamond Pack</h3>
+                                            </div>
+                                            <div class="tppricing-content">
+                                                <div class="tppricing-feature">
+                                                    <ul>
+                                                        <li class=""><span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
+                                                                    <path d="M20 6 9 17l-5-5" />
+                                                                </svg>
+                                                            </span>999 Email</li>
+                                                        <li class=""><span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
+                                                                    <path d="M20 6 9 17l-5-5" />
+                                                                </svg>
+                                                            </span>3gb Hosting</li>
+                                                        <li class=""><span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
+                                                                    <path d="M20 6 9 17l-5-5" />
+                                                                </svg>
+                                                            </span>Email &amp; Live
+                                                            chat</li>
+                                                        <li class="tppricing-inactive">
+                                                            <span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
+                                                                    <path d="M20 6 9 17l-5-5" />
+                                                                </svg>
+                                                            </span>1 Domain
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="tppricing-price">
+                                                    <h4 class="tppricing-price-title">$<!-- -->19.99</h4>
+                                                </div>
+                                                <div class="tppricing-btn-two">
+                                                    <a class="tp-btn-blue" href="/contact">Get Started</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 col-md-6">
+                                        <div class="tppricing">
+                                            <div class="tppricing-head">
+                                                <div class="tppricing-icon">
+                                                    <img src="{{ asset('assets/images/pricing-icon-2.webp') }}" loading="lazy" width="22" height="30" alt="">
+                                                </div>
+                                                <h3 class="tppricing-title">Gold Plan</h3>
+                                            </div>
+                                            <div class="tppricing-content">
+                                                <div class="tppricing-feature">
+                                                    <ul>
+                                                        <li class="">
+                                                            <span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
+                                                                    <path d="M20 6 9 17l-5-5" />
+                                                                </svg>
+                                                            </span>999 Email
+                                                        </li>
+                                                        <li class="">
+                                                            <span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
+                                                                    <path d="M20 6 9 17l-5-5" />
+                                                                </svg>
+                                                            </span>3gb Hosting
+                                                        </li>
+                                                        <li class="">
+                                                            <span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
+                                                                    <path d="M20 6 9 17l-5-5" />
+                                                                </svg>
+                                                            </span>Email &amp; Live
+                                                            chat
+                                                        </li>
+                                                        <li class="tppricing-inactive">
+                                                            <span>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
+                                                                    <path d="M20 6 9 17l-5-5" />
+                                                                </svg>
+                                                            </span>1 Domain
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="tppricing-price mb-40">
+                                                    <h4 class="tppricing-price-title">$<!-- -->19.99</h4>
+                                                </div>
+                                                <div class="tppricing-btn-two">
+                                                    <a class="tp-btn-blue" href="/contact">Get Started</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
+
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-    const serviceInput = document.getElementById('service_input');
-    const serviceBox = document.getElementById('service_suggest');
-    const cityInput = document.getElementById('city_input');
-    const cityBox = document.getElementById('city_suggest');
-    const form = serviceInput.closest('form');
+    document.addEventListener('DOMContentLoaded', () => {
+        const serviceInput = document.getElementById('service_input');
+        const serviceBox = document.getElementById('service_suggest');
+        const cityInput = document.getElementById('city_input');
+        const cityBox = document.getElementById('city_suggest');
+        const form = serviceInput.closest('form');
 
-    let debounceTimer;
+        const suggestUrl = "{{ route('ajax.category.suggest') }}"; // ✅ Blade route as string
 
-    function show(box) { box.style.display = 'block'; }
-    function hide(box) { box.style.display = 'none'; box.innerHTML = ''; }
+        let debounceTimer;
 
-    // 1. Service autocomplete (unchanged logic, just kept clean)
-    serviceInput.addEventListener('input', function () {
-        clearTimeout(debounceTimer);
-        const term = this.value.trim();
+        function show(box) {
+            box.style.display = 'block';
+        }
 
-        if (term.length < 2) return hide(serviceBox);
+        function hide(box) {
+            box.style.display = 'none';
+            box.innerHTML = '';
+        }
 
-        debounceTimer = setTimeout(async () => {
-            try {
-                const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(term)}`);
-                const { categories = [], businesses = [] } = await res.json();
+        // 1. Service autocomplete
+        serviceInput.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            const term = this.value.trim();
 
-                let html = '';
+            if (term.length < 2) return hide(serviceBox);
 
-                if (categories.length) {
-                    html += `<div class="suggest-heading">Categories</div>`;
-                    html += categories.map(c => `
+            debounceTimer = setTimeout(async () => {
+                try {
+                    const res = await fetch(`${suggestUrl}?term=${encodeURIComponent(term)}`);
+                    const {
+                        categories = [], businesses = []
+                    } = await res.json();
+
+                    let html = '';
+
+                    if (categories.length) {
+                        html += `<div class="suggest-heading">Categories</div>`;
+                        html += categories.map(c => `
                         <div class="suggest-item category-item" data-slug="${c.slug}">
                             🏷 ${c.name}
                         </div>
                     `).join('');
-                }
+                    }
 
-                if (businesses.length) {
-                    html += `<div class="suggest-heading">Businesses</div>`;
-                    html += businesses.map(b => `
+                    if (businesses.length) {
+                        html += `<div class="suggest-heading">Businesses</div>`;
+                        html += businesses.map(b => `
                         <div class="suggest-item business-item" data-name="${b.business_name}">
                             🏢 ${b.business_name}
                         </div>
                     `).join('');
+                    }
+
+                    if (!html) html = `<div class="suggest-item text-muted">No results found</div>`;
+
+                    serviceBox.innerHTML = html;
+                    show(serviceBox);
+                } catch (err) {
+                    console.error('Suggest error:', err);
                 }
+            }, 300);
+        });
 
-                if (!html) html = `<div class="suggest-item text-muted">No results found</div>`;
-
-                serviceBox.innerHTML = html;
-                show(serviceBox);
-            } catch (err) {
-                console.error('Suggest error:', err);
+        // Suggestion click
+        serviceBox.addEventListener('click', e => {
+            const item = e.target.closest('.category-item');
+            if (item) {
+                window.location.href = `/category/${item.dataset.slug}`;
+                return;
             }
-        }, 300);
-    });
 
-    // Category suggestion click → redirect
-    serviceBox.addEventListener('click', e => {
-        const item = e.target.closest('.category-item');
-        if (item) {
-            window.location.href = `/category/${item.dataset.slug}`;
-        }
-        // Business click just fills input (as before)
-        const bizItem = e.target.closest('.business-item');
-        if (bizItem) {
-            serviceInput.value = bizItem.dataset.name;
-        }
-        hide(serviceBox);
-    });
+            const bizItem = e.target.closest('.business-item');
+            if (bizItem) {
+                serviceInput.value = bizItem.dataset.name;
+                hide(serviceBox);
+            }
+        });
 
-    // 2. Quick category buttons (already good – redirect on first match)
-    document.querySelectorAll('.category-btn-link').forEach(btn => {
-        btn.addEventListener('click', async () => {
-            const term = btn.dataset.service;
+        // 2. Quick category buttons
+        document.querySelectorAll('.category-btn-link').forEach(btn => {
+            btn.addEventListener('click', async () => {
+                const term = btn.dataset.service;
+                try {
+                    const res = await fetch(`${suggestUrl}?term=${encodeURIComponent(term)}`);
+                    const {
+                        categories = []
+                    } = await res.json();
+
+                    if (categories.length > 0) {
+                        window.location.href = `/category/${categories[0].slug}`;
+                    } else {
+                        serviceInput.value = term;
+                        form.submit();
+                    }
+                } catch {
+                    window.location.href = `/search?service=${encodeURIComponent(term)}`;
+                }
+            });
+        });
+
+        // 3. Form submit
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const service = serviceInput.value.trim();
+            const city = cityInput ? cityInput.value.trim() : '';
+
+            if (!service) {
+                alert("Please enter a service");
+                return;
+            }
+
             try {
-                const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(term)}`);
-                const { categories = [] } = await res.json();
+                const res = await fetch(`${suggestUrl}?term=${encodeURIComponent(service)}`);
+                const {
+                    categories = []
+                } = await res.json();
 
                 if (categories.length > 0) {
                     window.location.href = `/category/${categories[0].slug}`;
                 } else {
-                    // Fallback: just go with typed value
-                    serviceInput.value = term;
-                    form.submit();
+                    window.location.href = `/search?service=${encodeURIComponent(service)}&city=${encodeURIComponent(city)}`;
                 }
-            } catch {
-                window.location.href = `/search?service=${encodeURIComponent(term)}`; // optional fallback
+            } catch (err) {
+                console.error('Search error:', err);
+                window.location.href = `/search?service=${encodeURIComponent(service)}`;
             }
         });
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', e => {
+            if (!serviceBox.contains(e.target) && e.target !== serviceInput) hide(serviceBox);
+            if (!cityBox.contains(e.target) && e.target !== cityInput) hide(cityBox);
+        });
     });
-
-    // 3. ← MOST IMPORTANT → Search button click (form submit)
-    form.addEventListener('submit', async function (e) {
-        e.preventDefault(); // ← Stop normal POST
-
-        const service = serviceInput.value.trim();
-
-        if (!service) {
-            alert("Please enter a service");
-            return;
-        }
-
-        try {
-            const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(service)}`);
-            const { categories = [] } = await res.json();
-
-            if (categories.length > 0) {
-                // Redirect to first matching category (most popular / exact match)
-                window.location.href = `/category/${categories[0].slug}`;
-            } else {
-                // Optional: different behavior when no category found
-                // 1. Go to general search page
-                window.location.href = `/search?service=${encodeURIComponent(service)}&city=${encodeURIComponent(cityInput.value.trim())}`;
-
-                // 2. Or show message (uncomment if you want)
-                // alert("No category found for '" + service + "'. Try another service!");
-            }
-        } catch (err) {
-            console.error('Search error:', err);
-            // Fallback redirect or message
-            window.location.href = `/search?service=${encodeURIComponent(service)}`;
-        }
-    });
-
-    // Hide suggestions when clicking outside
-    document.addEventListener('click', e => {
-        if (!serviceBox.contains(e.target) && e.target !== serviceInput) hide(serviceBox);
-        if (!cityBox.contains(e.target) && e.target !== cityInput) hide(cityBox);
-    });
-});
 </script>
+
+
+
 <style>
     .suggest-box {
         position: absolute;
@@ -464,22 +603,26 @@ document.addEventListener('DOMContentLoaded', () => {
         max-height: 260px;
         overflow-y: auto;
         z-index: 9999;
-        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
         display: none;
     }
+
     .suggest-item {
         padding: 12px 16px;
         cursor: pointer;
         font-size: 15px;
         border-bottom: 1px solid #f0f0f0;
     }
+
     .suggest-item:hover,
     .suggest-item:focus {
         background: #f8f9fa;
     }
+
     .suggest-item:last-child {
         border-bottom: none;
     }
+
     .geo-msg {
         position: absolute;
         bottom: -26px;

@@ -2399,17 +2399,17 @@ span.step-label {
 
 section.listing-area-front {
     position: relative;
-    padding: 60px 0;
+    padding: 60px 0 40px;
 }
 
 .front-listing-box {
     background: #fff;
     border-radius: 20px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: all 0.3s ease;
     position: relative;
     margin-bottom: 50px;
+    box-shadow: 0 25px 70px #080a3714;
 }
 
 .front-listing-img {
@@ -4205,41 +4205,117 @@ section.listing-details-area {
     margin-bottom: 0;
 }
 
+section.pricing-area {
+    position: relative;
+    padding: 40px 0;
+    background-color: #f8fafc;
+}
+
+.price-shape-one {
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+}
+
+.price-shape-one img {
+    width: 400px;
+    height: 350px;
+}
+
+.tpsection__content .section-title {
+    text-align: start;
+    margin-bottom: 0;
+    padding-left: 80px;
+}
+
+.tp-price-toggle {
+    position: relative;
+}
+
+.tpprice {
+    padding-left: 40px;
+}
+
+.tppricing {
+    background-color: #fff;
+    border-radius: 14px;
+    padding: 60px 50px;
+    box-shadow: 0 25px 70px #080a3714;
+    margin-bottom: 30px;
+}
+
+.tppricing-icon {
+    margin-bottom: 30px;
+}
+
+h3.tppricing-title {
+    font-size: 25px;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 20px;
+}
+
+.tppricing-icon-1 img {
+    width: 34px;
+    height: 30px;
+}
+
+.tppricing-feature ul li {
+    color: #565764;
+    padding-left: 28px;
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 34px;
+    list-style: none;
+    position: relative;
+}
+
+.tppricing-feature ul li span svg {
+    color: #017eff;
+    font-weight: 500;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+}
+
+h4.tppricing-price-title {
+    color: #000;
+    margin-bottom: 0;
+    font-size: 34px;
+    font-weight: 600;
+    line-height: 34px;
+}
+
+.tppricing-feature {
+    margin-bottom: 25px;
+}
 
 
+.tppricing-price {
+    margin-bottom: 25px;
+}
 
+a.tp-btn-blue {
+    color: #ffffff;
+    text-align: center;
+    -o-transition: all .4s ease-out 0s;
+    background-color: #0000;
+    border: 1px solid #0c13381a;
+    border-radius: 6px;
+    padding: 17px 10px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 10px;
+    transition: all .4s ease-out;
+    display: block;
+    background-color: #017eff;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+.pricing-wrapper .section-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
 
 
 

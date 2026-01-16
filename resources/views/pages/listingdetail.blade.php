@@ -865,14 +865,6 @@
 
 
 
-
-
-
-
-
-
-
-
 <!-- Modal -->
 <div class="modal fade" id="reviewForm" tabindex="-1" aria-labelledby="reviewFormModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
