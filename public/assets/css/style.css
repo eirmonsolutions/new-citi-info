@@ -110,7 +110,7 @@ section.banner-area {
 } */
 
 .banner-text {
-    max-width: 630px;
+    max-width: 760px;
     margin: 0 auto;
     text-align: center;
 }
@@ -185,7 +185,7 @@ section.banner-area {
 
 /* Zip Box Width */
 .banner-form-box.zip-form-box {
-    max-width: 150px;
+    max-width: 300px;
 }
 
 /* Submit Button */
