@@ -4,18 +4,17 @@
 
 @section('content')
 
-<link
-    rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
+
+<!-- Banner / Search Area -->
 <section class="banner-area">
     <div class="container">
         <div class="banner-text">
             <h1>Explore top-rated certified pros nearby</h1>
             <form action="{{ route('search.redirect') }}" method="POST" autocomplete="off">
                 @csrf
-
-                <input type="hidden" name="category_id" id="category_id">
+                <input type="hidden" name="category_id" id="category_id" value="">
 
                 <div class="banner-form">
                     <div class="banner-wrapper">
@@ -24,12 +23,11 @@
                         <div class="banner-form-box position-relative">
                             <i class="fi-search"></i>
                             <input type="search"
-                                id="service_input"
-                                class="form-control form-control-lg form-icon-start"
-                                placeholder="What service do you need?"
-                                required>
-
-                            <div id="service_suggest" class="suggest-box d-none"></div>
+                                   id="service_input"
+                                   class="form-control form-control-lg form-icon-start"
+                                   placeholder="What service do you need? (e.g. electrician, plumber)"
+                                   required>
+                            <div id="service_suggest" class="suggest-box"></div>
                         </div>
 
                         <hr class="vr d-sm-block">
@@ -37,20 +35,18 @@
                         <!-- CITY -->
                         <div class="banner-form-box zip-form-box position-relative">
                             <i class="fi-map-pin"></i>
-
                             <input type="text"
-                                name="city"
-                                id="city_input"
-                                class="form-control form-control-lg form-icon-start"
-                                placeholder="City"
-                                required>
-
-                            <div id="city_suggest" class="suggest-box d-none"></div>
-
+                                   name="city"
+                                   id="city_input"
+                                   class="form-control form-control-lg form-icon-start"
+                                   placeholder="City"
+                                   required>
+                            {{-- <button type="button" id="use-my-location" class="btn btn-sm btn-outline-secondary position-absolute end-0 top-50 translate-middle-y me-2" style="font-size:0.85rem; padding:0.35rem 0.7rem; z-index:10;">
+                                📍 My location
+                            </button> --}}
+                            <div id="city_suggest" class="suggest-box"></div>
                             <small id="geo_msg" class="geo-msg d-none"></small>
                         </div>
-
-
 
                     </div>
 
@@ -58,19 +54,18 @@
                 </div>
             </form>
 
-
             <div class="category-btns">
-                <button class="category-btn-link" type="button">Electrician</button>
-                <button class="category-btn-link" type="button">Plumbing</button>
-                <button class="category-btn-link" type="button">Hospitals</button>
-                <button class="category-btn-link" type="button">Roofing</button>
-                <button class="category-btn-link" type="button">Saloon</button>
+                <button class="category-btn-link" type="button" data-service="Electrician">Electrician</button>
+                <button class="category-btn-link" type="button" data-service="Plumbing">Plumbing</button>
+                <button class="category-btn-link" type="button" data-service="Hospitals">Hospitals</button>
+                <button class="category-btn-link" type="button" data-service="Roofing">Roofing</button>
+                <button class="category-btn-link" type="button" data-service="Saloon">Saloon</button>
             </div>
         </div>
     </div>
 </section>
 
-
+<!-- Category Area -->
 <section class="category-area">
     <div class="container">
         <div class="row justify-content-center">
@@ -82,8 +77,6 @@
         </div>
 
         <div class="row">
-
-
             <div class="category-item-grid">
                 @foreach($categories as $category)
                 <div class="category-item category-item-two">
@@ -105,7 +98,7 @@
                             <img
                                 src="{{ asset('storage/'.$category->categoryimage) }}"
                                 alt="{{ $category->name }}"
-                                style="width:40px;height:40px;object-fit:contain;filter: brightness(0);filter: brightness(0);">
+                                style="width:40px;height:40px;object-fit:contain;filter: brightness(0);">
                             @else
                             <span>-</span>
                             @endif
@@ -125,7 +118,7 @@
     </div>
 </section>
 
-
+<!-- Explore Cities Area -->
 <section class="explore-city-area">
     <div class="container">
         <div class="row justify-content-center">
@@ -136,69 +129,6 @@
             </div>
         </div>
         <div class="row g-0">
-            <div class="col-md-6 col-lg-4">
-                <a href="cities.html">
-                </a>
-                <div class="city-grid"><a href="cities.html">
-                        <div class="city-img">
-                            <img src="http://192.168.1.12:8000/assets/images/img-1.jpg" alt="">
-                        </div>
-                    </a>
-                    <div class="city-title"><a href="cities.html">
-                            <div class="listings-count">
-                                <span class="count-number">3</span>
-                                <p class="count-text">LISTINGS</p>
-                            </div>
-                        </a>
-                        <h3><a href="cities.html"></a><a href="#">Chicago</a></h3>
-                    </div>
-                </div>
-
-
-            </div>
-            <div class="col-md-6 col-lg-4">
-                <div class="city-grid city-grid-normal-height">
-                    <div class="city-img">
-                        <img src="https://images.unsplash.com/photo-1494522358652-f30e61a60313?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=800&amp;h=500" alt="Chicago skyline with Willis Tower">
-                    </div>
-                    <div class="city-title">
-                        <div class="listings-count">
-                            <span class="count-number">3</span>
-                            <p class="count-text">LISTINGS</p>
-                        </div>
-                        <h3><a href="#">Chicago</a></h3>
-                    </div>
-                </div>
-
-                <div class="city-grid city-grid-normal-height d-sm-none d-lg-block">
-                    <div class="city-img">
-                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=800&amp;h=500" alt="Times Square in New York City">
-                    </div>
-                    <div class="city-title">
-                        <div class="listings-count">
-                            <span class="count-number">3</span>
-                            <p class="count-text">LISTINGS</p>
-                        </div>
-                        <h3><a href="#">Chicago</a></h3>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 d-lg-none d-sm-block">
-
-                <div class="city-grid city-grid-normal-height ">
-                    <div class="city-img">
-                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&amp;auto=format&amp;fit=crop&amp;w=800&amp;h=500" alt="Times Square in New York City">
-                    </div>
-                    <div class="city-title">
-                        <div class="listings-count">
-                            <span class="count-number">3</span>
-                            <p class="count-text">LISTINGS</p>
-                        </div>
-                        <h3><a href="#">Chicago</a></h3>
-                    </div>
-                </div>
-            </div>
             <div class="col-md-6 col-lg-4">
                 <div class="city-grid">
                     <div class="city-img">
@@ -214,11 +144,68 @@
                 </div>
             </div>
 
+            <div class="col-md-6 col-lg-4">
+                <div class="city-grid city-grid-normal-height">
+                    <div class="city-img">
+                        <img src="https://images.unsplash.com/photo-1494522358652-f30e61a60313?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500" alt="Chicago skyline with Willis Tower">
+                    </div>
+                    <div class="city-title">
+                        <div class="listings-count">
+                            <span class="count-number">3</span>
+                            <p class="count-text">LISTINGS</p>
+                        </div>
+                        <h3><a href="#">Chicago</a></h3>
+                    </div>
+                </div>
+
+                <div class="city-grid city-grid-normal-height d-sm-none d-lg-block">
+                    <div class="city-img">
+                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500" alt="Times Square in New York City">
+                    </div>
+                    <div class="city-title">
+                        <div class="listings-count">
+                            <span class="count-number">3</span>
+                            <p class="count-text">LISTINGS</p>
+                        </div>
+                        <h3><a href="#">Chicago</a></h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 d-lg-none d-sm-block">
+                <div class="city-grid city-grid-normal-height">
+                    <div class="city-img">
+                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500" alt="Times Square in New York City">
+                    </div>
+                    <div class="city-title">
+                        <div class="listings-count">
+                            <span class="count-number">3</span>
+                            <p class="count-text">LISTINGS</p>
+                        </div>
+                        <h3><a href="#">Chicago</a></h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4">
+                <div class="city-grid">
+                    <div class="city-img">
+                        <img src="http://192.168.1.12:8000/assets/images/img-1.jpg" alt="">
+                    </div>
+                    <div class="city-title">
+                        <div class="listings-count">
+                            <span class="count-number">3</span>
+                            <p class="count-text">LISTINGS</p>
+                        </div>
+                        <h3><a href="#">Chicago</a></h3>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-
+<!-- Featured Listings -->
 <section class="listing-area-front">
     <div class="container">
         <div class="row justify-content-center">
@@ -244,24 +231,21 @@
                                         alt="{{ $img->alt_text ?? $listing->business_name }}">
                                 </div>
                                 @endforeach
-
                             </div>
-                            <!-- scrollbar -->
                             <div class="swiper-scrollbar"></div>
                         </div>
                         <div class="image-overlay"></div>
 
                         <div class="action-buttons">
                             <button class="action-btn" title="Save">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bookmark-icon lucide-bookmark">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bookmark">
                                     <path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z" />
                                 </svg>
                             </button>
                         </div>
 
-                        {{-- STATUS BADGE (optional) --}}
-                        <div class="status-badge open close">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                        <div class="status-badge open">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock">
                                 <path d="M12 6v6l4 2" />
                                 <circle cx="12" cy="12" r="10" />
                             </svg>
@@ -273,7 +257,6 @@
                         <div class="front-listing-header">
                             <div class="front-listing-title">
                                 <h3>
-                                    {{-- VIEW LINK --}}
                                     <a href="{{ route('listingdetail', $listing->slug) }}">
                                         {{ $listing->business_name }}
                                     </a>
@@ -283,14 +266,14 @@
                             <div class="front-listing-info">
                                 <div class="front-listing-meta">
                                     <div class="rating">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star-icon lucide-star">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-star">
                                             <path d="M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z" />
                                         </svg>
                                         <span>4.5</span>
                                     </div>
 
                                     <div class="reviews">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users-icon lucide-users">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users">
                                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                                             <path d="M16 3.128a4 4 0 0 1 0 7.744" />
                                             <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
@@ -300,14 +283,12 @@
                                     </div>
                                 </div>
 
-                                {{-- CATEGORY --}}
                                 <div class="category-badge">
                                     {{ $listing->categoryRel->name ?? '-' }}
                                 </div>
                             </div>
                         </div>
 
-                        {{-- DESCRIPTION --}}
                         <div class="testimonial">
                             <div class="testimonial-content">
                                 <img src="{{ $listing->logo ? asset('storage/'.$listing->logo) : 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&h=500' }}" alt="{{ $listing->business_name }}" class="testimonial-avatar">
@@ -318,18 +299,13 @@
                             </div>
                         </div>
 
-                        {{-- CITY --}}
                         <div class="location">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin">
                                 <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                                 <circle cx="12" cy="10" r="3" />
                             </svg>
-
-                            <span>
-                                {{ $listing->cityRel->name ?? $listing->city ?? '-' }}
-                            </span>
+                            <span>{{ $listing->cityRel->name ?? $listing->city ?? '-' }}</span>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -342,282 +318,174 @@
     </div>
 </section>
 
-
-
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-
-        // ---------------- ELEMENTS ----------------
-        const serviceInput = document.getElementById('service_input');
-        const serviceBox = document.getElementById('service_suggest');
-        const categoryIdEl = document.getElementById('category_id');
-
-        const cityInput = document.getElementById('city_input');
-        const cityBox = document.getElementById('city_suggest');
-
-        const geoMsg = document.getElementById('geo_msg');
-
-        let serviceTimer = null;
-        let cityTimer = null;
-
-        // ---------------- HELPERS ----------------
-        function showBox(box) {
-            box.classList.remove('d-none');
-        }
-
-        function hideBox(box) {
-            box.classList.add('d-none');
-            box.innerHTML = '';
-        }
-
-        function showGeoMsg(text) {
-            if (!geoMsg) return;
-            geoMsg.textContent = text;
-            geoMsg.classList.remove('d-none');
-        }
-
-        function hideGeoMsg() {
-            if (!geoMsg) return;
-            geoMsg.classList.add('d-none');
-            geoMsg.textContent = '';
-        }
-
-        // ---------------- SERVICE SUGGEST ----------------
-        serviceInput.addEventListener('input', function() {
-            clearTimeout(serviceTimer);
-            categoryIdEl.value = '';
-
-            const term = this.value.trim();
-            if (term.length < 1) {
-                hideBox(serviceBox);
-                return;
-            }
-
-            serviceTimer = setTimeout(async () => {
-                const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(term)}`);
-                const data = await res.json();
-
-                if (!data.length) {
-                    hideBox(serviceBox);
-                    return;
-                }
-
-                serviceBox.innerHTML = data.map(c =>
-                    `<div class="suggest-item" data-id="${c.id}" data-name="${c.name}">${c.name}</div>`
-                ).join('');
-
-                showBox(serviceBox);
-            }, 250);
-        });
-
-        serviceBox.addEventListener('click', function(e) {
-            const item = e.target.closest('.suggest-item');
-            if (!item) return;
-
-            serviceInput.value = item.dataset.name;
-            categoryIdEl.value = item.dataset.id;
-            hideBox(serviceBox);
-        });
-
-        // ---------------- CITY SUGGEST ----------------
-        cityInput.addEventListener('input', function() {
-            clearTimeout(cityTimer);
-
-            const term = this.value.trim();
-            if (term.length < 1) {
-                hideBox(cityBox);
-                return;
-            }
-
-            const catId = categoryIdEl.value;
-
-            cityTimer = setTimeout(async () => {
-                const url = new URL(`{{ route('ajax.city.suggest') }}`, window.location.origin);
-                url.searchParams.set('term', term);
-                if (catId) url.searchParams.set('category_id', catId);
-
-                const res = await fetch(url);
-                const data = await res.json();
-
-                if (!data.length) {
-                    hideBox(cityBox);
-                    return;
-                }
-
-                cityBox.innerHTML = data.map(city =>
-                    `<div class="suggest-item" data-city="${city}">${city}</div>`
-                ).join('');
-
-                showBox(cityBox);
-            }, 250);
-        });
-
-        cityBox.addEventListener('click', function(e) {
-            const item = e.target.closest('.suggest-item');
-            if (!item) return;
-
-            cityInput.value = item.dataset.city;
-            hideBox(cityBox);
-        });
-
-        // ---------------- CLICK OUTSIDE HIDE ----------------
-        document.addEventListener('click', function(e) {
-            if (!serviceBox.contains(e.target) && e.target !== serviceInput) hideBox(serviceBox);
-            if (!cityBox.contains(e.target) && e.target !== cityInput) hideBox(cityBox);
-        });
-
-        // ---------------- GEOLOCATION AUTO DETECT ----------------
-        async function reverseGeocodeCity(lat, lng) {
-            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`;
-            const res = await fetch(url, {
-                headers: {
-                    "Accept": "application/json"
-                }
-            });
-            const data = await res.json();
-            const a = data.address || {};
-            return a.city || a.town || a.village || a.county || '';
-        }
-
-        function autoDetectCity() {
-            if (!navigator.geolocation) return;
-
-            // ⚠️ HTTP + IP pe browser block kar deta hai
-            if (location.protocol !== 'https:' && location.hostname !== 'localhost') {
-                // yahan silently skip - aapka IP (192.168...) par kaam nahi karega
-                // test ke liye localhost ya https use karo
-                return;
-            }
-
-            showGeoMsg("Detecting your city...");
-
-            navigator.geolocation.getCurrentPosition(async (pos) => {
-                try {
-                    const city = await reverseGeocodeCity(pos.coords.latitude, pos.coords.longitude);
-                    if (city) {
-                        cityInput.value = city;
-                        hideBox(cityBox);
-                        showGeoMsg(`Detected: ${city}`);
-                        setTimeout(hideGeoMsg, 2500);
-                    } else {
-                        showGeoMsg("Could not detect city. Please type manually.");
-                    }
-                } catch (e) {
-                    showGeoMsg("City detection failed. Please type manually.");
-                }
-            }, (err) => {
-                // Permission denied etc.
-                // popup nahi aayega agar http + ip hai
-                hideGeoMsg();
-            }, {
-                enableHighAccuracy: true,
-                timeout: 8000,
-                maximumAge: 300000
-            });
-        }
-
-        // ✅ AUTO RUN ON PAGE LOAD
-        autoDetectCity();
-
-    });
-</script>
-
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
 <script>
-    // var swiperThumbs = new Swiper(".mySwiperThumbs", {
-    //     spaceBetween: 10,
-    //     slidesPerView: 5,
-    //     freeMode: true,
-    //     watchSlidesProgress: true,
-    //     grabCursor: true,
+document.addEventListener('DOMContentLoaded', () => {
+    const serviceInput = document.getElementById('service_input');
+    const serviceBox = document.getElementById('service_suggest');
+    const cityInput = document.getElementById('city_input');
+    const cityBox = document.getElementById('city_suggest');
+    const form = serviceInput.closest('form');
 
-    //     breakpoints: {
-    //         0: {
-    //             slidesPerView: 3
-    //         },
-    //         576: {
-    //             slidesPerView: 4
-    //         },
-    //         992: {
-    //             slidesPerView: 5
-    //         },
-    //     },
-    // });
+    let debounceTimer;
 
-    var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 1,
-        spaceBetween: 12,
-        loop: true,
+    function show(box) { box.style.display = 'block'; }
+    function hide(box) { box.style.display = 'none'; box.innerHTML = ''; }
 
-        speed: 900,
+    // 1. Service autocomplete (unchanged logic, just kept clean)
+    serviceInput.addEventListener('input', function () {
+        clearTimeout(debounceTimer);
+        const term = this.value.trim();
 
-        autoplay: {
-            delay: 5000,
-            disableOnInteraction: false,
-        },
+        if (term.length < 2) return hide(serviceBox);
 
-        grabCursor: true,
-        simulateTouch: true,
+        debounceTimer = setTimeout(async () => {
+            try {
+                const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(term)}`);
+                const { categories = [], businesses = [] } = await res.json();
 
-        scrollbar: {
-            el: ".swiper-scrollbar",
-            draggable: true,
-            hide: false,
-        },
+                let html = '';
 
-        effect: "slide",
+                if (categories.length) {
+                    html += `<div class="suggest-heading">Categories</div>`;
+                    html += categories.map(c => `
+                        <div class="suggest-item category-item" data-slug="${c.slug}">
+                            🏷 ${c.name}
+                        </div>
+                    `).join('');
+                }
 
-        // thumbs: {
-        //     swiper: swiperThumbs,
-        // },
+                if (businesses.length) {
+                    html += `<div class="suggest-heading">Businesses</div>`;
+                    html += businesses.map(b => `
+                        <div class="suggest-item business-item" data-name="${b.business_name}">
+                            🏢 ${b.business_name}
+                        </div>
+                    `).join('');
+                }
 
-        breakpoints: {
-            0: {
-                slidesPerView: 1
-            },
-            768: {
-                slidesPerView: 1
-            },
-            1024: {
-                slidesPerView: 1
-            },
-        },
+                if (!html) html = `<div class="suggest-item text-muted">No results found</div>`;
+
+                serviceBox.innerHTML = html;
+                show(serviceBox);
+            } catch (err) {
+                console.error('Suggest error:', err);
+            }
+        }, 300);
     });
+
+    // Category suggestion click → redirect
+    serviceBox.addEventListener('click', e => {
+        const item = e.target.closest('.category-item');
+        if (item) {
+            window.location.href = `/category/${item.dataset.slug}`;
+        }
+        // Business click just fills input (as before)
+        const bizItem = e.target.closest('.business-item');
+        if (bizItem) {
+            serviceInput.value = bizItem.dataset.name;
+        }
+        hide(serviceBox);
+    });
+
+    // 2. Quick category buttons (already good – redirect on first match)
+    document.querySelectorAll('.category-btn-link').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const term = btn.dataset.service;
+            try {
+                const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(term)}`);
+                const { categories = [] } = await res.json();
+
+                if (categories.length > 0) {
+                    window.location.href = `/category/${categories[0].slug}`;
+                } else {
+                    // Fallback: just go with typed value
+                    serviceInput.value = term;
+                    form.submit();
+                }
+            } catch {
+                window.location.href = `/search?service=${encodeURIComponent(term)}`; // optional fallback
+            }
+        });
+    });
+
+    // 3. ← MOST IMPORTANT → Search button click (form submit)
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault(); // ← Stop normal POST
+
+        const service = serviceInput.value.trim();
+
+        if (!service) {
+            alert("Please enter a service");
+            return;
+        }
+
+        try {
+            const res = await fetch(`{{ route('ajax.category.suggest') }}?term=${encodeURIComponent(service)}`);
+            const { categories = [] } = await res.json();
+
+            if (categories.length > 0) {
+                // Redirect to first matching category (most popular / exact match)
+                window.location.href = `/category/${categories[0].slug}`;
+            } else {
+                // Optional: different behavior when no category found
+                // 1. Go to general search page
+                window.location.href = `/search?service=${encodeURIComponent(service)}&city=${encodeURIComponent(cityInput.value.trim())}`;
+
+                // 2. Or show message (uncomment if you want)
+                // alert("No category found for '" + service + "'. Try another service!");
+            }
+        } catch (err) {
+            console.error('Search error:', err);
+            // Fallback redirect or message
+            window.location.href = `/search?service=${encodeURIComponent(service)}`;
+        }
+    });
+
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', e => {
+        if (!serviceBox.contains(e.target) && e.target !== serviceInput) hide(serviceBox);
+        if (!cityBox.contains(e.target) && e.target !== cityInput) hide(cityBox);
+    });
+});
 </script>
-
-
-
-
 <style>
-    .suggestBox {
+    .suggest-box {
         position: absolute;
         top: 100%;
         left: 0;
         right: 0;
-        background: #fff;
+        background: white;
         border: 1px solid #ddd;
         border-radius: 10px;
-        margin-top: 6px;
-        overflow: hidden;
-        display: none;
-        z-index: 9999;
+        margin-top: 8px;
         max-height: 260px;
         overflow-y: auto;
+        z-index: 9999;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        display: none;
     }
-
-    .suggestItem {
-        padding: 10px 12px;
+    .suggest-item {
+        padding: 12px 16px;
         cursor: pointer;
-        font-size: 14px;
+        font-size: 15px;
+        border-bottom: 1px solid #f0f0f0;
     }
-
-    .suggestItem:hover {
-        background: #f5f5f5;
+    .suggest-item:hover,
+    .suggest-item:focus {
+        background: #f8f9fa;
     }
-
-    .banner-form-box {
-        position: relative;
+    .suggest-item:last-child {
+        border-bottom: none;
+    }
+    .geo-msg {
+        position: absolute;
+        bottom: -26px;
+        left: 0;
+        font-size: 13.5px;
+        color: #0069d9;
     }
 </style>
 

@@ -13,41 +13,68 @@ class FrontSearchController extends Controller
 {
 
     public function listingCategory($category)
-    {
-        $catSlug = strtolower(trim($category));
+{
+    $catSlug = strtolower(trim($category));
 
-        $categoryRow = Category::whereRaw(
-            "LOWER(REPLACE(TRIM(name),' ','-')) = ?",
-            [$catSlug]
-        )->first();
+    // 🔹 Page load log
+    Log::info('Listing category page loaded', [
+        'category_param' => $category,
+        'slug' => $catSlug,
+        'ip' => request()->ip(),
+        'url' => request()->fullUrl(),
+        'user_id' => auth()->id() ?? 'guest',
+    ]);
 
-        $query = BusinessListing::query();
+    // 🔹 Find category by slug
+    $categoryRow = Category::whereRaw(
+        "LOWER(REPLACE(TRIM(name),' ','-')) = ?",
+        [$catSlug]
+    )->first();
 
-        if ($categoryRow) {
-            $query->where('category_id', $categoryRow->id);
-        } else {
-            // fallback (agar categoryRow na mile)
-            $query->whereRaw("LOWER(REPLACE(TRIM(category),' ','-')) = ?", [$catSlug]);
-        }
+    $query = BusinessListing::query();
 
-        // ✅ Only ACTIVE listings show
-        // (aapke table me column ka naam 'is_allowed' hai screenshot se)
-        $query->where('is_allowed', 1);
+    if ($categoryRow) {
 
-        $listings = $query->latest()->paginate(12);
+        // ✅ REAL & CORRECT FILTER (category_id)
+        $query->where('category_id', $categoryRow->id);
 
-        $catName = $categoryRow
-            ? $categoryRow->name
-            : Str::title(str_replace('-', ' ', $category));
+    } else {
 
-        return view('searchbar.results', [
-            'listings' => $listings,
-            'catName' => $catName,
-            'categoryRow' => $categoryRow,
-            'cityName' => null,
+        // ⚠️ Log warning if category not found
+        Log::warning('Category not found', [
+            'slug' => $catSlug
         ]);
+
+        // Empty result force (avoid wrong data)
+        $query->whereRaw('1 = 0');
     }
 
+    // ✅ Only allowed + published listings
+    $query->where('is_allowed', 1)
+          ->where('status', 'published')
+          ->whereNull('deleted_at');
+
+    $listings = $query->latest()->paginate(12);
+
+    // 🔹 Data fetch log
+    Log::info('Listing category data fetched', [
+        'category_found' => (bool) $categoryRow,
+        'category_id' => $categoryRow->id ?? null,
+        'total_results' => $listings->total(),
+        'current_page' => $listings->currentPage(),
+    ]);
+
+    $catName = $categoryRow
+        ? $categoryRow->name
+        : Str::title(str_replace('-', ' ', $category));
+
+    return view('searchbar.results', [
+        'listings' => $listings,
+        'catName' => $catName,
+        'categoryRow' => $categoryRow,
+        'cityName' => null,
+    ]);
+}
 
     
 
@@ -113,18 +140,46 @@ class FrontSearchController extends Controller
 
 
     // Suggest categories (service field)
-    public function categorySuggest(Request $request)
-    {
-        $term = $request->get('term', '');
+     public function categorySuggest(Request $request)
+{
+    $term = $request->get('term');
 
-        $cats = Category::where('is_active', 1)
-            ->where('name', 'like', "%{$term}%")
-            ->orderBy('name')
-            ->limit(10)
-            ->get(['id', 'name']);
+    \Log::info('Search term:', [$term]);
 
-        return response()->json($cats);
-    }
+    // 🔹 Categories
+   $categories = Category::query()
+    ->where('is_active', 1)
+    ->where('name', 'LIKE', "%{$term}%")
+    ->orderBy('name')
+    ->limit(10)
+    ->get(['id', 'name'])
+    ->map(function ($cat) {
+        return [
+            'id'   => $cat->id,
+            'name' => $cat->name,
+            'slug' => \Illuminate\Support\Str::slug($cat->name),
+        ];
+    });
+    // 🔹 Business Listings
+    $businesses = BusinessListing::query()
+        ->where('business_name', 'LIKE', "%{$term}%")
+        ->orderBy('business_name')
+        ->limit(10)
+        ->get([
+            'id',
+            'business_name',
+            'category_id',
+            'slug'
+        ]);
+
+    \Log::info('Categories:', $categories->toArray());
+    \Log::info('Businesses:', $businesses->toArray());
+
+    return response()->json([
+        'categories' => $categories,
+        'businesses' => $businesses
+    ]);
+}
 
     // Suggest cities (city field) - based on DB listings (best)
     public function citySuggest(Request $request)
