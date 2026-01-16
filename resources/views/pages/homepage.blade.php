@@ -11,7 +11,7 @@
 <section class="banner-area">
     <div class="container">
         <div class="banner-text">
-            <h1>Explore top-rated certified pros nearby</h1>
+            <h1>Explore top-rated certified pros nearby dfgfdg</h1>
             <form action="{{ route('search.redirect') }}" method="POST" autocomplete="off">
                 @csrf
                 <input type="hidden" name="category_id" id="category_id" value="">
