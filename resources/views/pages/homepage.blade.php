@@ -57,7 +57,6 @@
                                 📍 My location
                             </button> --}}
                             <div id="city_suggest" class="suggest-box"></div>
-                            <small id="geo_msg" class="geo-msg d-none"></small>
                         </div>
 
                     </div>
@@ -472,7 +471,7 @@
 
         const cityInput = document.getElementById('city_input');
         const cityBox = document.getElementById('city_suggest');
-        const geoMsg = document.getElementById('geo_msg');
+        // const geoMsg = document.getElementById('geo_msg');
 
         const form = serviceInput.closest('form');
         const suggestUrl = "{{ route('ajax.category.suggest') }}";
@@ -492,13 +491,8 @@
         // ── Auto-detect location on page load ──────────────────────────
         function autoDetectLocation() {
             if (!navigator.geolocation) {
-                geoMsg.textContent = "Geolocation is not supported by your browser.";
-                geoMsg.classList.remove('d-none');
-                return;
+                return; // geolocation not supported → silently ignore
             }
-
-            geoMsg.textContent = "Detecting your location...";
-            geoMsg.classList.remove('d-none');
 
             navigator.geolocation.getCurrentPosition(
                 async (position) => {
@@ -511,32 +505,31 @@
                             const response = await fetch(
                                 `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=10&addressdetails=1`
                             );
+
                             if (!response.ok) throw new Error('Reverse geocoding failed');
+
                             const data = await response.json();
 
-                            let city = data?.address?.city ||
+                            let city =
+                                data?.address?.city ||
                                 data?.address?.town ||
                                 data?.address?.city_district ||
                                 data?.address?.suburb ||
                                 data?.address?.county ||
-                                data?.address?.state || '';
+                                data?.address?.state ||
+                                '';
 
-                            if (city) {
+                            if (city && cityInput) {
                                 cityInput.value = city;
-                                geoMsg.textContent = `Detected: ${city}`;
-                                setTimeout(() => geoMsg.classList.add('d-none'), 3500);
-                            } else {
-                                geoMsg.textContent = "Could not determine city name";
                             }
+
                         } catch (err) {
                             console.error('Location detection error:', err);
-                            geoMsg.textContent = "Failed to detect location";
                         }
                     },
                     (error) => {
-                        let message = "";
-                        if (error.code === error.TIMEOUT) message = "Location detection timed out";
-                        geoMsg.textContent = message;
+                        // silently ignore errors (permission denied / timeout etc.)
+                        console.warn('Geolocation error:', error);
                     }, {
                         enableHighAccuracy: false,
                         timeout: 7000,
