@@ -79,18 +79,63 @@ class FrontSearchController extends Controller
 
     public function searchRedirect(Request $request)
     {
-        $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'city_id'     => 'required|integer',
-        ]);
+        $service = trim($request->service ?? '');
+        $cityText = trim($request->city ?? '');
+        $cityId = $request->city_id;          // hidden
+        $categoryId = $request->category_id;  // hidden
 
-        $category = Category::findOrFail($request->category_id);
+        // ✅ 1) If category_id selected -> city/category page
+        if (!empty($categoryId) && !empty($cityId)) {
 
-        return redirect()->route('city.category', [
-            'city'     => $request->city_id,      // ✅ ID
-            'category' => Str::slug($category->name),
+            $category = Category::findOrFail($categoryId);
+
+            return redirect()->route('city.category', [
+                'city'     => (int)$cityId,
+                'category' => Str::slug($category->name),
+            ]);
+        }
+
+        return redirect()->route('search.byText', [
+            'service' => $service,
+            'city'    => $cityText,
         ]);
     }
+
+    public function searchByText(Request $request)
+    {
+        $service = trim($request->get('service', ''));
+        $cityId  = $request->get('city_id'); // hidden
+        $cityTxt = trim($request->get('city', ''));
+
+        $query = BusinessListing::query()
+            ->where('is_allowed', 1)
+            ->where('status', 'published')
+            ->whereNull('deleted_at');
+
+        // ✅ business name search
+
+
+        if ($service) {
+            $query->where('business_name', 'LIKE', "%{$service}%");
+        }
+
+        // ✅ city filter (ID based)
+        if (!empty($cityId)) {
+            $query->where('city', (int)$cityId);
+        }
+
+        $listings = $query->latest()->paginate(12);
+
+        return view('searchbar.results', [
+            'listings'     => $listings,
+            'catName'      => $service ?: 'Listings',
+            'categoryRow'  => null,
+            'cityName'     => $cityTxt ?: null,
+        ]);
+    }
+
+
+
 
 
     // Page: /{city}/{category}
@@ -129,8 +174,6 @@ class FrontSearchController extends Controller
         $catName  = $categoryRow
             ? $categoryRow->name
             : Str::title(str_replace('-', ' ', $category));
-
-
 
         return view('searchbar.results', compact('listings', 'cityName', 'catName', 'categoryRow'));
     }

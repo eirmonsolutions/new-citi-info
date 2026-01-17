@@ -72,7 +72,8 @@
 <div class="listing-search-area">
   <div class="container">
     <h1>
-      Popular {{ $categoryRow->name ?? ucfirst(str_replace('-', ' ', $category)) }} in {{ $cityName }}
+      Popular {{ $categoryRow->name ?? ($catName ?? 'Listings') }} @if(!empty($cityName)) in {{ $cityName }} @endif
+
     </h1>
 
     <div class="row">

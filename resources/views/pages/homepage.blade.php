@@ -7,6 +7,10 @@
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
 
+<div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index:99999;"></div>
+
+
+
 <!-- Banner / Search Area -->
 <section class="banner-area">
     <div class="container">
@@ -15,6 +19,7 @@
             <form action="{{ route('search.redirect') }}" method="POST" autocomplete="off">
                 @csrf
                 <input type="hidden" name="category_id" id="category_id" value="">
+                <input type="hidden" name="city_id" id="city_id" value="">
 
                 <div class="banner-form">
                     <div class="banner-wrapper">
@@ -25,6 +30,7 @@
 
                             <input type="search"
                                 id="service_input"
+                                name="service"
                                 class="form-control form-control-lg form-icon-start"
                                 placeholder="What service do you need?"
                                 required>
@@ -473,6 +479,50 @@
         const cityBox = document.getElementById('city_suggest');
         // const geoMsg = document.getElementById('geo_msg');
 
+        const citySuggestUrl = "{{ route('ajax.city.suggest') }}";
+        const cityIdInput = document.getElementById('city_id');
+
+
+        let cityDebounce;
+
+        cityInput.addEventListener('input', function() {
+            clearTimeout(cityDebounce);
+            const term = this.value.trim();
+
+            if (term.length < 2) {
+                cityBox.innerHTML = '';
+                cityBox.style.display = 'none';
+                if (cityIdInput) cityIdInput.value = '';
+                return;
+            }
+
+            cityDebounce = setTimeout(async () => {
+                try {
+                    const categoryId = document.getElementById('category_id')?.value || '';
+                    const res = await fetch(`${citySuggestUrl}?term=${encodeURIComponent(term)}&category_id=${encodeURIComponent(categoryId)}`);
+                    const cities = await res.json();
+
+                    if (!cities.length) {
+                        cityBox.innerHTML = '';
+                        cityBox.style.display = 'none';
+                        if (cityIdInput) cityIdInput.value = '';
+                        return;
+                    }
+
+                    cityBox.innerHTML = cities.map(c => `
+                <div class="select-option city-option" data-id="${c.id}" style="padding:10px; cursor:pointer;">
+                    ${c.name}
+                </div>
+            `).join('');
+
+                    cityBox.style.display = 'block';
+                } catch (e) {
+                    console.error(e);
+                }
+            }, 250);
+        });
+
+
         const form = serviceInput.closest('form');
         const suggestUrl = "{{ route('ajax.category.suggest') }}";
 
@@ -487,6 +537,30 @@
         function hide(box) {
             box.style.display = 'none';
         }
+
+        function showToast(message, type = 'danger') {
+            const container = document.getElementById('toastContainer');
+            if (!container) {
+                alert(message);
+                return;
+            }
+
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-bg-${type} border-0 show`;
+            toast.role = 'alert';
+            toast.innerHTML = `
+        <div class="d-flex">
+            <div class="toast-body">${message}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto"></button>
+        </div>
+    `;
+
+            container.appendChild(toast);
+
+            toast.querySelector('button').addEventListener('click', () => toast.remove());
+            setTimeout(() => toast.remove(), 3000);
+        }
+
 
         // ── Auto-detect location on page load ──────────────────────────
         function autoDetectLocation() {
@@ -562,11 +636,14 @@
 
             if (filteredBiz.length) {
                 html += filteredBiz.map(b => `
-                <li class="select-option business-option" data-name="${b.business_name}">
-                    ${b.business_name}
-                </li>
-            `).join('');
+        <li class="select-option business-option"
+            data-name="${b.business_name}"
+            data-slug="${b.slug ?? ''}">
+            ${b.business_name}
+        </li>
+    `).join('');
             }
+
 
             if (!html) {
                 html = `<li class="select-option text-muted" style="cursor:default;">No results found</li>`;
@@ -622,6 +699,7 @@
                 hide(serviceBox);
                 return;
             }
+
         });
 
         // ── Quick category buttons ─────────────────────────────────────
@@ -652,6 +730,8 @@
 
             const service = serviceInput.value.trim();
             const city = cityInput ? cityInput.value.trim() : '';
+            const city_id = cityIdInput ? cityIdInput.value.trim() : '';
+            const category_id = document.getElementById('category_id')?.value || '';
 
             if (!service) {
                 alert("Please enter a service");
@@ -661,19 +741,39 @@
             try {
                 const res = await fetch(`${suggestUrl}?term=${encodeURIComponent(service)}`);
                 const {
-                    categories = []
+                    categories = [], businesses = []
                 } = await res.json();
 
+                // ✅ category found -> category page
                 if (categories.length > 0) {
                     window.location.href = `/category/${categories[0].slug}`;
-                } else {
-                    window.location.href = `/search?service=${encodeURIComponent(service)}&city=${encodeURIComponent(city)}`;
+                    return;
                 }
+
+                // ✅ business found OR user typed random but still search page open
+                // (no 405) -> GET /search
+                window.location.href = `{{ route('search.byText') }}?service=${encodeURIComponent(service)}&city=${encodeURIComponent(city)}&city_id=${encodeURIComponent(city_id)}`;
+                return;
+
             } catch (err) {
                 console.error('Search error:', err);
-                window.location.href = `/search?service=${encodeURIComponent(service)}&city=${encodeURIComponent(city)}`;
+                window.location.href = `{{ route('search.byText') }}?service=${encodeURIComponent(service)}&city=${encodeURIComponent(city)}&city_id=${encodeURIComponent(city_id)}`;
             }
         });
+
+
+        cityBox.addEventListener('click', function(e) {
+            const opt = e.target.closest('.city-option');
+            if (!opt) return;
+
+            cityInput.value = opt.textContent.trim();
+            if (cityIdInput) cityIdInput.value = opt.dataset.id;
+
+            cityBox.style.display = 'none';
+            cityBox.innerHTML = '';
+        });
+
+
 
         // ── Hide on outside click ──────────────────────────────────────
         document.addEventListener('click', (e) => {

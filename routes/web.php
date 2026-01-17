@@ -50,19 +50,10 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LogoutController::class, 'destroy'])
     ->name('logout');
 
-// Route::get('/add-listing', function () {
-//     $features = Feature::all();
-//     $categories = Category::all();
-//     $countries = Country::orderBy('name')->get();
-//     return view('pages.addlisting', compact('categories', 'countries', 'features'));
-// });
-
 
 Route::get('/register', function () {
     return view('auth.register');
 });
-
-
 
 // Route::get('/test-mail', function () {
 //     Mail::raw('Test Email OK', function ($m) {
@@ -211,6 +202,7 @@ Route::get('/category/{category}', [FrontSearchController::class, 'listingCatego
 // AJAX suggest
 Route::get('/ajax/category-suggest', [FrontSearchController::class, 'categorySuggest'])->name('ajax.category.suggest');
 Route::get('/ajax/city-suggest', [FrontSearchController::class, 'citySuggest'])->name('ajax.city.suggest');
+Route::get('/search', [FrontSearchController::class, 'searchByText'])->name('search.byText');
 
 // Route::get('/{city}/{category}', [FrontSearchController::class, 'listingByCityCategory'])
 //     ->name('city.category');
