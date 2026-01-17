@@ -9,8 +9,6 @@
 
 <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index:99999;"></div>
 
-
-
 <!-- Banner / Search Area -->
 <section class="banner-area">
     <div class="container">
@@ -126,7 +124,10 @@
                                 {{ $category->name }}
                             </a>
                         </h3>
-                        <span class="listing">15 Listing</span>
+                        <span class="listing">
+                            {{ $category->listings_count }} Listing{{ $category->listings_count != 1 ? 's' : '' }}
+                        </span>
+
                     </div>
                 </div>
                 @endforeach
@@ -145,82 +146,110 @@
                 </div>
             </div>
         </div>
+
         <div class="row g-0">
+
+            {{-- ✅ Melbourne --}}
             <div class="col-md-6 col-lg-4">
                 <div class="city-grid">
                     <div class="city-img">
-                        <img src="{{ asset('assets/images/img-1.jpg') }}" alt="">
+                        <img src="{{ asset('assets/images/cities/Melbourne.jpg') }}" alt="Melbourne">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
-                            <span class="count-number">3</span>
+                            <span class="count-number">
+                                {{ $cityCounts['Melbourne']->listings_count ?? 0 }}
+                            </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
-                        <h3><a href="#">Chicago</a></h3>
+                        <h3>
+                            <a href="{{ route('listingpage', ['location' => 'Melbourne']) }}">Melbourne</a>
+                        </h3>
                     </div>
                 </div>
             </div>
 
+            {{-- ✅ Sydney + Perth (desktop second block) --}}
             <div class="col-md-6 col-lg-4">
                 <div class="city-grid city-grid-normal-height">
                     <div class="city-img">
-                        <img src="https://images.unsplash.com/photo-1494522358652-f30e61a60313?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500" alt="Chicago skyline with Willis Tower">
+                        <img src="{{ asset('assets/images/cities/Sydney.jpg') }}" alt="Sydney">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
-                            <span class="count-number">3</span>
+                            <span class="count-number">
+                                {{ $cityCounts['Sydney']->listings_count ?? 0 }}
+                            </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
-                        <h3><a href="#">Chicago</a></h3>
+                        <h3>
+                            <a href="{{ route('listingpage', ['location' => 'Sydney']) }}">Sydney</a>
+                        </h3>
                     </div>
                 </div>
 
                 <div class="city-grid city-grid-normal-height d-sm-none d-lg-block">
                     <div class="city-img">
-                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500" alt="Times Square in New York City">
+                        <img src="{{ asset('assets/images/cities/Perth.jpg') }}" alt="Perth">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
-                            <span class="count-number">3</span>
+                            <span class="count-number">
+                                {{ $cityCounts['Perth']->listings_count ?? 0 }}
+                            </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
-                        <h3><a href="#">Chicago</a></h3>
+                        <h3>
+                            <a href="{{ route('listingpage', ['location' => 'Perth']) }}">Perth</a>
+                        </h3>
                     </div>
                 </div>
             </div>
 
+            {{-- ✅ Perth (mobile only block) --}}
             <div class="col-md-6 col-lg-4 d-lg-none d-sm-block">
                 <div class="city-grid city-grid-normal-height">
                     <div class="city-img">
-                        <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=500" alt="Times Square in New York City">
+                        <img src="{{ asset('assets/images/cities/Perth.jpg') }}" alt="Perth">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
-                            <span class="count-number">3</span>
+                            <span class="count-number">
+                                {{ $cityCounts['Perth']->listings_count ?? 0 }}
+                            </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
-                        <h3><a href="#">Chicago</a></h3>
+                        <h3>
+                            <a href="{{ route('listingpage', ['location' => 'Perth']) }}">Perth</a>
+                        </h3>
                     </div>
                 </div>
             </div>
 
+            {{-- ✅ Brisbane --}}
             <div class="col-md-6 col-lg-4">
                 <div class="city-grid">
                     <div class="city-img">
-                        <img src="{{ asset('assets/images/img-1.jpg') }}" alt="">
+                        <img src="{{ asset('assets/images/cities/Brisbane.jpg') }}" alt="Brisbane">
                     </div>
                     <div class="city-title">
                         <div class="listings-count">
-                            <span class="count-number">3</span>
+                            <span class="count-number">
+                                {{ $cityCounts['Brisbane']->listings_count ?? 0 }}
+                            </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
-                        <h3><a href="#">Chicago</a></h3>
+                        <h3>
+                            <a href="{{ route('listingpage', ['location' => 'Brisbane']) }}">Brisbane</a>
+                        </h3>
                     </div>
                 </div>
             </div>
+
         </div>
     </div>
 </section>
+
 
 <!-- Featured Listings -->
 <section class="listing-area-front">
@@ -335,136 +364,52 @@
     </div>
 </section>
 
-<section class="pricing-area">
-    <div class="price-shape-one d-none d-xl-block">
-        <!-- <img src="{{ asset('assets/images/pricing-shape-1.png') }}" alt=""> -->
-    </div>
-    <div class="container">
-        <div class="pricing-wrapper">
-            <div class="section-title">
-                <h2>Choose Your Product</h2>
-            </div>
-            <div class="tpprice-shape">
-                <div class="tppricing-shape-one">
-                    <img src="" alt="">
-                </div>
-            </div>
-            <div class="row g-0 justify-content-center">
 
-                <div class="col-md-8">
-                    <div class="tp-price-toggle">
-                        <div class="wrapper-full ">
-                            <div class="tpprice">
-                                <div class="row">
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="tppricing">
-                                            <div class="tppricing-head">
-                                                <div class="tppricing-icon tppricing-icon-1">
-                                                    <img src="{{ asset('assets/images/pricing-icon-1.webp') }}" alt="">
-                                                </div>
-                                                <h3 class="tppricing-title">Diamond Pack</h3>
-                                            </div>
-                                            <div class="tppricing-content">
-                                                <div class="tppricing-feature">
-                                                    <ul>
-                                                        <li class=""><span>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
-                                                                    <path d="M20 6 9 17l-5-5" />
-                                                                </svg>
-                                                            </span>999 Email</li>
-                                                        <li class=""><span>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
-                                                                    <path d="M20 6 9 17l-5-5" />
-                                                                </svg>
-                                                            </span>3gb Hosting</li>
-                                                        <li class=""><span>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
-                                                                    <path d="M20 6 9 17l-5-5" />
-                                                                </svg>
-                                                            </span>Email &amp; Live
-                                                            chat</li>
-                                                        <li class="tppricing-inactive">
-                                                            <span>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
-                                                                    <path d="M20 6 9 17l-5-5" />
-                                                                </svg>
-                                                            </span>1 Domain
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="tppricing-price">
-                                                    <h4 class="tppricing-price-title">$<!-- -->19.99</h4>
-                                                </div>
-                                                <div class="tppricing-btn-two">
-                                                    <a class="tp-btn-blue" href="/contact">Get Started</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-md-6">
-                                        <div class="tppricing">
-                                            <div class="tppricing-head">
-                                                <div class="tppricing-icon">
-                                                    <img src="{{ asset('assets/images/pricing-icon-2.webp') }}" loading="lazy" width="22" height="30" alt="">
-                                                </div>
-                                                <h3 class="tppricing-title">Gold Plan</h3>
-                                            </div>
-                                            <div class="tppricing-content">
-                                                <div class="tppricing-feature">
-                                                    <ul>
-                                                        <li class="">
-                                                            <span>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
-                                                                    <path d="M20 6 9 17l-5-5" />
-                                                                </svg>
-                                                            </span>999 Email
-                                                        </li>
-                                                        <li class="">
-                                                            <span>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
-                                                                    <path d="M20 6 9 17l-5-5" />
-                                                                </svg>
-                                                            </span>3gb Hosting
-                                                        </li>
-                                                        <li class="">
-                                                            <span>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
-                                                                    <path d="M20 6 9 17l-5-5" />
-                                                                </svg>
-                                                            </span>Email &amp; Live
-                                                            chat
-                                                        </li>
-                                                        <li class="tppricing-inactive">
-                                                            <span>
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check">
-                                                                    <path d="M20 6 9 17l-5-5" />
-                                                                </svg>
-                                                            </span>1 Domain
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                                <div class="tppricing-price mb-40">
-                                                    <h4 class="tppricing-price-title">$<!-- -->19.99</h4>
-                                                </div>
-                                                <div class="tppricing-btn-two">
-                                                    <a class="tp-btn-blue" href="/contact">Get Started</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
+<script>
+    var swiper = new Swiper(".mySwiper", {
+        slidesPerView: 1,
+        spaceBetween: 12,
+        loop: true,
+
+        speed: 900,
+
+        autoplay: {
+            delay: 5000,
+            disableOnInteraction: false,
+        },
+
+        grabCursor: true,
+        simulateTouch: true,
+
+        scrollbar: {
+            el: ".swiper-scrollbar",
+            draggable: true,
+            hide: false,
+        },
+
+        effect: "slide",
+
+        // thumbs: {
+        //     swiper: swiperThumbs,
+        // },
+
+        breakpoints: {
+            0: {
+                slidesPerView: 1
+            },
+            768: {
+                slidesPerView: 1
+            },
+            1024: {
+                slidesPerView: 1
+            },
+        },
+    });
+</script>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {

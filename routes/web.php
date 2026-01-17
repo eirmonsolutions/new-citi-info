@@ -41,6 +41,11 @@ Route::get('/', [HomeController::class, 'index'])->name('homepage');
 
 Route::get('/about', [AboutPageController::class, 'index'])->name('aboutpage');
 
+Route::get('/pricing-plans', function () {
+    return view('pages.pricingpage');
+});
+
+
 Route::get('/listing', [ListingPageController::class, 'index'])->name('listingpage');
 Route::get('/category', [CategoryPageController::class, 'index'])->name('categorypage');
 

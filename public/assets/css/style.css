@@ -93,7 +93,6 @@ section.banner-area {
     background-color: var(--banner-bg);
     padding: 100px 0;
     position: relative;
-    overflow: hidden;
     z-index: 1;
 }
 

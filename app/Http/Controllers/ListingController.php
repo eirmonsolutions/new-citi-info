@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
+
 use App\Models\Country;
 use App\Models\State;
 use App\Models\City;
@@ -32,7 +35,7 @@ class ListingController extends Controller
 
 
 
-    
+
 
     public function show($slug)
     {
@@ -352,9 +355,32 @@ class ListingController extends Controller
 
             // ✅ gallery upload (multiple)
             if ($request->hasFile('business_gallery')) {
-                foreach ($request->file('business_gallery') as $index => $img) {
-                    $path = $img->store('business/gallery', 'public');
 
+                $manager = new ImageManager(new Driver());
+
+                foreach ($request->file('business_gallery') as $index => $img) {
+
+                    // ✅ create image instance
+                    $image = $manager->read($img);
+
+                    // ✅ resize (max width 1200px, height auto)
+                    $image->scaleDown(width: 1200);
+
+                    // ✅ generate filename
+                    $filename = uniqid('gallery_') . '.jpg';
+                    $path = 'business/gallery/' . $filename;
+
+                    // ✅ compress loop until size <= 500 KB
+                    $quality = 85; // start quality
+                    do {
+                        $encoded = $image->toJpeg($quality);
+                        $quality -= 5;
+                    } while (strlen((string) $encoded) > 500 * 1024 && $quality > 30);
+
+                    // ✅ save to storage
+                    \Storage::disk('public')->put($path, (string) $encoded);
+
+                    // ✅ save DB
                     BusinessGallery::create([
                         'business_id' => $listing->id,
                         'image_path'  => $path,

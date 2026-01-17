@@ -11,4 +11,9 @@ class Category extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    public function businessListings()
+    {
+        return $this->hasMany(\App\Models\BusinessListing::class, 'category_id');
+    }
 }

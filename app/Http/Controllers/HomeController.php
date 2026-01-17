@@ -3,28 +3,46 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\City;
 use App\Models\BusinessListing;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // Categories (same as before)
+        // ✅ Categories with listing count
         $categories = Category::where('is_active', 1)
+            ->withCount([
+                'businessListings as listings_count' => function ($q) {
+                    $q->where('is_allowed', 1)
+                        ->where('status', 'published')
+                        ->whereNull('deleted_at');
+                }
+            ])
             ->orderBy('id', 'desc')
             ->take(6)
             ->get();
 
         // ✅ FRONTEND LISTINGS (ONLY allowed + published)
         $listings = BusinessListing::where('status', 'published')
-            ->where('status', 'published')
             ->where('is_allowed', 1)
             ->latest()
-            ->take(6) // homepage pe kitni dikhani hain
+            ->take(6)
             ->get();
 
-        return view('pages.homepage', compact('categories', 'listings'));
-    }
+        $cityNames = ['Melbourne', 'Sydney', 'Perth', 'Brisbane'];
 
-    
+        $cities = City::whereIn('name', $cityNames)
+            ->withCount([
+                'listings as listings_count' => function ($q) {
+                    $q->where('is_allowed', 1)
+                        ->where('status', 'published')
+                        ->whereNull('deleted_at');
+                }
+            ])
+            ->get()
+            ->keyBy('name'); // ✅ access by city name
+
+        return view('pages.homepage', compact('categories', 'listings', 'cities'));
+    }
 }

@@ -47,7 +47,7 @@
                 <div class="col-lg-3 col-sm-6">
                     <div class="footer-box-layout1">
                         <div class="footer-title">
-                            <h3>How to Sell Fast</h3>
+                            <h3>Company Info</h3>
                         </div>
                         <div class="footer-menu-box">
                             <ul>
@@ -63,12 +63,13 @@
                 <div class="col-lg-3 col-sm-6">
                     <div class="footer-box-layout1">
                         <div class="footer-title">
-                            <h3>Information</h3>
+                            <h3>Quick Links</h3>
                         </div>
                         <div class="footer-menu-box">
                             <ul>
-                                <li><a href="#">Company &amp; Contact Info</a></li>
-                                <li><a href="#">Blog &amp; Articles</a></li>
+                                <li><a href="/about">About Us</a></li>
+                                <li><a href="/pricing-plans">Pricing Plans</a></li>
+                                <li><a href="#">Blogs</a></li>
                                 <li><a href="#">Sitemap</a></li>
                                 <li><a href="#">Terms of Service</a></li>
                                 <li><a href="#">Privacy Policy</a></li>
@@ -85,9 +86,8 @@
                             <ul>
                                 <li><a href="#">Live Chat</a></li>
                                 <li><a href="#">FAQ</a></li>
-                                <li><a href="#">How to Stay Safe</a></li>
-                                <li><a href="#">Terms &amp; Conditions</a></li>
                                 <li><a href="#">Contact Us</a></li>
+                                <li><a href="#">Disclaimer</a></li>
                             </ul>
                         </div>
                     </div>

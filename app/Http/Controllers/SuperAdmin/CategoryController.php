@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\ImageManager;
+use Intervention\Image\Drivers\Gd\Driver;
 
 class CategoryController extends Controller
 {
@@ -13,6 +15,29 @@ class CategoryController extends Controller
     {
         $categories = Category::orderBy('id', 'desc')->get();
         return view('superadmin.category', compact('categories'));
+    }
+
+    private function compressAndStoreImage($file, string $folder, int $maxKb = 500, int $maxWidth = 1200): string
+    {
+        $manager = new ImageManager(new Driver());
+        $image = $manager->read($file);
+
+        // resize down (keep aspect ratio)
+        $image->scaleDown(width: $maxWidth);
+
+        $filename = uniqid('cat_') . '.jpg';
+        $path = $folder . '/' . $filename;
+
+        // compress loop
+        $quality = 85;
+        do {
+            $encoded = $image->toJpeg($quality);
+            $quality -= 5;
+        } while (strlen((string) $encoded) > ($maxKb * 1024) && $quality > 30);
+
+        Storage::disk('public')->put($path, (string) $encoded);
+
+        return $path;
     }
 
     public function store(Request $request)
@@ -30,12 +55,22 @@ class CategoryController extends Controller
 
         // ✅ icon image
         if ($request->hasFile('categoryimage')) {
-            $category->categoryimage = $request->file('categoryimage')->store('category-icon', 'public');
+            $category->categoryimage = $this->compressAndStoreImage(
+                $request->file('categoryimage'),
+                'category-icon',
+                200,
+                400
+            );
         }
 
-        // ✅ category image
+        // ✅ main category image (500KB, width 1200)
         if ($request->hasFile('image')) {
-            $category->image = $request->file('image')->store('categories', 'public');
+            $category->image = $this->compressAndStoreImage(
+                $request->file('image'),
+                'categories',
+                500,
+                1200
+            );
         }
 
         $category->save();
@@ -45,17 +80,44 @@ class CategoryController extends Controller
 
     public function update(Request $request, $id)
     {
-        $category = Category::findOrFail($id); // ✅ same row
+        $category = Category::findOrFail($id);
+
+        $request->validate([
+            'name'          => ['required', 'string', 'max:255'],
+            'categoryimage' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'is_active'     => ['nullable', 'in:0,1'],
+        ]);
 
         $category->name = $request->name;
         $category->is_active = $request->is_active ?? 0;
 
+        // ✅ icon image update (delete old + save new compressed)
         if ($request->hasFile('categoryimage')) {
-            $category->categoryimage = $request->file('categoryimage')->store('category-icon', 'public');
+            if ($category->categoryimage && Storage::disk('public')->exists($category->categoryimage)) {
+                Storage::disk('public')->delete($category->categoryimage);
+            }
+
+            $category->categoryimage = $this->compressAndStoreImage(
+                $request->file('categoryimage'),
+                'category-icon',
+                200,
+                400
+            );
         }
 
+        // ✅ main image update (delete old + save new compressed)
         if ($request->hasFile('image')) {
-            $category->image = $request->file('image')->store('categories', 'public');
+            if ($category->image && Storage::disk('public')->exists($category->image)) {
+                Storage::disk('public')->delete($category->image);
+            }
+
+            $category->image = $this->compressAndStoreImage(
+                $request->file('image'),
+                'categories',
+                500,
+                1200
+            );
         }
 
         $category->save();
