@@ -666,7 +666,8 @@
                                         <div class="upload-btn">Choose Images</div>
                                     </div>
 
-                                    <input id="business_gallery" name="business_gallery[]" type="file" accept="image/*" multiple hidden />
+                                    <input type="file" id="business_gallery" name="business_gallery[]" multiple accept="image/*">
+
                                 </label>
                             </div>
                         </div>
@@ -728,11 +729,13 @@
                                 <div class="gallery-strip thumb-row" id="galleryPreview">
                                     {{-- ✅ Existing gallery thumbnails --}}
                                     @foreach($listing->gallery as $img)
-                                    <div class="thumb">
-                                        <img src="{{ asset('storage/'.$img->image_path) }}" alt="">
+                                    <div class="gallery-item" data-id="{{ $img->id }}">
+                                        <img src="{{ asset('storage/'.$img->image_path) }}" class="gallery-thumb" alt="">
+                                        <button type="button" class="gallery-remove-btn">×</button>
                                     </div>
                                     @endforeach
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -1471,7 +1474,9 @@
     }
 
     function renderGallery() {
-        galleryPreview.innerHTML = "";
+
+        // ✅ ONLY remove new preview items, existing DB items ko touch nahi karega
+        galleryPreview.querySelectorAll('.gallery-item[data-new="1"]').forEach(el => el.remove());
 
         // show max 20 like your code
         selectedFiles.slice(0, 20).forEach((file, index) => {
@@ -1480,6 +1485,7 @@
             // wrapper
             const wrap = document.createElement("div");
             wrap.className = "gallery-item";
+            wrap.setAttribute("data-new", "1"); // ✅ mark as new
 
             // image
             const img = document.createElement("img");
@@ -1494,14 +1500,9 @@
             btn.innerHTML = "&times;"; // ×
 
             btn.addEventListener("click", () => {
-                // remove that file from array
                 selectedFiles.splice(index, 1);
-
-                // update input files + re-render
                 syncInputFiles();
                 renderGallery();
-
-                // cleanup object url
                 URL.revokeObjectURL(url);
             });
 
@@ -1510,19 +1511,31 @@
             galleryPreview.appendChild(wrap);
         });
 
-        galleryCountText.textContent = `${selectedFiles.length} photos ready to showcase`;
+        // ✅ existing + new count show
+        const existingCount = galleryPreview.querySelectorAll('.gallery-item:not([data-new="1"])').length;
+        galleryCountText.textContent = `${existingCount + selectedFiles.length} photos ready to showcase`;
     }
+
+    galleryPreview.querySelectorAll('.gallery-item:not([data-new="1"]) .gallery-remove-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const item = e.target.closest('.gallery-item');
+            if (item) item.remove();
+
+            const existingCount = galleryPreview.querySelectorAll('.gallery-item:not([data-new="1"])').length;
+            galleryCountText.textContent = `${existingCount + selectedFiles.length} photos ready to showcase`;
+        });
+    });
+
+
 
     galleryInput?.addEventListener("change", () => {
         const files = Array.from(galleryInput.files || []);
-
-        // replace selection (same behaviour as your old code)
         selectedFiles = files.slice(0, 20);
-
         syncInputFiles();
         renderGallery();
     });
 
+    
     // Optional: YouTube preview (basic)
     const ytInput = document.getElementById("youtube_video");
     const emptyBox = document.getElementById("videoPreviewEmpty");

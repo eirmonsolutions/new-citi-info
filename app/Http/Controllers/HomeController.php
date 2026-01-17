@@ -12,6 +12,7 @@ class HomeController extends Controller
     {
         // ✅ Categories with listing count
         $categories = Category::where('is_active', 1)
+            ->where('is_home', 1)
             ->withCount([
                 'businessListings as listings_count' => function ($q) {
                     $q->where('is_allowed', 1)
@@ -20,7 +21,7 @@ class HomeController extends Controller
                 }
             ])
             ->orderBy('id', 'desc')
-            ->take(6)
+            ->take(8)
             ->get();
 
         // ✅ FRONTEND LISTINGS (ONLY allowed + published)

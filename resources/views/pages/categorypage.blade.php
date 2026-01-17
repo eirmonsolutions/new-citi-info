@@ -19,14 +19,12 @@
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="section-title">
-                    <h2>Destination Category</h2>
+                    <h2>Destination Categories</h2>
                 </div>
             </div>
         </div>
 
         <div class="row">
-
-
             <div class="category-item-grid">
                 @foreach($categories as $category)
                 <div class="category-item category-item-two">
@@ -48,7 +46,7 @@
                             <img
                                 src="{{ asset('storage/'.$category->categoryimage) }}"
                                 alt="{{ $category->name }}"
-                                style="width:40px;height:40px;object-fit:contain;filter: brightness(0);filter: brightness(0);">
+                                style="width:40px;height:40px;object-fit:contain;filter: brightness(0);">
                             @else
                             <span>-</span>
                             @endif
@@ -59,7 +57,10 @@
                                 {{ $category->name }}
                             </a>
                         </h3>
-                        <span class="listing">15 Listing</span>
+                        <span class="listing">
+                            {{ $category->listings_count }} Listing{{ $category->listings_count != 1 ? 's' : '' }}
+                        </span>
+
                     </div>
                 </div>
                 @endforeach

@@ -28,20 +28,28 @@
                     <th>Category Image</th>
                     <th>Category Name</th>
                     <th>Category Image Icon</th>
+
+                    {{-- ✅ NEW: Homepage show checkbox --}}
+                    <th>Homepage (Max 6)</th>
+
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
+
             <tbody id="categoryTableBody">
                 @foreach($categories as $index => $cat)
                 <tr>
-                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $categories->firstItem() + $index }}</td>
+
                     <td>
                         <div class="category-img">
                             <img src="{{ $cat->image ? asset('storage/'.$cat->image) : asset('assets/images/saloon.jpg') }}" alt="">
                         </div>
                     </td>
+
                     <td>{{ $cat->name }}</td>
+
                     <td>
                         <div class="category-icon">
                             @if($cat->categoryimage)
@@ -53,8 +61,24 @@
                             <span>-</span>
                             @endif
                         </div>
-
                     </td>
+
+                    {{-- ✅ NEW: is_home toggle --}}
+                    <td>
+                        <form method="POST" action="{{ route('superadmin.category.toggle-home', $cat->id) }}" class="homeToggleForm">
+                            @csrf
+                            @method('PATCH')
+
+                            <label class="switch" style="margin:0;">
+                                <input type="checkbox"
+                                    name="is_home"
+                                    value="1"
+                                    {{ $cat->is_home ? 'checked' : '' }}>
+                                <span class="slider"></span>
+                            </label>
+                        </form>
+                    </td>
+
                     <td>
                         <form method="POST" action="{{ route('superadmin.category.toggle-status', $cat->id) }}">
                             @csrf
@@ -64,6 +88,7 @@
                             </button>
                         </form>
                     </td>
+
                     <td>
                         <div class="action-buttons">
                             <button
@@ -88,7 +113,6 @@
                             <form method="POST" action="{{ route('superadmin.category.destroy', $cat) }}" class="deleteCategoryForm">
                                 @csrf
                                 @method('DELETE')
-
                                 <button type="submit" class="btn-icon btn-delete">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash-2">
                                         <path d="M10 11v6" />
@@ -99,16 +123,49 @@
                                     </svg>
                                 </button>
                             </form>
-
                         </div>
                     </td>
                 </tr>
-
                 @endforeach
-
             </tbody>
         </table>
+        <div class="pagination-wrap">
+            <nav aria-label="Category Pagination">
+                <ul class="pagination">
+
+                    {{-- ✅ Previous --}}
+                    <li class="page-item {{ $categories->onFirstPage() ? 'disabled' : '' }}">
+                        <a class="page-link"
+                            href="{{ $categories->previousPageUrl() ?? '#' }}"
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    {{-- ✅ Page Numbers --}}
+                    @foreach ($categories->getUrlRange(1, $categories->lastPage()) as $page => $url)
+                    <li class="page-item {{ $categories->currentPage() == $page ? 'active' : '' }}">
+                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                    </li>
+                    @endforeach
+
+                    {{-- ✅ Next --}}
+                    <li class="page-item {{ $categories->hasMorePages() ? '' : 'disabled' }}">
+                        <a class="page-link"
+                            href="{{ $categories->nextPageUrl() ?? '#' }}"
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+
     </section>
+
+
+
 
 </main>
 
@@ -159,7 +216,7 @@
                     <label class="form-label">Category Image</label>
                     <div class="category-img-upload" id="categoryImg" style="cursor:pointer;">
                         <div class="upload-area">
-                            <img id="addImagePreview" src="" style="display:none;max-height:60px;margin-bottom:8px;filter: brightness(0);">
+                            <img id="addImagePreview" src="" style="display:none;max-height:60px;margin-bottom:8px;">
 
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -243,7 +300,7 @@
                     <label class="form-label">Category Image</label>
                     <div class="category-img-upload" id="editUploadBox" style="cursor:pointer;">
                         <div class="upload-area">
-                            <img id="editPreview" src="" style="display:none;height: 160px;margin-bottom:8px;filter: brightness(0);">
+                            <img id="editPreview" src="" style="display:none;height: 160px;margin-bottom:8px;">
 
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -281,7 +338,13 @@
 </div>
 
 
-
+<script>
+    document.querySelectorAll('.homeToggleForm input[type="checkbox"]').forEach(chk => {
+        chk.addEventListener('change', function() {
+            this.closest('form').submit();
+        });
+    });
+</script>
 
 
 <script>

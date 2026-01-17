@@ -356,31 +356,27 @@ class ListingController extends Controller
             // ✅ gallery upload (multiple)
             if ($request->hasFile('business_gallery')) {
 
-                $manager = new ImageManager(new Driver());
+                $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
 
                 foreach ($request->file('business_gallery') as $index => $img) {
 
-                    // ✅ create image instance
-                    $image = $manager->read($img);
+                    $image = $manager->read($img->getPathname());
 
-                    // ✅ resize (max width 1200px, height auto)
+                    // ✅ resize (max width 1200px)
                     $image->scaleDown(width: 1200);
 
-                    // ✅ generate filename
                     $filename = uniqid('gallery_') . '.jpg';
-                    $path = 'business/gallery/' . $filename;
+                    $path = 'business/gallery/' . $filename;   // ✅ same folder
 
-                    // ✅ compress loop until size <= 500 KB
-                    $quality = 85; // start quality
+                    // ✅ compress until <= 500 KB
+                    $quality = 85;
                     do {
                         $encoded = $image->toJpeg($quality);
                         $quality -= 5;
-                    } while (strlen((string) $encoded) > 500 * 1024 && $quality > 30);
+                    } while (strlen((string)$encoded) > (500 * 1024) && $quality > 30);
 
-                    // ✅ save to storage
-                    \Storage::disk('public')->put($path, (string) $encoded);
+                    \Storage::disk('public')->put($path, (string)$encoded);
 
-                    // ✅ save DB
                     BusinessGallery::create([
                         'business_id' => $listing->id,
                         'image_path'  => $path,
@@ -392,6 +388,7 @@ class ListingController extends Controller
                     ]);
                 }
             }
+
 
             // ✅ video link (handle your JSON key also)
             // JSON: youtube_video, Form: video_link_url/embed_code

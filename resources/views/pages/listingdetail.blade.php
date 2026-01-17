@@ -603,6 +603,7 @@
 
 
             </div>
+
             <div class="col-lg-12 col-xl-4">
                 <div class="top-sticky">
 
@@ -769,6 +770,26 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div class="map-sidebar">
+                        {{-- Map Preview --}}
+                        @if(!empty($listing->address))
+                        @php
+                        $mapQuery = urlencode($listing->address);
+                        $mapUrl = "https://www.google.com/maps?q={$mapQuery}&output=embed";
+                        @endphp
+
+                        <iframe
+                            style="border-radius: 10px;"
+                            src="{{ $mapUrl }}"
+                            width="100%"
+                            height="220"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade">
+                        </iframe>
+                        @endif
+
                     </div>
 
 

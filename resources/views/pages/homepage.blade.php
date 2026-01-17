@@ -86,7 +86,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="section-title">
-                    <h2>Destination Category</h2>
+                    <h2>Destination Categories</h2>
                 </div>
             </div>
         </div>
@@ -131,6 +131,10 @@
                     </div>
                 </div>
                 @endforeach
+            </div>
+
+            <div class="view-all-btn">
+                <a class="listing-btn" href="/categories">View All</a>
             </div>
         </div>
     </div>

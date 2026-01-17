@@ -47,7 +47,7 @@ Route::get('/pricing-plans', function () {
 
 
 Route::get('/listing', [ListingPageController::class, 'index'])->name('listingpage');
-Route::get('/category', [CategoryPageController::class, 'index'])->name('categorypage');
+Route::get('/categories', [CategoryPageController::class, 'index'])->name('categorypage');
 
 Route::get('/login', [LoginController::class, 'showLogin'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.post');
@@ -85,6 +85,8 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
     Route::post('/category/{id}/update', [CategoryController::class, 'update'])->name('.category.update');
     Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->name('.category.destroy');
     Route::patch('/category/{id}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('.category.toggle-status');
+    Route::patch('/category/{id}/toggle-home', [CategoryController::class, 'toggleHome'])
+        ->name('.category.toggle-home');
 
 
     Route::get('/feature', [FeatureController::class, 'index'])->name('.feature.index');
@@ -186,7 +188,9 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 Route::get('listing/{slug}', [ListingController::class, 'show'])->name('listingdetail');
 
 
-
+// Route::get('/gd-check', function () {
+//     return extension_loaded('gd') ? 'GD ENABLED ✅' : 'GD NOT ENABLED ❌';
+// });
 
 Route::get('/clear-all-cache-now', function () {
     Artisan::call('optimize:clear');

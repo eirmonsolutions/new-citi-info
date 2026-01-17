@@ -20,6 +20,10 @@
     .listing-slider-single {
         height: 360px !important;
     }
+
+    .listing-slider-wrapper {
+        height: auto;
+    }
 </style>
 
 <main class="main-dashboard">

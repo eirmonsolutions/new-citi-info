@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -13,29 +14,53 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::orderBy('id', 'desc')->get();
+        $categories = Category::orderBy('id', 'desc')->paginate(10);
         return view('superadmin.category', compact('categories'));
     }
 
-    private function compressAndStoreImage($file, string $folder, int $maxKb = 500, int $maxWidth = 1200): string
+    public function toggleHome($id)
     {
+        $cat = Category::findOrFail($id);
+
+        // if turning ON, check max 6
+        if (!$cat->is_home) {
+            $count = Category::where('is_home', 1)->count();
+            if ($count >= 8) {
+                return back()->with('error', 'You can select only 6 categories for homepage.');
+            }
+        }
+
+        $cat->is_home = !$cat->is_home;
+        $cat->save();
+
+        return back()->with('success', 'Homepage categories updated!');
+    }
+
+
+    // ✅ ONLY for main category image (compress to <= 500KB)
+    private function compressAndStoreMainImage(
+        UploadedFile $file,
+        string $folder = 'categories',
+        int $maxKb = 500,
+        int $maxWidth = 1200
+    ): string {
         $manager = new ImageManager(new Driver());
-        $image = $manager->read($file);
+        $image   = $manager->read($file->getPathname());
 
         // resize down (keep aspect ratio)
         $image->scaleDown(width: $maxWidth);
 
         $filename = uniqid('cat_') . '.jpg';
-        $path = $folder . '/' . $filename;
+        $path     = $folder . '/' . $filename;
 
         // compress loop
         $quality = 85;
         do {
             $encoded = $image->toJpeg($quality);
             $quality -= 5;
-        } while (strlen((string) $encoded) > ($maxKb * 1024) && $quality > 30);
+        } while (strlen((string)$encoded) > ($maxKb * 1024) && $quality > 30);
 
-        Storage::disk('public')->put($path, (string) $encoded);
+        Storage::disk('public')->put($path, (string)$encoded);
 
         return $path;
     }
@@ -44,28 +69,23 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
-            'categoryimage' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'], // icon image
-            'image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'], // category image
+            'categoryimage' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'], // ✅ NO compress
+            'image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'], // allow bigger, we compress anyway
             'is_active'     => ['nullable', 'in:0,1'],
         ]);
 
         $category = new Category();
-        $category->name = $data['name'];
+        $category->name      = $data['name'];
         $category->is_active = (bool)($data['is_active'] ?? 0);
 
-        // ✅ icon image
+        // ✅ ICON IMAGE (NO COMPRESS) -> normal store
         if ($request->hasFile('categoryimage')) {
-            $category->categoryimage = $this->compressAndStoreImage(
-                $request->file('categoryimage'),
-                'category-icon',
-                200,
-                400
-            );
+            $category->categoryimage = $request->file('categoryimage')->store('category-icon', 'public');
         }
 
-        // ✅ main category image (500KB, width 1200)
+        // ✅ MAIN CATEGORY IMAGE (COMPRESS to <= 500KB)
         if ($request->hasFile('image')) {
-            $category->image = $this->compressAndStoreImage(
+            $category->image = $this->compressAndStoreMainImage(
                 $request->file('image'),
                 'categories',
                 500,
@@ -84,35 +104,29 @@ class CategoryController extends Controller
 
         $request->validate([
             'name'          => ['required', 'string', 'max:255'],
-            'categoryimage' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-            'image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'categoryimage' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'], // ✅ NO compress
+            'image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'], // allow bigger, we compress anyway
             'is_active'     => ['nullable', 'in:0,1'],
         ]);
 
-        $category->name = $request->name;
+        $category->name      = $request->name;
         $category->is_active = $request->is_active ?? 0;
 
-        // ✅ icon image update (delete old + save new compressed)
+        // ✅ ICON IMAGE update (NO COMPRESS)
         if ($request->hasFile('categoryimage')) {
             if ($category->categoryimage && Storage::disk('public')->exists($category->categoryimage)) {
                 Storage::disk('public')->delete($category->categoryimage);
             }
-
-            $category->categoryimage = $this->compressAndStoreImage(
-                $request->file('categoryimage'),
-                'category-icon',
-                200,
-                400
-            );
+            $category->categoryimage = $request->file('categoryimage')->store('category-icon', 'public');
         }
 
-        // ✅ main image update (delete old + save new compressed)
+        // ✅ MAIN IMAGE update (COMPRESS)
         if ($request->hasFile('image')) {
             if ($category->image && Storage::disk('public')->exists($category->image)) {
                 Storage::disk('public')->delete($category->image);
             }
 
-            $category->image = $this->compressAndStoreImage(
+            $category->image = $this->compressAndStoreMainImage(
                 $request->file('image'),
                 'categories',
                 500,

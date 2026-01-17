@@ -356,7 +356,8 @@ h3.title {
 .category-item-grid {
     display: flex;
     flex-wrap: wrap;
-    gap: 50px;
+    gap: 10px;
+    justify-content: space-between;
 }
 
 /* explore cities */
@@ -702,7 +703,7 @@ aside.sidebar-main {
     scrollbar-width: thin;
     scrollbar-color: #aab7cf transparent;
     position: relative;
-    height: 100vh;
+    height: auto;
 }
 
 .sidebar-heading {
@@ -745,6 +746,20 @@ a.sidebar-list {
 a.sidebar-list:hover {
     color: #fff;
     background: var(--primary-color);
+}
+
+a.sidebar-list.active {
+    color: #fff;
+    background: var(--primary-color);
+}
+
+.view-all-btn {
+    margin-top: 30px;
+}
+
+.view-all-btn a.listing-btn {
+    width: fit-content;
+    margin: 0 auto;
 }
 
 .logout-btn {
@@ -4316,11 +4331,21 @@ a.tp-btn-blue {
     margin-bottom: 20px;
 }
 
+.map-sidebar {
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
+    position: relative;
+    margin-bottom: 20px;
+}
 
+.pagination-wrap {
+    float: right;
+}
 
-
-
-
+ul.pagination li.page-item.active a.page-link {
+    color: #fff;
+}
 
 
 

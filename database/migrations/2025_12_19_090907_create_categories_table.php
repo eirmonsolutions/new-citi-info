@@ -13,11 +13,16 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
+
             $table->string('name');
-            $table->string('icon')->nullable();          // like: flaticon-chef
-            $table->string('image')->nullable();         // storage path
-            $table->string('categoryimage')->nullable();
-            $table->boolean('is_active')->default(1); // status
+
+            $table->string('icon')->nullable();          // flaticon / font icon
+            $table->string('image')->nullable();         // main category image
+            $table->string('categoryimage')->nullable(); // icon image (upload)
+
+            $table->boolean('is_active')->default(1);    // active / inactive
+            $table->boolean('is_home')->default(0);      // ✅ homepage show (max 6)
+
             $table->timestamps();
         });
     }
