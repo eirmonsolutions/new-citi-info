@@ -790,7 +790,7 @@ a.sidebar-list.active {
     /* display: flex; */
     /* flex-direction: column; */
     /* flex: 1 1 0%; */
-    /* height: 100vh; */
+    height: 100vh;
     width: 100%;
 }
 
