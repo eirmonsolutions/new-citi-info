@@ -28,6 +28,11 @@
     --radius-md: 8px;
 }
 
+body {
+    height: 100vh;
+    background-color: #f6f9ff;
+}
+
 a {
     text-decoration: none;
 }
@@ -688,8 +693,6 @@ input#rememberMe {
 }
 
 .dashboard-wrapper {
-    background-color: #f6f9ff;
-    /* height: 100%; */
     display: flex;
     position: relative;
 }
@@ -790,7 +793,7 @@ a.sidebar-list.active {
     /* display: flex; */
     /* flex-direction: column; */
     /* flex: 1 1 0%; */
-    height: 100vh;
+    /* height: 100vh; */
     width: 100%;
 }
 
