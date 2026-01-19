@@ -25,11 +25,13 @@ class HomeController extends Controller
             ->get();
 
         // ✅ FRONTEND LISTINGS (ONLY allowed + published)
-        $listings = BusinessListing::where('status', 'published')
+        $listings = BusinessListing::with(['gallery', 'hours']) // ✅ add this
+            ->where('status', 'published')
             ->where('is_allowed', 1)
             ->latest()
             ->take(6)
             ->get();
+
 
         $cityNames = ['Melbourne', 'Sydney', 'Perth', 'Brisbane'];
 

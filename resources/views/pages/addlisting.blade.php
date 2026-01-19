@@ -444,15 +444,23 @@
                                             </div>
                                         </div>
 
-                                        <span class="lunch-label">Lunch</span>
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
 
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[monday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[monday][lunch_end]" value="14:00">
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[monday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[monday][lunch_end]" value="14:00">
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -481,17 +489,26 @@
                                             </div>
                                         </div>
 
-                                        <span class="lunch-label">Lunch</span>
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
 
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[tuesday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[tuesday][lunch_end]" value="14:00">
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[tuesday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[tuesday][lunch_end]" value="14:00">
+                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
 
                                     <div class="closed-text d-none">Closed</div>
@@ -518,17 +535,26 @@
                                             </div>
                                         </div>
 
-                                        <span class="lunch-label">Lunch</span>
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
 
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[wednesday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[wednesday][lunch_end]" value="14:00">
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[wednesday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[wednesday][lunch_end]" value="14:00">
+                                                </div>
                                             </div>
                                         </div>
+
                                     </div>
 
                                     <div class="closed-text d-none">Closed</div>
@@ -555,17 +581,27 @@
                                             </div>
                                         </div>
 
-                                        <span class="lunch-label">Lunch</span>
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
 
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[thursday][lunch_start]" value="13:30">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[thursday][lunch_end]" value="14:00">
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[thursday][lunch_start]" value="13:30">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[thursday][lunch_end]" value="14:00">
+                                                </div>
                                             </div>
                                         </div>
+
+
                                     </div>
 
                                     <div class="closed-text d-none">Closed</div>
@@ -592,17 +628,27 @@
                                             </div>
                                         </div>
 
-                                        <span class="lunch-label">Lunch</span>
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
 
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[friday][lunch_start]" value="13:30">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[friday][lunch_end]" value="14:00">
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[friday][lunch_start]" value="13:30">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[friday][lunch_end]" value="14:00">
+                                                </div>
                                             </div>
                                         </div>
+
+
                                     </div>
 
                                     <div class="closed-text d-none">Closed</div>
@@ -629,17 +675,27 @@
                                             </div>
                                         </div>
 
-                                        <span class="lunch-label">Lunch</span>
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
 
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[saturday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[saturday][lunch_end]" value="14:00">
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[saturday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[saturday][lunch_end]" value="14:00">
+                                                </div>
                                             </div>
                                         </div>
+
+
                                     </div>
 
                                     <div class="closed-text">Closed</div>
@@ -666,17 +722,27 @@
                                             </div>
                                         </div>
 
-                                        <span class="lunch-label">Lunch</span>
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
 
-                                        <div class="day-flex">
-                                            <div class="time-box">
-                                                <input type="time" name="hours[sunday][lunch_start]" value="13:00">
-                                            </div>
-                                            <div class="to-text">to</div>
-                                            <div class="time-box">
-                                                <input type="time" name="hours[sunday][lunch_end]" value="14:00">
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[sunday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[sunday][lunch_end]" value="14:00">
+                                                </div>
                                             </div>
                                         </div>
+
+
                                     </div>
 
                                     <div class="closed-text">Closed</div>
@@ -1710,26 +1776,66 @@
 
 <script>
     document.querySelectorAll(".day-row").forEach((row) => {
-        const toggle = row.querySelector(".day-toggle");
+        const dayToggle = row.querySelector(".day-toggle");
         const timeWrap = row.querySelector(".time-wrap");
         const closedText = row.querySelector(".closed-text");
-        const inputs = row.querySelectorAll('input[type="time"]');
 
-        function applyState() {
-            const open = toggle.checked;
+        // Lunch toggle + wrapper
+        const lunchToggle = row.querySelector(".lunch-toggle");
+        const lunchWrap = row.querySelector(".lunch-wrap");
+
+        // Inputs
+        const allTimeInputs = row.querySelectorAll('input[type="time"]');
+        const lunchInputs = row.querySelectorAll('input[name*="[lunch_start]"], input[name*="[lunch_end]"]');
+
+        function applyLunchState(dayOpen) {
+            if (!lunchToggle || !lunchWrap) return;
+
+            const lunchOn = lunchToggle.checked;
+
+            // show lunch only if day open AND lunch toggle on
+            const showLunch = dayOpen && lunchOn;
+            lunchWrap.style.display = showLunch ? "flex" : "none";
+
+            // lunch inputs enable only if showLunch
+            lunchInputs.forEach(i => i.readOnly = !showLunch);
+
+            // if day closed -> also force hide lunch (optional)
+            // (toggle state keep rahega, but UI hide rahegi)
+        }
+
+        function applyDayState() {
+            const open = dayToggle ? dayToggle.checked : true;
 
             row.classList.toggle("is-closed", !open);
 
             if (timeWrap) timeWrap.style.display = open ? "flex" : "none";
             if (closedText) closedText.classList.toggle("d-none", open);
 
-            inputs.forEach(i => i.disabled = !open);
+            // all inputs disable when day closed
+            allTimeInputs.forEach(i => i.disabled = !open);
+
+            // lunch state (will re-disable lunch if needed)
+            applyLunchState(open);
         }
 
-        toggle.addEventListener("change", applyState);
-        applyState();
+        if (dayToggle) dayToggle.addEventListener("change", applyDayState);
+
+        if (lunchToggle) {
+            // default OFF (safe even if HTML me checked na ho)
+            lunchToggle.checked = false;
+
+            lunchToggle.addEventListener("change", () => {
+                const dayOpen = dayToggle ? dayToggle.checked : true;
+                applyLunchState(dayOpen);
+            });
+        }
+
+        // init
+        applyDayState();
     });
 </script>
+
 
 
 <!-- services step -->
@@ -1854,19 +1960,19 @@
             selectedChips.innerHTML = '';
 
             selected.forEach((v, id) => {
-                const chip = document.createElement('div');
-                chip.className = 'sel-chip';
+                const chip = document.createElement('span');
+                chip.className = 'chip';
                 chip.setAttribute('data-id', id);
 
                 chip.innerHTML = `
-        <span>${v.name}</span>
-        <button type="button" aria-label="remove">×</button>
-      `;
+            ${v.name}
+            <button type="button" class="chip-remove" aria-label="Remove">×</button>
+        `;
+
                 selectedChips.appendChild(chip);
             });
 
-            syncHidden();
-            renderReviewFeatures();
+            syncHidden(); // count + hidden inputs update
         }
 
         // Click on tiles (select / deselect)
@@ -1902,26 +2008,21 @@
 
         // Remove from chips
         selectedChips.addEventListener('click', function(e) {
-            const btn = e.target.closest('button');
+            const btn = e.target.closest('.chip-remove');
             if (!btn) return;
 
-            const chip = btn.closest('.sel-chip');
+            const chip = btn.closest('.chip');
             const id = chip?.getAttribute('data-id');
             if (!id) return;
 
-            selected.delete(id);
-            chip.remove();
+            // remove from map
+            selected.delete(String(id));
 
-            // unselect tile too
-            const tile = featuresGrid.querySelector(`.feature-tile[data-id="${id}"]`);
-            consolelog(tile);
+            // ✅ unselect upper tile
+            const tile = featuresGrid.querySelector(`.feature-tile[data-id="${CSS.escape(String(id))}"]`);
             if (tile) setTileSelected(tile, false);
 
-            syncHidden();
-            renderReviewFeatures();
-            selectedCount.textContent = String(selected.size);
-
-            if (selected.size === 0) renderChips();
+            renderChips();
         });
 
         // ✅ If edit page (already saved CSV in hidden) -> auto select
@@ -2121,6 +2222,8 @@
         const address = document.querySelector('[name="full_address"]')?.value || '—';
         const description = document.querySelector('[name="business_description"]')?.value || '—';
 
+
+
         setText('rv_business_name', businessName);
         setText('rv_category', categoryId ? categoryLabel : '—');
         setText('rv_country', countryId ? countryLabel : '—');
@@ -2174,18 +2277,6 @@
                 ).join('');
             }
         }
-
-        // Step 4: Features chips (hidden input: features)
-        // const rvFeat = document.getElementById('rv_features_chips');
-        // const featHidden = document.getElementById('featuresHidden')?.value || '';
-        // if (rvFeat) {
-        //     if (!featHidden.trim()) {
-        //         rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
-        //     } else {
-        //         const selectedChips = document.getElementById('selectedChips');
-        //         rvFeat.innerHTML = selectedChips ? selectedChips.innerHTML : `<span class="muted-sm">Selected.</span>`;
-        //     }
-        // }
 
         // Step 5: Gallery thumbs
         const rvThumbs = document.getElementById('rv_gallery_thumbs');
@@ -2244,12 +2335,13 @@
 
             const lunchStart = document.querySelector(`input[name="hours[${dayName}][lunch_start]"]`)?.value || '';
             const lunchEnd = document.querySelector(`input[name="hours[${dayName}][lunch_end]"]`)?.value || '';
+            const lunchOn = dayRow.querySelector('.lunch-toggle')?.checked;
 
             let txt = '';
             if (start && end) txt += `${start} - ${end}`;
-            if (lunchStart && lunchEnd) txt += `  |  Lunch: ${lunchStart} - ${lunchEnd}`;
-
+            if (lunchOn && lunchStart && lunchEnd) txt += `  |  Lunch: ${lunchStart} - ${lunchEnd}`;
             timeCell.textContent = txt || '—';
+
         });
     }
 </script>

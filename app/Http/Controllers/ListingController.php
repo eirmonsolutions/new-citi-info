@@ -218,15 +218,15 @@ class ListingController extends Controller
 
 
             // ✅ business hours save
-            $hours = $request->input('hours', []); // monday..sunday
+            $hours = $request->input('hours', []);
 
             $daysOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
             foreach ($daysOrder as $day) {
-                $d = $hours[$day] ?? null;
+                $d = $hours[$day] ?? [];
 
-                // agar day ka data hi nahi aaya => treat as closed
-                $isClosed = empty($d) ? 1 : 0;
+                // day closed agar start/end hi nahi
+                $isClosed = empty($d['start']) || empty($d['end']) ? 1 : 0;
 
                 BusinessHour::create([
                     'business_id' => $listing->id,
@@ -237,11 +237,12 @@ class ListingController extends Controller
                     'open_time'   => $d['start'] ?? null,
                     'close_time'  => $d['end'] ?? null,
 
-                    // break/lunch
+                    // lunch/break (agar user ne dala ho)
                     'break_start' => $d['lunch_start'] ?? null,
                     'break_end'   => $d['lunch_end'] ?? null,
                 ]);
             }
+
 
 
 
