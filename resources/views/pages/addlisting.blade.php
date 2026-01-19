@@ -1310,7 +1310,7 @@
                             <div class="listing-head">Listing Options</div>
 
                             <label class="opt-card active" id="optFreeWrap">
-                                <input type="radio" name="listing_option" value="free" checked>
+                                <input type="radio" name="listing_option" value="free" >
                                 <div class="opt-body">
                                     <div class="opt-title">Free Listing</div>
                                     <div class="opt-sub">Basic listing with standard features</div>
@@ -1318,7 +1318,7 @@
                             </label>
 
                             <label class="opt-card" id="optPremiumWrap">
-                                <input type="radio" name="listing_option" value="premium">
+                                <input type="radio" name="listing_option" value="premium" checked>
                                 <div class="opt-body">
                                     <div class="opt-title">Premium Listing - $29/month</div>
                                     <div class="opt-sub">Enhanced visibility, priority placement, and additional features</div>
@@ -1338,9 +1338,14 @@
 
                     <button type="button" class="btn next-btn" id="nextBtn">Next</button>
 
-                    <button type="submit" class="btn submit-btn" id="submitBtn" style="display:none;">
+                    <button type="submit"
+                        class="btn submit-btn"
+                        id="submitBtn"
+                        disabled
+                        style="display:none; opacity:.6; cursor:not-allowed;">
                         Submit Listing
                     </button>
+
                 </div>
 
             </form>
@@ -2372,6 +2377,47 @@
         if (next === 6) fillReviewFromForm();
     });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const terms = document.getElementById('agree_terms');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (!terms || !submitBtn) return;
+
+        // helper
+        function toggleSubmit() {
+            const ok = terms.checked;
+
+            // aapka button hidden hai -> check hoga to show
+            submitBtn.style.display = ok ? 'inline-block' : 'none';
+            submitBtn.disabled = !ok;
+
+            // optional styling
+            submitBtn.style.opacity = ok ? '1' : '.6';
+            submitBtn.style.cursor = ok ? 'pointer' : 'not-allowed';
+        }
+
+        // initial state
+        toggleSubmit();
+
+        // on change
+        terms.addEventListener('change', toggleSubmit);
+
+        // extra safety: form submit pe bhi check
+        const form = submitBtn.closest('form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                if (!terms.checked) {
+                    e.preventDefault();
+                    alert('Please accept Terms of Service & Privacy Policy to submit.');
+                }
+            });
+        }
+    });
+</script>
+
+
 
 
 @endsection

@@ -122,6 +122,7 @@ class ListingController extends Controller
         $request->validate([
             'business_name' => 'required|string|max:255',
             'category_id'   => 'required',
+            'agree_terms'   => 'accepted',
             'business_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'business_gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
             'email' => 'nullable|email',

@@ -4358,7 +4358,19 @@ ul.pagination li.page-item.active a.page-link {
     color: #fff;
 }
 
-
+button#submitBtn {
+    padding: 10px 20px;
+    background-color: var(--primary-color);
+    color: var(--bg-color);
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    line-height: 16px;
+    transition: 0.2s ease;
+}
 
 
 
