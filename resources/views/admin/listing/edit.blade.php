@@ -8,6 +8,7 @@
 
 
 
+
 <section class="main-top-progress-bar sticky-progess-bar">
     <div class="top-progress-bar">
         <div class="container">
@@ -455,42 +456,68 @@
                                 @foreach($daysLabel as $dayKey => $dayTitle)
                                 @php
                                 $h = $hoursMap[$dayKey] ?? null;
-                                $isClosed = $h ? (int)$h->is_closed : 1; // if not exist => closed
+
+                                // if no record => closed by default (your existing logic)
+                                $isClosed = $h ? (int) $h->is_closed : 1;
+
+                                // lunch enabled if break times exist (or old values exist)
+                                $oldLunchStart = old("hours.$dayKey.lunch_start");
+                                $oldLunchEnd = old("hours.$dayKey.lunch_end");
+
+                                $lunchStartVal = old("hours.$dayKey.lunch_start", $h->break_start ?? '');
+                                $lunchEndVal = old("hours.$dayKey.lunch_end", $h->break_end ?? '');
+
+                                $hasLunch = (!empty($lunchStartVal) || !empty($lunchEndVal));
                                 @endphp
 
                                 <div class="day-row {{ $isClosed ? 'is-closed' : '' }}" data-day="{{ $dayKey }}">
-                                    <label class="switch">
-                                        <input type="checkbox" class="day-toggle" {{ $isClosed ? '' : 'checked' }}>
-                                        <span class="slider"></span>
-                                    </label>
-
-                                    <div class="day-name">{{ $dayTitle }}</div>
+                                    <div class="day-flex">
+                                        <label class="switch">
+                                            {{-- Open = checked (same as create). Closed = unchecked --}}
+                                            <input type="checkbox" class="day-toggle" {{ $isClosed ? '' : 'checked' }}>
+                                            <span class="slider"></span>
+                                        </label>
+                                        <div class="day-name">{{ $dayTitle }}</div>
+                                    </div>
 
                                     <div class="time-wrap">
-                                        <div class="time-box">
-                                            <input type="time" name="hours[{{ $dayKey }}][start]"
-                                                value="{{ old("hours.$dayKey.start", $h->open_time ?? '') }}">
+                                        <div class="day-flex">
+                                            <div class="time-box">
+                                                <input type="time"
+                                                    name="hours[{{ $dayKey }}][start]"
+                                                    value="{{ old("hours.$dayKey.start", $h->open_time ?? '') }}">
+                                            </div>
+                                            <div class="to-text">to</div>
+                                            <div class="time-box">
+                                                <input type="time"
+                                                    name="hours[{{ $dayKey }}][end]"
+                                                    value="{{ old("hours.$dayKey.end", $h->close_time ?? '') }}">
+                                            </div>
                                         </div>
 
-                                        <div class="to-text">to</div>
-
-                                        <div class="time-box">
-                                            <input type="time" name="hours[{{ $dayKey }}][end]"
-                                                value="{{ old("hours.$dayKey.end", $h->close_time ?? '') }}">
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                {{-- Lunch checkbox checked if lunch values exist --}}
+                                                <input type="checkbox" class="lunch-toggle" {{ $hasLunch ? 'checked' : '' }}>
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
                                         </div>
 
-                                        <span class="lunch-label">Lunch</span>
-
-                                        <div class="time-box">
-                                            <input type="time" name="hours[{{ $dayKey }}][lunch_start]"
-                                                value="{{ old("hours.$dayKey.lunch_start", $h->break_start ?? '') }}">
-                                        </div>
-
-                                        <div class="to-text">to</div>
-
-                                        <div class="time-box">
-                                            <input type="time" name="hours[{{ $dayKey }}][lunch_end]"
-                                                value="{{ old("hours.$dayKey.lunch_end", $h->break_end ?? '') }}">
+                                        <div class="lunch-wrap" style="{{ $hasLunch ? '' : 'display:none;' }}">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time"
+                                                        name="hours[{{ $dayKey }}][lunch_start]"
+                                                        value="{{ $lunchStartVal }}">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time"
+                                                        name="hours[{{ $dayKey }}][lunch_end]"
+                                                        value="{{ $lunchEndVal }}">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -502,6 +529,7 @@
                         </div>
                     </div>
                 </div>
+
 
 
                 {{-- ===================== STEP 4 (SERVICES + FEATURES) ===================== --}}
@@ -590,17 +618,22 @@
                                         class="feature-tile"
                                         data-id="{{ $f->id }}"
                                         data-name="{{ $f->name }}"
-                                        data-icon="{{ $f->icon }}">
+                                        data-icon-image="{{ $f->icon_image }}">
                                         <span class="ft-icon">
-                                            @if(!empty($f->icon))
-                                            <i class="{{ $f->icon }}"></i>
+                                            @if(!empty($f->icon_image))
+                                            <img
+                                                src="{{ asset('storage/'.$f->icon_image) }}"
+                                                alt="{{ $f->name }}"
+                                                style="height:30px;width:40px;object-fit:contain;">
                                             @else
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <circle cx="12" cy="12" r="10"></circle>
                                                 <path d="M12 8v8M8 12h8"></path>
                                             </svg>
                                             @endif
                                         </span>
+
                                         <span class="ft-text">{{ $f->name }}</span>
                                     </button>
                                     @endforeach
@@ -616,12 +649,18 @@
 
                                 <div id="featuresHiddenWrap"></div>
 
-                                {{-- ✅ Prefill CSV for edit --}}
-                                <input type="hidden" id="featureIDHidden" name="feature_id" value="{{ old('feature_id', $featureIdsCsv) }}">
-                                <input type="hidden" id="featuresHidden" name="features" value="{{ old('features', $featureNamesCsv) }}">
-                                <input type="hidden" id="featureIconsHidden" name="feature_icons" value="{{ old('feature_icons', $featureIconsCsv) }}">
+                                {{-- ✅ Prefill for edit (CSV) --}}
+                                <input type="hidden" id="featureIDHidden" name="feature_id"
+                                    value="{{ old('feature_id', $featureIdsCsv ?? '') }}">
+
+                                <input type="hidden" id="featuresHidden" name="features"
+                                    value="{{ old('features', $featureNamesCsv ?? '') }}">
+
+                                <input type="hidden" id="featureImagesHidden" name="feature_images"
+                                    value="{{ old('feature_images', $featureImagesCsv ?? '') }}">
                             </div>
                         </div>
+
 
                     </div>
                 </div>
@@ -632,7 +671,7 @@
                     <h2 class="step-title">Media</h2>
 
                     <div class="row g-4">
-                        {{-- Gallery Upload --}}
+                        <!-- Business Gallery -->
                         <div class="col-lg-6">
                             <div class="media-card">
                                 <div class="media-card-head">
@@ -666,13 +705,18 @@
                                         <div class="upload-btn">Choose Images</div>
                                     </div>
 
-                                    <input type="file" id="business_gallery" name="business_gallery[]" multiple accept="image/*">
-
+                                    <input
+                                        id="business_gallery"
+                                        name="business_gallery[]"
+                                        type="file"
+                                        accept="image/*"
+                                        multiple
+                                        hidden />
                                 </label>
                             </div>
                         </div>
 
-                        {{-- Youtube --}}
+                        <!-- YouTube Video -->
                         <div class="col-lg-6">
                             <div class="media-card">
                                 <div class="media-card-head">
@@ -690,17 +734,19 @@
 
                                 <div class="form-group mb-3">
                                     <label class="form-label">Video Link / Embed Code</label>
-                                    <input type="text"
+                                    <input
+                                        type="text"
+                                        class="form-control media-input"
                                         name="youtube_video"
                                         id="youtube_video"
-                                        value="{{ old('youtube_video', $video->video_link_url ?? '') }}">
-
+                                        placeholder="https://youtu.be/xxxx or iframe embed code"
+                                        value="{{ old('youtube_video', $video->video_link_url ?? '') }}" />
                                 </div>
 
                                 <div class="video-preview-wrap">
                                     <div class="video-preview-title">VIDEO PREVIEW</div>
 
-                                    <div class="video-preview" id="videoPreviewEmpty">
+                                    <div class="video-preview {{ old('youtube_video', $video->video_link_url ?? '') ? 'd-none' : '' }}" id="videoPreviewEmpty">
                                         <div class="video-preview-icon">
                                             <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                                 <path d="M8 5v14l11-7L8 5z"></path>
@@ -709,12 +755,12 @@
                                         <div class="video-preview-text">Video preview will appear here</div>
                                     </div>
 
-                                    <div class="ratio ratio-16x9 d-none" id="videoPreviewFrame"></div>
+                                    <div class="ratio ratio-16x9 {{ old('youtube_video', $video->video_link_url ?? '') ? '' : 'd-none' }}" id="videoPreviewFrame"></div>
                                 </div>
                             </div>
                         </div>
 
-                        {{-- Gallery Preview --}}
+                        <!-- Gallery Preview -->
                         <div class="col-12">
                             <div class="media-card">
                                 <div class="gallery-head">
@@ -727,39 +773,346 @@
                                 </div>
 
                                 <div class="gallery-strip thumb-row" id="galleryPreview">
-                                    {{-- ✅ Existing gallery thumbnails --}}
+                                    {{-- Existing thumbnails (edit) --}}
                                     @foreach($listing->gallery as $img)
-                                    <div class="gallery-item" data-id="{{ $img->id }}">
+                                    <div class="gallery-item thumb" data-id="{{ $img->id }}">
                                         <img src="{{ asset('storage/'.$img->image_path) }}" class="gallery-thumb" alt="">
-                                        <button type="button" class="gallery-remove-btn">×</button>
+                                        <button type="button" class="gallery-remove-btn" title="Remove">×</button>
                                     </div>
                                     @endforeach
                                 </div>
-
                             </div>
                         </div>
                     </div>
                 </div>
 
 
+
                 {{-- ===================== STEP 6 ===================== --}}
+                @php
+                $oldOpt = old('listing_option', $listing->listing_option ?? 'premium'); // default premium
+                @endphp
+
                 <div class="form-step" data-step="6">
                     <h2>Review</h2>
 
-                    {{-- Your review UI kept as-is (no change) --}}
-                    {{-- ... your same review HTML ... --}}
-                    {{-- (Keeping it as you pasted) --}}
+                    <div class="review-wrap">
 
-                    <div class="terms-box mt-3">
-                        <label class="d-flex align-items-start gap-2 m-0">
-                            <input type="checkbox" name="agree_terms" id="agree_terms" class="mt-1">
-                            <span class="terms-text">
-                                I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>.
-                                I confirm that all information provided is accurate and up to date.
-                            </span>
-                        </label>
+                        <!-- 1) Basic Information -->
+                        <div class="review-card theme-basic">
+                            <div class="review-head" data-bs-toggle="collapse" data-bs-target="#revBasic" aria-expanded="true">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0Z"></path>
+                                            <circle cx="12" cy="10" r="3"></circle>
+                                        </svg>
+                                    </span>
+                                    <span>Basic Information</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revBasic" class="collapse show">
+                                <div class="review-body">
+                                    <div class="review-grid">
+                                        <div class="review-item">
+                                            <div class="lbl">Business Name</div>
+                                            <div class="val" id="rv_business_name">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">Business Logo</div>
+                                            <div class="val" id="rv_business_logo">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">Category</div>
+                                            <div class="val" id="rv_category">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">Country</div>
+                                            <div class="val" id="rv_country">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">State</div>
+                                            <div class="val" id="rv_state">—</div>
+                                        </div>
+
+                                        <div class="review-item">
+                                            <div class="lbl">City</div>
+                                            <div class="val" id="rv_city">—</div>
+                                        </div>
+
+                                        <div class="review-item full">
+                                            <div class="lbl">Address</div>
+                                            <div class="val" id="rv_address">—</div>
+                                        </div>
+
+                                        <div class="review-item full">
+                                            <div class="lbl">Description</div>
+                                            <div class="val" id="rv_description">—</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2) Contact Information -->
+                        <div class="review-card theme-contact">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revContact" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.59 13.41 11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82Z"></path>
+                                            <circle cx="7.5" cy="7.5" r="1.5"></circle>
+                                        </svg>
+                                    </span>
+                                    <span>Contact Information</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revContact" class="collapse">
+                                <div class="review-body">
+                                    <div class="review-grid">
+                                        <div class="review-item">
+                                            <div class="lbl">Your Name</div>
+                                            <div class="val" id="rv_contact_name">—</div>
+                                        </div>
+                                        <div class="review-item">
+                                            <div class="lbl">Phone</div>
+                                            <div class="val" id="rv_phone">—</div>
+                                        </div>
+                                        <div class="review-item">
+                                            <div class="lbl">Email</div>
+                                            <div class="val" id="rv_email">—</div>
+                                        </div>
+                                        <div class="review-item">
+                                            <div class="lbl">Website</div>
+                                            <div class="val" id="rv_website">—</div>
+                                        </div>
+                                        <div class="review-item">
+                                            <div class="lbl">Alternate Phone</div>
+                                            <div class="val" id="rv_alt_phone">—</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3) Business Hours -->
+                        <div class="review-card theme-hours">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revHours" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="M12 6v6l4 2"></path>
+                                        </svg>
+                                    </span>
+                                    <span>Business Hours</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revHours" class="collapse">
+                                <div class="review-body">
+                                    <div class="hours-table" id="rv_hours_table">
+                                        <div class="hours-row">
+                                            <div class="d">Monday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Tuesday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Wednesday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Thursday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Friday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Saturday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                        <div class="hours-row">
+                                            <div class="d">Sunday</div>
+                                            <div class="t">—</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4) Services & Pricing -->
+                        <div class="review-card theme-services">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revServices" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"></path>
+                                        </svg>
+                                    </span>
+                                    <span>Services &amp; Pricing</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revServices" class="collapse">
+                                <div class="review-body">
+                                    <div id="rv_services_list" class="muted-sm">No services added.</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 5) Features -->
+                        <div class="review-card theme-features">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revFeatures" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20.59 13.41 11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82Z"></path>
+                                            <circle cx="7.5" cy="7.5" r="1.5"></circle>
+                                        </svg>
+                                    </span>
+                                    <span>Features</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revFeatures" class="collapse">
+                                <div class="review-body">
+                                    <div class="chips" id="rv_features_chips">
+                                        <span class="muted-sm">No features selected.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 6) Media -->
+                        <div class="review-card theme-media">
+                            <div class="review-head collapsed" data-bs-toggle="collapse" data-bs-target="#revMedia" aria-expanded="false">
+                                <div class="review-title">
+                                    <span class="review-ico">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                            <path d="m21 15-5-5L5 21"></path>
+                                        </svg>
+                                    </span>
+                                    <span>Media</span>
+                                </div>
+
+                                <div class="review-actions">
+                                    <span class="chev">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="m6 9 6 6 6-6" />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div id="revMedia" class="collapse">
+                                <div class="review-body">
+                                    <div class="media-block">
+                                        <div class="media-label">YouTube Video</div>
+                                        <div class="media-video" id="rv_youtube_box">
+                                            <div class="video-empty">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="m22 8-6 4 6 4V8Z"></path>
+                                                    <rect x="2" y="6" width="14" height="12" rx="2"></rect>
+                                                </svg>
+                                            </div>
+                                        </div>
+
+                                        <div class="media-label mt-3">Gallery Images (<span id="rv_gallery_count">0</span> images)</div>
+                                        <div class="media-thumbs" id="rv_gallery_thumbs"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Terms box -->
+                        <div class="terms-box mt-3">
+                            <label class="d-flex align-items-start gap-2 m-0">
+                                <input type="checkbox" name="agree_terms" id="agree_terms" class="mt-1"
+                                    {{ old('agree_terms') ? 'checked' : '' }}>
+                                <span class="terms-text">
+                                    I agree to the <a href="#" target="_blank">Terms of Service</a> and <a href="#" target="_blank">Privacy Policy</a>.
+                                    I confirm that all information provided is accurate and up to date.
+                                </span>
+                            </label>
+                        </div>
+
+                        <!-- Listing Options -->
+                        <div class="listing-card mt-3">
+                            <div class="listing-head">Listing Options</div>
+
+                            <label class="opt-card {{ $oldOpt === 'free' ? 'active' : '' }}" id="optFreeWrap">
+                                <input type="radio" name="listing_option" value="free" {{ $oldOpt === 'free' ? 'checked' : '' }}>
+                                <div class="opt-body">
+                                    <div class="opt-title">Free Listing</div>
+                                    <div class="opt-sub">Basic listing with standard features</div>
+                                </div>
+                            </label>
+
+                            <label class="opt-card {{ $oldOpt === 'premium' ? 'active' : '' }}" id="optPremiumWrap">
+                                <input type="radio" name="listing_option" value="premium" {{ $oldOpt === 'premium' ? 'checked' : '' }}>
+                                <div class="opt-body">
+                                    <div class="opt-title">Premium Listing - $29/month</div>
+                                    <div class="opt-sub">Enhanced visibility, priority placement, and additional features</div>
+                                </div>
+                            </label>
+                        </div>
+
                     </div>
                 </div>
+
 
 
                 {{-- FOOTER --}}
@@ -773,7 +1126,7 @@
                     <button type="button" class="btn next-btn" id="nextBtn">Next</button>
 
                     <button type="submit" class="btn submit-btn" id="submitBtn" style="display:none;">
-                        Submit Listing
+                        Update Listing
                     </button>
                 </div>
 
@@ -784,6 +1137,24 @@
 
 </section>
 
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const freeWrap = document.getElementById('optFreeWrap');
+        const premWrap = document.getElementById('optPremiumWrap');
+
+        function syncOpt() {
+            const val = document.querySelector('input[name="listing_option"]:checked')?.value;
+            freeWrap?.classList.toggle('active', val === 'free');
+            premWrap?.classList.toggle('active', val === 'premium');
+        }
+
+        document.querySelectorAll('input[name="listing_option"]').forEach(r => {
+            r.addEventListener('change', syncOpt);
+        });
+
+        syncOpt();
+    });
+</script>
 
 
 <!-- dropdown js category, , country, state, city js -->
@@ -1210,29 +1581,69 @@
 
 <script>
     document.querySelectorAll(".day-row").forEach((row) => {
-        const toggle = row.querySelector(".day-toggle");
+        const dayToggle = row.querySelector(".day-toggle");
         const timeWrap = row.querySelector(".time-wrap");
         const closedText = row.querySelector(".closed-text");
-        const inputs = row.querySelectorAll('input[type="time"]');
 
-        function applyState() {
-            const open = toggle.checked;
+        // Lunch toggle + wrapper
+        const lunchToggle = row.querySelector(".lunch-toggle");
+        const lunchWrap = row.querySelector(".lunch-wrap");
+
+        // Inputs
+        const allTimeInputs = row.querySelectorAll('input[type="time"]');
+        const lunchInputs = row.querySelectorAll('input[name*="[lunch_start]"], input[name*="[lunch_end]"]');
+
+        function applyLunchState(dayOpen) {
+            if (!lunchToggle || !lunchWrap) return;
+
+            const lunchOn = lunchToggle.checked;
+
+            // show lunch only if day open AND lunch toggle on
+            const showLunch = dayOpen && lunchOn;
+            lunchWrap.style.display = showLunch ? "flex" : "none";
+
+            // lunch inputs enable only if showLunch
+            lunchInputs.forEach(i => i.readOnly = !showLunch);
+
+            // if day closed -> also force hide lunch (optional)
+            // (toggle state keep rahega, but UI hide rahegi)
+        }
+
+        function applyDayState() {
+            const open = dayToggle ? dayToggle.checked : true;
 
             row.classList.toggle("is-closed", !open);
 
             if (timeWrap) timeWrap.style.display = open ? "flex" : "none";
             if (closedText) closedText.classList.toggle("d-none", open);
 
-            inputs.forEach(i => i.disabled = !open);
+            // all inputs disable when day closed
+            allTimeInputs.forEach(i => i.disabled = !open);
+
+            // lunch state (will re-disable lunch if needed)
+            applyLunchState(open);
         }
 
-        toggle.addEventListener("change", applyState);
-        applyState();
+        if (dayToggle) dayToggle.addEventListener("change", applyDayState);
+
+        if (lunchToggle) {
+            // default OFF (safe even if HTML me checked na ho)
+            lunchToggle.checked = false;
+
+            lunchToggle.addEventListener("change", () => {
+                const dayOpen = dayToggle ? dayToggle.checked : true;
+                applyLunchState(dayOpen);
+            });
+        }
+
+        // init
+        applyDayState();
     });
 </script>
 
 
 <!-- services step -->
+
 
 <script>
     (function() {
@@ -1288,168 +1699,6 @@
     `;
             servicesWrap.appendChild(div);
         });
-
-        // ====== Features Select (FIXED) ======
-        const featuresGrid = document.getElementById('featuresGrid');
-        const selectedChips = document.getElementById('selectedChips');
-        const selectedCount = document.getElementById('selectedCount');
-
-        const featuresHidden = document.getElementById('featuresHidden'); // CSV names
-        const featureIconsHidden = document.getElementById('featureIconsHidden'); // CSV icons
-        const featureIDHidden = document.getElementById('featureIDHidden'); // CSV icons
-
-        const rvFeat = document.getElementById('rv_features_chips'); // Step6 review
-
-        if (!featuresGrid || !selectedChips || !selectedCount || !featuresHidden || !featureIconsHidden) {
-            return; // features section not on this page
-        }
-
-        // Map key = feature_id (string), value = {name, icon}
-        const selected = new Map();
-
-        function setTileSelected(tile, isSel) {
-            tile.classList.toggle('is-selected', isSel);
-            tile.setAttribute('aria-pressed', isSel ? 'true' : 'false');
-        }
-
-        function syncHidden() {
-            const names = [];
-            const icons = [];
-            const ids = [];
-
-            selected.forEach((v, k) => { // k = feature_id
-                names.push(v.name);
-                icons.push(v.icon || '');
-                ids.push(k); // ✅ id Map key se
-            });
-
-            featuresHidden.value = names.join(',');
-            featureIconsHidden.value = icons.join(',');
-            featureIDHidden.value = ids.join(',');
-            selectedCount.textContent = String(selected.size);
-        }
-
-
-
-        function renderReviewFeatures() {
-            if (!rvFeat) return;
-
-            rvFeat.innerHTML = '';
-
-            if (selected.size === 0) {
-                rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
-                return;
-            }
-
-            // Review chips (simple chips without remove button)
-            selected.forEach((v) => {
-                const chip = document.createElement('span');
-                chip.className = 'chip';
-                chip.textContent = v.name;
-                rvFeat.appendChild(chip);
-            });
-        }
-
-        function renderChips() {
-            selectedChips.innerHTML = '';
-
-            selected.forEach((v, id) => {
-                const chip = document.createElement('div');
-                chip.className = 'sel-chip';
-                chip.setAttribute('data-id', id);
-
-                chip.innerHTML = `
-        <span>${v.name}</span>
-        <button type="button" aria-label="remove">×</button>
-      `;
-                selectedChips.appendChild(chip);
-            });
-
-            syncHidden();
-            renderReviewFeatures();
-        }
-
-        // Click on tiles (select / deselect)
-        featuresGrid.addEventListener('click', function(e) {
-            const tile = e.target.closest('.feature-tile');
-            if (!tile) return;
-
-            const id = String(tile.getAttribute('data-id') || '').trim();
-            const name = String(tile.getAttribute('data-name') || '').trim();
-            const icon = String(tile.getAttribute('data-icon') || '').trim();
-
-            console.log({
-                id,
-                name,
-                icon
-            });
-
-            if (!id || !name) return;
-
-            if (selected.has(id)) {
-                selected.delete(id);
-                setTileSelected(tile, false);
-            } else {
-                selected.set(id, {
-                    name,
-                    icon
-                });
-                setTileSelected(tile, true);
-            }
-
-            renderChips();
-        });
-
-        // Remove from chips
-        selectedChips.addEventListener('click', function(e) {
-            const btn = e.target.closest('button');
-            if (!btn) return;
-
-            const chip = btn.closest('.sel-chip');
-            const id = chip?.getAttribute('data-id');
-            if (!id) return;
-
-            selected.delete(id);
-            chip.remove();
-
-            // unselect tile too
-            const tile = featuresGrid.querySelector(`.feature-tile[data-id="${id}"]`);
-            consolelog(tile);
-            if (tile) setTileSelected(tile, false);
-
-            syncHidden();
-            renderReviewFeatures();
-            selectedCount.textContent = String(selected.size);
-
-            if (selected.size === 0) renderChips();
-        });
-
-        // ✅ If edit page (already saved CSV in hidden) -> auto select
-        const savedNames = (featuresHidden.value || '').split(',').map(s => s.trim()).filter(Boolean);
-        const savedIcons = (featureIconsHidden.value || '').split(',').map(s => s.trim());
-
-        if (savedNames.length) {
-            // match by tile name (because CSV me ids nahi)
-            const tiles = featuresGrid.querySelectorAll('.feature-tile');
-            tiles.forEach((tile) => {
-                const id = String(tile.getAttribute('data-id') || '').trim();
-                const name = String(tile.getAttribute('data-name') || '').trim();
-                const icon = String(tile.getAttribute('data-icon') || '').trim();
-
-                const idx = savedNames.findIndex(n => n.toLowerCase() === name.toLowerCase());
-                if (idx > -1 && id) {
-                    selected.set(id, {
-                        name,
-                        icon: savedIcons[idx] || icon
-                    });
-                    setTileSelected(tile, true);
-                }
-            });
-
-            renderChips();
-        } else {
-            renderReviewFeatures(); // initial
-        }
 
     })();
 </script>
@@ -1535,7 +1784,7 @@
         renderGallery();
     });
 
-    
+
     // Optional: YouTube preview (basic)
     const ytInput = document.getElementById("youtube_video");
     const emptyBox = document.getElementById("videoPreviewEmpty");
@@ -1631,6 +1880,8 @@
         const address = document.querySelector('[name="full_address"]')?.value || '—';
         const description = document.querySelector('[name="business_description"]')?.value || '—';
 
+
+
         setText('rv_business_name', businessName);
         setText('rv_category', categoryId ? categoryLabel : '—');
         setText('rv_country', countryId ? countryLabel : '—');
@@ -1684,18 +1935,6 @@
                 ).join('');
             }
         }
-
-        // Step 4: Features chips (hidden input: features)
-        // const rvFeat = document.getElementById('rv_features_chips');
-        // const featHidden = document.getElementById('featuresHidden')?.value || '';
-        // if (rvFeat) {
-        //     if (!featHidden.trim()) {
-        //         rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
-        //     } else {
-        //         const selectedChips = document.getElementById('selectedChips');
-        //         rvFeat.innerHTML = selectedChips ? selectedChips.innerHTML : `<span class="muted-sm">Selected.</span>`;
-        //     }
-        // }
 
         // Step 5: Gallery thumbs
         const rvThumbs = document.getElementById('rv_gallery_thumbs');
@@ -1754,12 +1993,13 @@
 
             const lunchStart = document.querySelector(`input[name="hours[${dayName}][lunch_start]"]`)?.value || '';
             const lunchEnd = document.querySelector(`input[name="hours[${dayName}][lunch_end]"]`)?.value || '';
+            const lunchOn = dayRow.querySelector('.lunch-toggle')?.checked;
 
             let txt = '';
             if (start && end) txt += `${start} - ${end}`;
-            if (lunchStart && lunchEnd) txt += `  |  Lunch: ${lunchStart} - ${lunchEnd}`;
-
+            if (lunchOn && lunchStart && lunchEnd) txt += `  |  Lunch: ${lunchStart} - ${lunchEnd}`;
             timeCell.textContent = txt || '—';
+
         });
     }
 </script>
@@ -1945,46 +2185,63 @@
             });
         }
 
-        // ----------------- Features preselect + CSV hidden sync -----------------
+        // ----------------- Features preselect + CSV hidden sync (UPDATED for icon_image) -----------------
         const featureIDHidden = document.getElementById('featureIDHidden');
         const featuresHidden = document.getElementById('featuresHidden');
-        const featureIconsHidden = document.getElementById('featureIconsHidden');
+        const featureImagesHidden = document.getElementById('featureImagesHidden'); // ✅ NEW
 
         function updateFeatureCsvFromActive() {
             const active = Array.from(document.querySelectorAll('.feature-tile.active'));
-            const ids = active.map(b => b.dataset.id);
-            const names = active.map(b => b.dataset.name);
-            const icons = active.map(b => b.dataset.icon || '');
+
+            const ids = active.map(b => (b.dataset.id || '').trim());
+            const names = active.map(b => (b.dataset.name || '').trim());
+            const images = active.map(b => (b.dataset.iconImage || '').trim()); // ✅ data-icon-image
 
             if (featureIDHidden) featureIDHidden.value = ids.join(',');
             if (featuresHidden) featuresHidden.value = names.join(',');
-            if (featureIconsHidden) featureIconsHidden.value = icons.join(',');
+            if (featureImagesHidden) featureImagesHidden.value = images.join(',');
 
             const count = document.getElementById('selectedCount');
             if (count) count.textContent = String(active.length);
 
-            // Chips
+            // Chips (image + name)
             const chipsWrap = document.getElementById('selectedChips');
             if (chipsWrap) {
                 chipsWrap.innerHTML = '';
                 active.forEach(b => {
                     const chip = document.createElement('div');
                     chip.className = 'chip';
-                    chip.textContent = b.dataset.name;
+
+                    const imgPath = (b.dataset.iconImage || '').trim();
+                    const name = (b.dataset.name || '').trim();
+
+                    chip.innerHTML = `
+                ${imgPath ? `<img src="/storage/${imgPath}" alt="${name}" style="height:18px;width:22px;object-fit:contain;margin-right:6px;vertical-align:middle;">` : ''}
+                <span>${name}</span>
+            `;
+
                     chipsWrap.appendChild(chip);
                 });
             }
         }
 
-        // Pre-activate based on CSV
-        const existingIds = (featureIDHidden?.value || '').split(',').map(v => v.trim()).filter(Boolean);
+        // ✅ Pre-activate based on saved IDs (edit prefill)
+        const existingIds = (featureIDHidden?.value || '')
+            .split(',')
+            .map(v => v.trim())
+            .filter(Boolean);
+
         if (existingIds.length) {
             document.querySelectorAll('.feature-tile').forEach(btn => {
-                if (existingIds.includes(btn.dataset.id)) btn.classList.add('active');
+                if (existingIds.includes((btn.dataset.id || '').trim())) {
+                    btn.classList.add('active');
+                }
             });
         }
+
         updateFeatureCsvFromActive();
 
+        // Toggle active on click
         document.getElementById('featuresGrid')?.addEventListener('click', (e) => {
             const tile = e.target.closest('.feature-tile');
             if (!tile) return;
@@ -2016,6 +2273,45 @@
             });
         }
 
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const terms = document.getElementById('agree_terms');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (!terms || !submitBtn) return;
+
+        // helper
+        function toggleSubmit() {
+            const ok = terms.checked;
+
+            // aapka button hidden hai -> check hoga to show
+            submitBtn.style.display = ok ? 'inline-block' : 'none';
+            submitBtn.disabled = !ok;
+
+            // optional styling
+            submitBtn.style.opacity = ok ? '1' : '.6';
+            submitBtn.style.cursor = ok ? 'pointer' : 'not-allowed';
+        }
+
+        // initial state
+        toggleSubmit();
+
+        // on change
+        terms.addEventListener('change', toggleSubmit);
+
+        // extra safety: form submit pe bhi check
+        const form = submitBtn.closest('form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                if (!terms.checked) {
+                    e.preventDefault();
+                    alert('Please accept Terms of Service & Privacy Policy to submit.');
+                }
+            });
+        }
     });
 </script>
 

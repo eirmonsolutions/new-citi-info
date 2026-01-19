@@ -416,45 +416,45 @@
                         <div class="col-lg-12">
                             <div class="working-hours-card">
 
-                                <!-- ====== Day Row Template (Repeat for all days) ====== -->
+                                <!-- Monday -->
                                 <div class="day-row" data-day="monday">
-                                    <label class="switch">
-                                        <input type="checkbox" checked class="day-toggle">
-                                        <span class="slider"></span>
-                                    </label>
-
-                                    <div class="day-name">Monday</div>
+                                    <div class="day-flex">
+                                        <label class="switch">
+                                            <input type="checkbox" checked class="day-toggle">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <div class="day-name">Monday</div>
+                                    </div>
 
                                     <div class="time-wrap">
-                                        <!-- Start -->
-                                        <div class="time-box">
-                                            <input type="time" name="hours[monday][start]" value="09:00">
-
+                                        <div class="day-flex">
+                                            <div class="time-box">
+                                                <input type="time" name="hours[monday][start]" value="09:00">
+                                            </div>
+                                            <div class="to-text">to</div>
+                                            <div class="time-box">
+                                                <input type="time" name="hours[monday][end]" value="17:00">
+                                            </div>
                                         </div>
 
-                                        <div class="to-text">to</div>
-
-                                        <!-- End -->
-                                        <div class="time-box">
-                                            <input type="time" name="hours[monday][end]" value="17:00">
-
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
                                         </div>
 
-                                        <!-- ✅ Lunch Time (Added like you asked) -->
-                                        <span class="lunch-label">Lunch</span>
-
-                                        <!-- Lunch Start -->
-                                        <div class="time-box">
-                                            <input type="time" name="hours[monday][lunch_start]" value="13:00">
-
-                                        </div>
-
-                                        <div class="to-text">to</div>
-
-                                        <!-- Lunch End -->
-                                        <div class="time-box">
-                                            <input type="time" name="hours[monday][lunch_end]" value="14:00">
-
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[monday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[monday][lunch_end]" value="14:00">
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
 
@@ -463,193 +463,281 @@
 
                                 <!-- Tuesday -->
                                 <div class="day-row" data-day="tuesday">
-                                    <label class="switch">
-                                        <input type="checkbox" checked class="day-toggle">
-                                        <span class="slider"></span>
-                                    </label>
-                                    <div class="day-name">Tuesday</div>
-                                    <div class="time-wrap">
-                                        <div class="time-box">
-                                            <input type="time" name="hours[tuesday][start]" value="09:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[tuesday][end]" value="17:00">
-
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[tuesday][lunch_start]" value="13:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[tuesday][lunch_end]" value="14:00">
-
-                                        </div>
+                                    <div class="day-flex">
+                                        <label class="switch">
+                                            <input type="checkbox" checked class="day-toggle">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <div class="day-name">Tuesday</div>
                                     </div>
+
+                                    <div class="time-wrap">
+                                        <div class="day-flex">
+                                            <div class="time-box">
+                                                <input type="time" name="hours[tuesday][start]" value="09:00">
+                                            </div>
+                                            <div class="to-text">to</div>
+                                            <div class="time-box">
+                                                <input type="time" name="hours[tuesday][end]" value="17:00">
+                                            </div>
+                                        </div>
+
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
+
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[tuesday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[tuesday][lunch_end]" value="14:00">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
                                     <div class="closed-text d-none">Closed</div>
                                 </div>
 
                                 <!-- Wednesday -->
                                 <div class="day-row" data-day="wednesday">
-                                    <label class="switch">
-                                        <input type="checkbox" checked class="day-toggle">
-                                        <span class="slider"></span>
-                                    </label>
-                                    <div class="day-name">Wednesday</div>
-                                    <div class="time-wrap">
-                                        <div class="time-box">
-                                            <input type="time" name="hours[wednesday][start]" value="09:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[wednesday][end]" value="17:00">
-
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[wednesday][lunch_start]" value="13:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[wednesday][lunch_end]" value="14:00">
-
-                                        </div>
+                                    <div class="day-flex">
+                                        <label class="switch">
+                                            <input type="checkbox" checked class="day-toggle">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <div class="day-name">Wednesday</div>
                                     </div>
+
+                                    <div class="time-wrap">
+                                        <div class="day-flex">
+                                            <div class="time-box">
+                                                <input type="time" name="hours[wednesday][start]" value="09:00">
+                                            </div>
+                                            <div class="to-text">to</div>
+                                            <div class="time-box">
+                                                <input type="time" name="hours[wednesday][end]" value="17:00">
+                                            </div>
+                                        </div>
+
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
+
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[wednesday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[wednesday][lunch_end]" value="14:00">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
                                     <div class="closed-text d-none">Closed</div>
                                 </div>
 
                                 <!-- Thursday -->
                                 <div class="day-row" data-day="thursday">
-                                    <label class="switch">
-                                        <input type="checkbox" checked class="day-toggle">
-                                        <span class="slider"></span>
-                                    </label>
-                                    <div class="day-name">Thursday</div>
-                                    <div class="time-wrap">
-                                        <div class="time-box">
-                                            <input type="time" name="hours[thursday][start]" value="11:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[thursday][end]" value="16:00">
-
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[thursday][lunch_start]" value="13:30">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[thursday][lunch_end]" value="14:00">
-
-                                        </div>
+                                    <div class="day-flex">
+                                        <label class="switch">
+                                            <input type="checkbox" checked class="day-toggle">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <div class="day-name">Thursday</div>
                                     </div>
+
+                                    <div class="time-wrap">
+                                        <div class="day-flex">
+                                            <div class="time-box">
+                                                <input type="time" name="hours[thursday][start]" value="11:00">
+                                            </div>
+                                            <div class="to-text">to</div>
+                                            <div class="time-box">
+                                                <input type="time" name="hours[thursday][end]" value="16:00">
+                                            </div>
+                                        </div>
+
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
+
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[thursday][lunch_start]" value="13:30">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[thursday][lunch_end]" value="14:00">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
                                     <div class="closed-text d-none">Closed</div>
                                 </div>
 
                                 <!-- Friday -->
                                 <div class="day-row" data-day="friday">
-                                    <label class="switch">
-                                        <input type="checkbox" checked class="day-toggle">
-                                        <span class="slider"></span>
-                                    </label>
-                                    <div class="day-name">Friday</div>
-                                    <div class="time-wrap">
-                                        <div class="time-box">
-                                            <input type="time" name="hours[friday][start]" value="11:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[friday][end]" value="16:00">
-
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[friday][lunch_start]" value="13:30">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[friday][lunch_end]" value="14:00">
-
-                                        </div>
+                                    <div class="day-flex">
+                                        <label class="switch">
+                                            <input type="checkbox" checked class="day-toggle">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <div class="day-name">Friday</div>
                                     </div>
+
+                                    <div class="time-wrap">
+                                        <div class="day-flex">
+                                            <div class="time-box">
+                                                <input type="time" name="hours[friday][start]" value="11:00">
+                                            </div>
+                                            <div class="to-text">to</div>
+                                            <div class="time-box">
+                                                <input type="time" name="hours[friday][end]" value="16:00">
+                                            </div>
+                                        </div>
+
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
+
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[friday][lunch_start]" value="13:30">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[friday][lunch_end]" value="14:00">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
                                     <div class="closed-text d-none">Closed</div>
                                 </div>
 
                                 <!-- Saturday (Closed by default) -->
                                 <div class="day-row is-closed" data-day="saturday">
-                                    <label class="switch">
-                                        <input type="checkbox" class="day-toggle">
-                                        <span class="slider"></span>
-                                    </label>
-                                    <div class="day-name">Saturday</div>
-                                    <div class="time-wrap">
-                                        <div class="time-box">
-                                            <input type="time" name="hours[saturday][start]" value="09:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[saturday][end]" value="17:00">
-
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[saturday][lunch_start]" value="13:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[saturday][lunch_end]" value="14:00">
-
-                                        </div>
+                                    <div class="day-flex">
+                                        <label class="switch">
+                                            <input type="checkbox" class="day-toggle">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <div class="day-name">Saturday</div>
                                     </div>
+
+                                    <div class="time-wrap">
+                                        <div class="day-flex">
+                                            <div class="time-box">
+                                                <input type="time" name="hours[saturday][start]" value="09:00">
+                                            </div>
+                                            <div class="to-text">to</div>
+                                            <div class="time-box">
+                                                <input type="time" name="hours[saturday][end]" value="17:00">
+                                            </div>
+                                        </div>
+
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
+
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[saturday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[saturday][lunch_end]" value="14:00">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
                                     <div class="closed-text">Closed</div>
                                 </div>
 
                                 <!-- Sunday (Closed by default) -->
                                 <div class="day-row is-closed" data-day="sunday">
-                                    <label class="switch">
-                                        <input type="checkbox" class="day-toggle">
-                                        <span class="slider"></span>
-                                    </label>
-                                    <div class="day-name">Sunday</div>
-                                    <div class="time-wrap">
-                                        <div class="time-box">
-                                            <input type="time" name="hours[sunday][start]" value="09:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[sunday][end]" value="17:00">
-
-                                        </div>
-
-                                        <span class="lunch-label">Lunch</span>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[sunday][lunch_start]" value="13:00">
-
-                                        </div>
-                                        <div class="to-text">to</div>
-                                        <div class="time-box">
-                                            <input type="time" name="hours[sunday][lunch_end]" value="14:00">
-
-                                        </div>
+                                    <div class="day-flex">
+                                        <label class="switch">
+                                            <input type="checkbox" class="day-toggle">
+                                            <span class="slider"></span>
+                                        </label>
+                                        <div class="day-name">Sunday</div>
                                     </div>
+
+                                    <div class="time-wrap">
+                                        <div class="day-flex">
+                                            <div class="time-box">
+                                                <input type="time" name="hours[sunday][start]" value="09:00">
+                                            </div>
+                                            <div class="to-text">to</div>
+                                            <div class="time-box">
+                                                <input type="time" name="hours[sunday][end]" value="17:00">
+                                            </div>
+                                        </div>
+
+                                        <div class="lunch-toggle-row">
+                                            <label class="switch">
+                                                <input type="checkbox" class="lunch-toggle">
+                                                <span class="slider"></span>
+                                            </label>
+                                            <span class="lunch-toggle-text">Lunch</span>
+                                        </div>
+
+                                        <div class="lunch-wrap" style="display:none;">
+                                            <div class="day-flex">
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[sunday][lunch_start]" value="13:00">
+                                                </div>
+                                                <div class="to-text">to</div>
+                                                <div class="time-box">
+                                                    <input type="time" name="hours[sunday][lunch_end]" value="14:00">
+                                                </div>
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+
                                     <div class="closed-text">Closed</div>
                                 </div>
 
@@ -709,18 +797,23 @@
                                         class="feature-tile"
                                         data-id="{{ $f->id }}"
                                         data-name="{{ $f->name }}"
-                                        data-icon="{{ $f->icon }}">
+                                        data-icon-image="{{ $f->icon_image }}">
                                         <span class="ft-icon">
-                                            @if(!empty($f->icon))
-                                            <i class="{{ $f->icon }}"></i>
+                                            @if(!empty($f->icon_image))
+                                            <img
+                                                src="{{ asset('storage/'.$f->icon_image) }}"
+                                                alt="{{ $f->name }}"
+                                                style="height:30px;width:40px;object-fit:contain;">
                                             @else
                                             <!-- fallback icon -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <circle cx="12" cy="12" r="10"></circle>
                                                 <path d="M12 8v8M8 12h8"></path>
                                             </svg>
                                             @endif
                                         </span>
+
                                         <span class="ft-text">{{ $f->name }}</span>
                                     </button>
                                     @endforeach
@@ -735,12 +828,16 @@
 
                                 <div class="selected-chips" id="selectedChips"></div>
 
-                                {{-- hidden inputs (arrays) yahan JS append karega --}}
+                                {{-- hidden inputs --}}
                                 <div id="featuresHiddenWrap"></div>
                                 <input type="hidden" id="featureIDHidden" name="feature_id" value="">
                                 <input type="hidden" id="featuresHidden" name="features" value="">
-                                <input type="hidden" id="featureIconsHidden" name="feature_icons" value="">
 
+                                {{-- ✅ old: feature_icons (classes) removed --}}
+                                {{-- <input type="hidden" id="featureIconsHidden" name="feature_icons" value=""> --}}
+
+                                {{-- ✅ new: feature_images --}}
+                                <input type="hidden" id="featureImagesHidden" name="feature_images" value="">
                             </div>
                         </div>
 
@@ -1210,6 +1307,27 @@
                             </label>
                         </div>
 
+                        <!-- Listing Options -->
+                        <div class="listing-card mt-3">
+                            <div class="listing-head">Listing Options</div>
+
+                            <label class="opt-card active" id="optFreeWrap">
+                                <input type="radio" name="listing_option" value="free">
+                                <div class="opt-body">
+                                    <div class="opt-title">Free Listing</div>
+                                    <div class="opt-sub">Basic listing with standard features</div>
+                                </div>
+                            </label>
+
+                            <label class="opt-card" id="optPremiumWrap">
+                                <input type="radio" name="listing_option" value="premium" checked>
+                                <div class="opt-body">
+                                    <div class="opt-title">Premium Listing - $29/month</div>
+                                    <div class="opt-sub">Enhanced visibility, priority placement, and additional features</div>
+                                </div>
+                            </label>
+                        </div>
+
 
                     </div>
                 </div>
@@ -1223,7 +1341,11 @@
 
                     <button type="button" class="btn next-btn" id="nextBtn">Next</button>
 
-                    <button type="submit" class="btn submit-btn" id="submitBtn" style="display:none;">
+                    <button type="submit"
+                        class="btn submit-btn"
+                        id="submitBtn"
+                        disabled
+                        style="display:none; opacity:.6; cursor:not-allowed;">
                         Submit Listing
                     </button>
                 </div>
@@ -1661,24 +1783,63 @@
 
 <script>
     document.querySelectorAll(".day-row").forEach((row) => {
-        const toggle = row.querySelector(".day-toggle");
+        const dayToggle = row.querySelector(".day-toggle");
         const timeWrap = row.querySelector(".time-wrap");
         const closedText = row.querySelector(".closed-text");
-        const inputs = row.querySelectorAll('input[type="time"]');
 
-        function applyState() {
-            const open = toggle.checked;
+        // Lunch toggle + wrapper
+        const lunchToggle = row.querySelector(".lunch-toggle");
+        const lunchWrap = row.querySelector(".lunch-wrap");
+
+        // Inputs
+        const allTimeInputs = row.querySelectorAll('input[type="time"]');
+        const lunchInputs = row.querySelectorAll('input[name*="[lunch_start]"], input[name*="[lunch_end]"]');
+
+        function applyLunchState(dayOpen) {
+            if (!lunchToggle || !lunchWrap) return;
+
+            const lunchOn = lunchToggle.checked;
+
+            // show lunch only if day open AND lunch toggle on
+            const showLunch = dayOpen && lunchOn;
+            lunchWrap.style.display = showLunch ? "flex" : "none";
+
+            // lunch inputs enable only if showLunch
+            lunchInputs.forEach(i => i.readOnly = !showLunch);
+
+            // if day closed -> also force hide lunch (optional)
+            // (toggle state keep rahega, but UI hide rahegi)
+        }
+
+        function applyDayState() {
+            const open = dayToggle ? dayToggle.checked : true;
 
             row.classList.toggle("is-closed", !open);
 
             if (timeWrap) timeWrap.style.display = open ? "flex" : "none";
             if (closedText) closedText.classList.toggle("d-none", open);
 
-            inputs.forEach(i => i.disabled = !open);
+            // all inputs disable when day closed
+            allTimeInputs.forEach(i => i.disabled = !open);
+
+            // lunch state (will re-disable lunch if needed)
+            applyLunchState(open);
         }
 
-        toggle.addEventListener("change", applyState);
-        applyState();
+        if (dayToggle) dayToggle.addEventListener("change", applyDayState);
+
+        if (lunchToggle) {
+            // default OFF (safe even if HTML me checked na ho)
+            lunchToggle.checked = false;
+
+            lunchToggle.addEventListener("change", () => {
+                const dayOpen = dayToggle ? dayToggle.checked : true;
+                applyLunchState(dayOpen);
+            });
+        }
+
+        // init
+        applyDayState();
     });
 </script>
 
@@ -1741,166 +1902,192 @@
         });
 
         // ====== Features Select (FIXED) ======
+        // ====== Features Select (UPDATED for icon_image) ======
         const featuresGrid = document.getElementById('featuresGrid');
         const selectedChips = document.getElementById('selectedChips');
         const selectedCount = document.getElementById('selectedCount');
 
-        const featuresHidden = document.getElementById('featuresHidden'); // CSV names
-        const featureIconsHidden = document.getElementById('featureIconsHidden'); // CSV icons
-        const featureIDHidden = document.getElementById('featureIDHidden'); // CSV icons
+        const featuresHidden = document.getElementById('featuresHidden'); // CSV names (optional)
+        const featureImagesHidden = document.getElementById('featureImagesHidden'); // ✅ CSV image paths
+        const featureIDHidden = document.getElementById('featureIDHidden'); // ✅ CSV ids
 
         const rvFeat = document.getElementById('rv_features_chips'); // Step6 review
 
-        if (!featuresGrid || !selectedChips || !selectedCount || !featuresHidden || !featureIconsHidden) {
-            return; // features section not on this page
-        }
+        if (!featuresGrid || !selectedChips || !selectedCount || !featuresHidden || !featureImagesHidden || !featureIDHidden) {
+            // features section not on this page
+        } else {
 
-        // Map key = feature_id (string), value = {name, icon}
-        const selected = new Map();
+            // Map key = feature_id (string), value = {name, icon_image}
+            const selected = new Map();
 
-        function setTileSelected(tile, isSel) {
-            tile.classList.toggle('is-selected', isSel);
-            tile.setAttribute('aria-pressed', isSel ? 'true' : 'false');
-        }
-
-        function syncHidden() {
-            const names = [];
-            const icons = [];
-            const ids = [];
-
-            selected.forEach((v, k) => { // k = feature_id
-                names.push(v.name);
-                icons.push(v.icon || '');
-                ids.push(k); // ✅ id Map key se
-            });
-
-            featuresHidden.value = names.join(',');
-            featureIconsHidden.value = icons.join(',');
-            featureIDHidden.value = ids.join(',');
-            selectedCount.textContent = String(selected.size);
-        }
-
-
-
-        function renderReviewFeatures() {
-            if (!rvFeat) return;
-
-            rvFeat.innerHTML = '';
-
-            if (selected.size === 0) {
-                rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
-                return;
+            function setTileSelected(tile, isSel) {
+                tile.classList.toggle('is-selected', isSel);
+                tile.setAttribute('aria-pressed', isSel ? 'true' : 'false');
             }
 
-            // Review chips (simple chips without remove button)
-            selected.forEach((v) => {
-                const chip = document.createElement('span');
-                chip.className = 'chip';
-                chip.textContent = v.name;
-                rvFeat.appendChild(chip);
-            });
-        }
+            function syncHidden() {
+                const names = [];
+                const images = [];
+                const ids = [];
 
-        function renderChips() {
-            selectedChips.innerHTML = '';
-
-            selected.forEach((v, id) => {
-                const chip = document.createElement('div');
-                chip.className = 'sel-chip';
-                chip.setAttribute('data-id', id);
-
-                chip.innerHTML = `
-        <span>${v.name}</span>
-        <button type="button" aria-label="remove">×</button>
-      `;
-                selectedChips.appendChild(chip);
-            });
-
-            syncHidden();
-            renderReviewFeatures();
-        }
-
-        // Click on tiles (select / deselect)
-        featuresGrid.addEventListener('click', function(e) {
-            const tile = e.target.closest('.feature-tile');
-            if (!tile) return;
-
-            const id = String(tile.getAttribute('data-id') || '').trim();
-            const name = String(tile.getAttribute('data-name') || '').trim();
-            const icon = String(tile.getAttribute('data-icon') || '').trim();
-
-            console.log({
-                id,
-                name,
-                icon
-            });
-
-            if (!id || !name) return;
-
-            if (selected.has(id)) {
-                selected.delete(id);
-                setTileSelected(tile, false);
-            } else {
-                selected.set(id, {
-                    name,
-                    icon
+                selected.forEach((v, k) => {
+                    names.push(v.name);
+                    images.push(v.icon_image || '');
+                    ids.push(k);
                 });
-                setTileSelected(tile, true);
+
+                featuresHidden.value = names.join(',');
+                featureImagesHidden.value = images.join(',');
+                featureIDHidden.value = ids.join(',');
+                selectedCount.textContent = String(selected.size);
             }
 
-            renderChips();
-        });
+            function renderReviewFeatures() {
+                if (!rvFeat) return;
 
-        // Remove from chips
-        selectedChips.addEventListener('click', function(e) {
-            const btn = e.target.closest('button');
-            if (!btn) return;
+                rvFeat.innerHTML = '';
 
-            const chip = btn.closest('.sel-chip');
-            const id = chip?.getAttribute('data-id');
-            if (!id) return;
+                if (selected.size === 0) {
+                    rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
+                    return;
+                }
 
-            selected.delete(id);
-            chip.remove();
+                selected.forEach((v) => {
+                    const chip = document.createElement('span');
+                    chip.className = 'chip chip-feature-review';
 
-            // unselect tile too
-            const tile = featuresGrid.querySelector(`.feature-tile[data-id="${id}"]`);
-            consolelog(tile);
-            if (tile) setTileSelected(tile, false);
+                    const imgHtml = v.icon_image ?
+                        `<img src="/storage/${v.icon_image}" alt="" class="chip-icon">` :
+                        '';
 
-            syncHidden();
-            renderReviewFeatures();
-            selectedCount.textContent = String(selected.size);
+                    chip.innerHTML = `
+            ${imgHtml}
+            <span class="chip-text">${v.name}</span>
+        `;
 
-            if (selected.size === 0) renderChips();
-        });
+                    rvFeat.appendChild(chip);
+                });
+            }
 
-        // ✅ If edit page (already saved CSV in hidden) -> auto select
-        const savedNames = (featuresHidden.value || '').split(',').map(s => s.trim()).filter(Boolean);
-        const savedIcons = (featureIconsHidden.value || '').split(',').map(s => s.trim());
 
-        if (savedNames.length) {
-            // match by tile name (because CSV me ids nahi)
-            const tiles = featuresGrid.querySelectorAll('.feature-tile');
-            tiles.forEach((tile) => {
+            function renderChips() {
+                selectedChips.innerHTML = '';
+
+                selected.forEach((v, id) => {
+                    const chip = document.createElement('span');
+                    chip.className = 'chip';
+                    chip.setAttribute('data-id', id);
+
+                    // ✅ optional: show small image inside chip (if you want)
+                    const iconHtml = v.icon_image ?
+                        `<img src="/storage/${v.icon_image}" alt="" style="height:30px;width:40px;object-fit:contain;margin-right:6px;vertical-align:middle;">` :
+                        '';
+
+                    chip.innerHTML = `
+                ${iconHtml}${v.name}
+                <button type="button" class="chip-remove" aria-label="Remove">×</button>
+            `;
+
+                    selectedChips.appendChild(chip);
+                });
+
+                syncHidden();
+                renderReviewFeatures();
+            }
+
+            // Click on tiles (select / deselect)
+            featuresGrid.addEventListener('click', function(e) {
+                const tile = e.target.closest('.feature-tile');
+                if (!tile) return;
+
                 const id = String(tile.getAttribute('data-id') || '').trim();
                 const name = String(tile.getAttribute('data-name') || '').trim();
-                const icon = String(tile.getAttribute('data-icon') || '').trim();
+                const icon_image = String(tile.getAttribute('data-icon-image') || '').trim();
 
-                const idx = savedNames.findIndex(n => n.toLowerCase() === name.toLowerCase());
-                if (idx > -1 && id) {
+                if (!id || !name) return;
+
+                if (selected.has(id)) {
+                    selected.delete(id);
+                    setTileSelected(tile, false);
+                } else {
                     selected.set(id, {
                         name,
-                        icon: savedIcons[idx] || icon
+                        icon_image
                     });
                     setTileSelected(tile, true);
                 }
+
+                renderChips();
             });
 
-            renderChips();
-        } else {
-            renderReviewFeatures(); // initial
+            // Remove from chips
+            selectedChips.addEventListener('click', function(e) {
+                const btn = e.target.closest('.chip-remove');
+                if (!btn) return;
+
+                const chip = btn.closest('.chip');
+                const id = chip?.getAttribute('data-id');
+                if (!id) return;
+
+                selected.delete(String(id));
+
+                const tile = featuresGrid.querySelector(`.feature-tile[data-id="${CSS.escape(String(id))}"]`);
+                if (tile) setTileSelected(tile, false);
+
+                renderChips();
+            });
+
+            // ✅ If edit page (already saved) -> auto select using IDs (BEST)
+            const savedIds = (featureIDHidden.value || '').split(',').map(s => s.trim()).filter(Boolean);
+            const savedNames = (featuresHidden.value || '').split(',').map(s => s.trim()).filter(Boolean);
+            const savedImages = (featureImagesHidden.value || '').split(',').map(s => s.trim());
+
+            if (savedIds.length) {
+                const tiles = featuresGrid.querySelectorAll('.feature-tile');
+
+                tiles.forEach((tile) => {
+                    const id = String(tile.getAttribute('data-id') || '').trim();
+                    if (!id) return;
+
+                    const idx = savedIds.findIndex(x => x === id);
+                    if (idx > -1) {
+                        const name = String(tile.getAttribute('data-name') || '').trim();
+                        const icon_image = savedImages[idx] || String(tile.getAttribute('data-icon-image') || '').trim();
+
+                        selected.set(id, {
+                            name,
+                            icon_image
+                        });
+                        setTileSelected(tile, true);
+                    }
+                });
+
+                renderChips();
+            }
+            // fallback: old data (only names saved)
+            else if (savedNames.length) {
+                const tiles = featuresGrid.querySelectorAll('.feature-tile');
+                tiles.forEach((tile) => {
+                    const id = String(tile.getAttribute('data-id') || '').trim();
+                    const name = String(tile.getAttribute('data-name') || '').trim();
+                    const icon_image = String(tile.getAttribute('data-icon-image') || '').trim();
+
+                    const idx = savedNames.findIndex(n => n.toLowerCase() === name.toLowerCase());
+                    if (idx > -1 && id) {
+                        selected.set(id, {
+                            name,
+                            icon_image: savedImages[idx] || icon_image
+                        });
+                        setTileSelected(tile, true);
+                    }
+                });
+
+                renderChips();
+            } else {
+                renderReviewFeatures();
+            }
         }
+
 
     })();
 </script>
@@ -2072,6 +2259,8 @@
         const address = document.querySelector('[name="full_address"]')?.value || '—';
         const description = document.querySelector('[name="business_description"]')?.value || '—';
 
+
+
         setText('rv_business_name', businessName);
         setText('rv_category', categoryId ? categoryLabel : '—');
         setText('rv_country', countryId ? countryLabel : '—');
@@ -2125,18 +2314,6 @@
                 ).join('');
             }
         }
-
-        // Step 4: Features chips (hidden input: features)
-        // const rvFeat = document.getElementById('rv_features_chips');
-        // const featHidden = document.getElementById('featuresHidden')?.value || '';
-        // if (rvFeat) {
-        //     if (!featHidden.trim()) {
-        //         rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
-        //     } else {
-        //         const selectedChips = document.getElementById('selectedChips');
-        //         rvFeat.innerHTML = selectedChips ? selectedChips.innerHTML : `<span class="muted-sm">Selected.</span>`;
-        //     }
-        // }
 
         // Step 5: Gallery thumbs
         const rvThumbs = document.getElementById('rv_gallery_thumbs');
@@ -2195,12 +2372,13 @@
 
             const lunchStart = document.querySelector(`input[name="hours[${dayName}][lunch_start]"]`)?.value || '';
             const lunchEnd = document.querySelector(`input[name="hours[${dayName}][lunch_end]"]`)?.value || '';
+            const lunchOn = dayRow.querySelector('.lunch-toggle')?.checked;
 
             let txt = '';
             if (start && end) txt += `${start} - ${end}`;
-            if (lunchStart && lunchEnd) txt += `  |  Lunch: ${lunchStart} - ${lunchEnd}`;
-
+            if (lunchOn && lunchStart && lunchEnd) txt += `  |  Lunch: ${lunchStart} - ${lunchEnd}`;
             timeCell.textContent = txt || '—';
+
         });
     }
 </script>
@@ -2229,6 +2407,45 @@
         // (aapka existing step change logic rahe)
         // बस before/after step activate, yeh call ensure:
         if (next === 6) fillReviewFromForm();
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const terms = document.getElementById('agree_terms');
+        const submitBtn = document.getElementById('submitBtn');
+
+        if (!terms || !submitBtn) return;
+
+        // helper
+        function toggleSubmit() {
+            const ok = terms.checked;
+
+            // aapka button hidden hai -> check hoga to show
+            submitBtn.style.display = ok ? 'inline-block' : 'none';
+            submitBtn.disabled = !ok;
+
+            // optional styling
+            submitBtn.style.opacity = ok ? '1' : '.6';
+            submitBtn.style.cursor = ok ? 'pointer' : 'not-allowed';
+        }
+
+        // initial state
+        toggleSubmit();
+
+        // on change
+        terms.addEventListener('change', toggleSubmit);
+
+        // extra safety: form submit pe bhi check
+        const form = submitBtn.closest('form');
+        if (form) {
+            form.addEventListener('submit', (e) => {
+                if (!terms.checked) {
+                    e.preventDefault();
+                    alert('Please accept Terms of Service & Privacy Policy to submit.');
+                }
+            });
+        }
     });
 </script>
 
