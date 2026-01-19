@@ -2188,14 +2188,26 @@
         // ----------------- Features preselect + CSV hidden sync (UPDATED for icon_image) -----------------
         const featureIDHidden = document.getElementById('featureIDHidden');
         const featuresHidden = document.getElementById('featuresHidden');
-        const featureImagesHidden = document.getElementById('featureImagesHidden'); // ✅ NEW
+        const featureImagesHidden = document.getElementById('featureImagesHidden');
+
+        function setTileSelected(tile, isSel) {
+            tile.classList.toggle('is-selected', isSel);
+            tile.setAttribute('aria-pressed', isSel ? 'true' : 'false');
+        }
 
         function updateFeatureCsvFromActive() {
+            // ✅ First: sync tiles classes properly
+            document.querySelectorAll('.feature-tile').forEach(tile => {
+                const isActive = tile.classList.contains('active');
+                setTileSelected(tile, isActive); // adds/removes is-selected + aria-pressed
+            });
+
+            // ✅ Now pick active list
             const active = Array.from(document.querySelectorAll('.feature-tile.active'));
 
             const ids = active.map(b => (b.dataset.id || '').trim());
             const names = active.map(b => (b.dataset.name || '').trim());
-            const images = active.map(b => (b.dataset.iconImage || '').trim()); // ✅ data-icon-image
+            const images = active.map(b => (b.dataset.iconImage || '').trim());
 
             if (featureIDHidden) featureIDHidden.value = ids.join(',');
             if (featuresHidden) featuresHidden.value = names.join(',');
@@ -2219,7 +2231,6 @@
                 ${imgPath ? `<img src="/storage/${imgPath}" alt="${name}" style="height:18px;width:22px;object-fit:contain;margin-right:6px;vertical-align:middle;">` : ''}
                 <span>${name}</span>
             `;
-
                     chipsWrap.appendChild(chip);
                 });
             }
@@ -2235,6 +2246,7 @@
             document.querySelectorAll('.feature-tile').forEach(btn => {
                 if (existingIds.includes((btn.dataset.id || '').trim())) {
                     btn.classList.add('active');
+                    setTileSelected(btn, true); // ✅ add is-selected on prefill
                 }
             });
         }
@@ -2245,9 +2257,15 @@
         document.getElementById('featuresGrid')?.addEventListener('click', (e) => {
             const tile = e.target.closest('.feature-tile');
             if (!tile) return;
-            tile.classList.toggle('active');
+
+            const willSelect = !tile.classList.contains('active');
+
+            tile.classList.toggle('active', willSelect);
+            setTileSelected(tile, willSelect); // ✅ keep is-selected in sync
+
             updateFeatureCsvFromActive();
         });
+
 
         // ----------------- Gallery preview (new uploads) -----------------
         const galleryInput = document.getElementById('business_gallery');
