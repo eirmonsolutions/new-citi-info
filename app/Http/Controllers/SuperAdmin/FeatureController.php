@@ -18,33 +18,48 @@ class FeatureController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'name'      => ['required', 'string', 'max:255'],
-            'icon'      => ['nullable', 'string', 'max:255'],
-            'is_active' => ['nullable', 'in:0,1'],
+            'name'       => ['required', 'string', 'max:255'],
+            'icon_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'is_active'  => ['nullable', 'in:0,1'],
         ]);
 
+        $path = null;
+        if ($request->hasFile('icon_image')) {
+            $path = $request->file('icon_image')->store('features', 'public');
+        }
+
         Feature::create([
-            'name'      => $data['name'],
-            'icon'      => $data['icon'] ?? null,
-            'is_active' => (bool)($data['is_active'] ?? 0),
+            'name'       => $data['name'],
+            'icon_image' => $path,
+            'is_active'  => (bool)($data['is_active'] ?? 0),
         ]);
 
         return back()->with('success', 'Feature added successfully!');
     }
 
-
     public function update(Request $request, Feature $feature)
     {
         $data = $request->validate([
-            'name'      => ['required', 'string', 'max:255'],
-            'icon'      => ['nullable', 'string', 'max:255'],
-            'is_active' => ['nullable', 'in:0,1'],
+            'name'       => ['required', 'string', 'max:255'],
+            'icon_image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'is_active'  => ['nullable', 'in:0,1'],
         ]);
 
+        $path = $feature->icon_image;
+
+        if ($request->hasFile('icon_image')) {
+            // delete old
+            if ($feature->icon_image && Storage::disk('public')->exists($feature->icon_image)) {
+                Storage::disk('public')->delete($feature->icon_image);
+            }
+
+            $path = $request->file('icon_image')->store('features', 'public');
+        }
+
         $feature->update([
-            'name'      => $data['name'],
-            'icon'      => $data['icon'] ?? null,
-            'is_active' => (bool)($data['is_active'] ?? 0),
+            'name'       => $data['name'],
+            'icon_image' => $path,
+            'is_active'  => (bool)($data['is_active'] ?? 0),
         ]);
 
         return back()->with('success', 'Feature updated successfully!');
@@ -52,6 +67,10 @@ class FeatureController extends Controller
 
     public function destroy(Feature $feature)
     {
+        if ($feature->icon_image && Storage::disk('public')->exists($feature->icon_image)) {
+            Storage::disk('public')->delete($feature->icon_image);
+        }
+
         $feature->delete();
         return back()->with('success', 'Feature deleted successfully!');
     }

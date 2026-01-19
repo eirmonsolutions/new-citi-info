@@ -41,8 +41,11 @@
 
                     <td>
                         <div class="category-icon">
-                            @if($feature->icon)
-                            <i class="{{ $feature->icon }}"></i>
+                            @if(!empty($feature->icon_image))
+                            <img
+                                src="{{ asset('storage/'.$feature->icon_image) }}"
+                                alt="{{ $feature->name }}"
+                                style="height:34px;width:34px;object-fit:contain;">
                             @else
                             -
                             @endif
@@ -72,7 +75,7 @@
                                 data-bs-target="#editfeatureModal"
                                 data-id="{{ $feature->id }}"
                                 data-name="{{ $feature->name }}"
-                                data-icon="{{ $feature->icon ?? '' }}"
+                                data-icon-image="{{ $feature->icon_image }}"
                                 data-active="{{ $feature->is_active ? 1 : 0 }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -116,6 +119,7 @@
         </table>
     </section>
 
+
 </main>
 
 <!-- Add Feature Modal -->
@@ -129,39 +133,34 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form id="featureForm" method="POST" action="{{ route('superadmin.feature.store') }}" class="modal-body">
+            <form id="featureForm" method="POST" action="{{ route('superadmin.feature.store') }}" class="modal-body" enctype="multipart/form-data">
                 @csrf
 
                 <div class="form-group">
                     <label for="featureName" class="form-label">Feature Name</label>
-                    <input type="text" id="featureName" name="name" class="form-input"
-                        placeholder="Enter feature name" required>
+                    <input type="text" id="featureName" name="name" class="form-input" placeholder="Enter feature name" required>
                 </div>
 
+                {{-- ✅ Feature Icon Image Upload (same design as your example) --}}
                 <div class="form-group">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle w-100 d-flex align-items-center justify-content-between"
-                            type="button" id="iconDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="selectedIcon">
-                                <i class="fa-solid fa-icons me-2"></i>Select Icon
-                            </span>
-                        </button>
+                    <label class="form-label">Feature Icon Image</label>
 
-                        <ul class="dropdown-menu w-100" aria-labelledby="iconDropdown" style="max-height: 250px; overflow-y: auto;">
-                            {{-- Add more icons here --}}
-                            <li>
-                                <a class="dropdown-item icon-option" data-value="flaticon-government" href="#">
-                                    <i class="flaticon-government me-2"></i> Home
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item icon-option" data-value="flaticon-chef" href="#">
-                                    <i class="flaticon-chef me-2"></i> User
-                                </a>
-                            </li>
-                        </ul>
+                    <div class="category-img-upload" id="featureIconUpload" style="cursor:pointer;">
+                        <div class="upload-area">
+                            <img id="addFeatureIconPreview" src="" style="display:none;max-height:60px;margin-bottom:8px;">
 
-                        <input type="hidden" name="icon" id="iconInput">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
+                                <path d="M12 13v8" />
+                                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+                                <path d="m8 17 4-4 4 4" />
+                            </svg>
+
+                            <p class="upload-text">Drop icon image here or click</p>
+                        </div>
+
+                        <input type="file" id="featureIconFile" name="icon_image" accept="image/*" hidden>
                     </div>
                 </div>
 
@@ -191,6 +190,8 @@
 
 
 
+
+<!-- Edit Feature Modal -->
 <!-- Edit Feature Modal -->
 <div class="modal fade CategoryModal" id="editfeatureModal" tabindex="-1" aria-labelledby="editfeatureModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -201,40 +202,39 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
 
-            <form id="editfeatureForm" method="POST" class="modal-body">
+            <form id="editfeatureForm" method="POST" class="modal-body" enctype="multipart/form-data">
                 @csrf
+                @method('PUT')
 
                 <div class="form-group">
                     <label class="form-label">Feature Name</label>
-                    <input type="text" name="name" id="editName" class="form-input"
-                        placeholder="Enter feature name" required>
+                    <input type="text" name="name" id="editName" class="form-input" placeholder="Enter feature name" required>
                 </div>
 
+                {{-- ✅ Feature Icon Image Upload --}}
                 <div class="form-group">
-                    <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle w-100 d-flex align-items-center justify-content-between"
-                            type="button" id="editIconDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <span id="editSelectedIcon">
-                                <i class="fa-solid fa-icons me-2"></i>Select Icon
-                            </span>
-                        </button>
+                    <label class="form-label">Feature Icon Image</label>
 
-                        <ul class="dropdown-menu w-100" aria-labelledby="editIconDropdown" style="max-height: 250px; overflow-y: auto;">
-                            {{-- Same icon list as Add --}}
-                            <li>
-                                <a class="dropdown-item edit-icon-option" data-value="flaticon-government" href="#">
-                                    <i class="flaticon-government me-2"></i> Home
-                                </a>
-                            </li>
-                            <li>
-                                <a class="dropdown-item edit-icon-option" data-value="flaticon-chef" href="#">
-                                    <i class="flaticon-chef me-2"></i> User
-                                </a>
-                            </li>
-                        </ul>
+                    <div class="category-img-upload" id="editFeatureIconUpload" style="cursor:pointer;">
+                        <div class="upload-area">
+                            <img id="editFeatureIconPreview" src="" style="display:none;max-height:60px;margin-bottom:8px;">
 
-                        <input type="hidden" name="icon" id="editIconInput">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-cloud-upload-icon lucide-cloud-upload">
+                                <path d="M12 13v8" />
+                                <path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+                                <path d="m8 17 4-4 4 4" />
+                            </svg>
+
+                            <p class="upload-text">Drop icon image here or click</p>
+                        </div>
+
+                        <input type="file" id="editFeatureIconFile" name="icon_image" accept="image/*" hidden>
                     </div>
+
+                    {{-- hidden old image path (optional for JS use only) --}}
+                    <input type="hidden" id="editOldIconImage" value="">
                 </div>
 
                 <div class="form-group-inline">
@@ -261,48 +261,71 @@
     </div>
 </div>
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        // ✅ ADD MODAL: icon select
-        document.querySelectorAll('.icon-option').forEach(function(el) {
-            el.addEventListener('click', function(e) {
-                e.preventDefault();
+        // ---------- ADD MODAL: click upload box -> open file picker ----------
+        const featureIconUpload = document.getElementById('featureIconUpload');
+        const featureIconFile = document.getElementById('featureIconFile');
+        const addPreview = document.getElementById('addFeatureIconPreview');
 
-                const val = this.getAttribute('data-value') || '';
+        if (featureIconUpload && featureIconFile) {
+            featureIconUpload.addEventListener('click', () => featureIconFile.click());
 
-                const iconInput = document.getElementById('iconInput');
-                const selectedIcon = document.getElementById('selectedIcon');
+            featureIconFile.addEventListener('change', function() {
+                const file = this.files && this.files[0];
+                if (!file) return;
 
-                if (iconInput) iconInput.value = val;
-                if (selectedIcon) selectedIcon.innerHTML = this.innerHTML;
+                const url = URL.createObjectURL(file);
+                addPreview.src = url;
+                addPreview.style.display = 'block';
             });
-        });
+        }
 
-        // ✅ EDIT: open modal fill data + set action url
+        // ---------- EDIT MODAL: click upload box -> open file picker ----------
+        const editFeatureIconUpload = document.getElementById('editFeatureIconUpload');
+        const editFeatureIconFile = document.getElementById('editFeatureIconFile');
+        const editPreview = document.getElementById('editFeatureIconPreview');
+
+        if (editFeatureIconUpload && editFeatureIconFile) {
+            editFeatureIconUpload.addEventListener('click', () => editFeatureIconFile.click());
+
+            editFeatureIconFile.addEventListener('change', function() {
+                const file = this.files && this.files[0];
+                if (!file) return;
+
+                const url = URL.createObjectURL(file);
+                editPreview.src = url;
+                editPreview.style.display = 'block';
+            });
+        }
+
+        // ---------- EDIT BUTTON: open modal fill data + set form action ----------
         document.querySelectorAll('.btn-edit').forEach(function(btn) {
             btn.addEventListener('click', function() {
 
                 const id = this.getAttribute('data-id');
                 const name = this.getAttribute('data-name') || '';
-                const icon = this.getAttribute('data-icon') || '';
                 const active = this.getAttribute('data-active') === '1';
 
+                // IMPORTANT: yaha image path bhejo: data-icon-image="features/xxxx.png"
+                const iconImage = this.getAttribute('data-icon-image') || '';
+
                 const editName = document.getElementById('editName');
-                const editIconInput = document.getElementById('editIconInput');
                 const editActive = document.getElementById('editActive');
-                const editSelectedIcon = document.getElementById('editSelectedIcon');
 
                 if (editName) editName.value = name;
-                if (editIconInput) editIconInput.value = icon;
                 if (editActive) editActive.checked = active;
 
-                // show selected icon in edit dropdown button
-                if (editSelectedIcon) {
-                    if (icon) {
-                        editSelectedIcon.innerHTML = `<i class="${icon} me-2"></i>${icon}`;
+                // show existing image preview in edit
+                if (editPreview) {
+                    if (iconImage) {
+                        editPreview.src = `{{ asset('storage') }}/${iconImage}`;
+                        editPreview.style.display = 'block';
                     } else {
-                        editSelectedIcon.innerHTML = `<i class="fa-solid fa-icons me-2"></i>Select Icon`;
+                        editPreview.src = '';
+                        editPreview.style.display = 'none';
                     }
                 }
 
@@ -312,26 +335,15 @@
 
                 const editForm = document.getElementById('editfeatureForm');
                 if (editForm) editForm.action = url;
-            });
-        });
 
-        // ✅ EDIT MODAL: icon select
-        document.querySelectorAll('.edit-icon-option').forEach(function(el) {
-            el.addEventListener('click', function(e) {
-                e.preventDefault();
-
-                const val = this.getAttribute('data-value') || '';
-
-                const editIconInput = document.getElementById('editIconInput');
-                const editSelectedIcon = document.getElementById('editSelectedIcon');
-
-                if (editIconInput) editIconInput.value = val;
-                if (editSelectedIcon) editSelectedIcon.innerHTML = this.innerHTML;
+                // clear previous selected file
+                if (editFeatureIconFile) editFeatureIconFile.value = '';
             });
         });
 
     });
 </script>
+
 
 
 @endsection

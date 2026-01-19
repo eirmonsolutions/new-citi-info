@@ -14,12 +14,17 @@ return new class extends Migration
         Schema::create('features', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('icon')->nullable();
+
+            // ✅ icon class removed
+            // $table->string('icon')->nullable();
+
+            // ✅ icon image column
+            $table->string('icon_image')->nullable();
+
             $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
