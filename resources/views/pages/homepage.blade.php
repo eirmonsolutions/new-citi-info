@@ -162,7 +162,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cityCounts['Melbourne']->listings_count ?? 0 }}
+                                {{ $cities['Melbourne']->listings_count ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -182,7 +182,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cityCounts['Sydney']->listings_count ?? 0 }}
+                                {{ $cities['Sydney']->listings_count ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -199,7 +199,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cityCounts['Perth']->listings_count ?? 0 }}
+                                {{ $cities['Perth']->listings_count ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -219,7 +219,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cityCounts['Perth']->listings_count ?? 0 }}
+                                {{ $cities['Perth']->listings_count ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -239,7 +239,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cityCounts['Brisbane']->listings_count ?? 0 }}
+                                {{ $cities['Brisbane']->listings_count ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -253,6 +253,7 @@
         </div>
     </div>
 </section>
+
 
 
 <!-- Featured Listings -->

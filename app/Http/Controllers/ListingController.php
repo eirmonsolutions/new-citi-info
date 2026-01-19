@@ -286,11 +286,11 @@ class ListingController extends Controller
                 }
             }
 
-        
+
             // ✅ FEATURES (save only once) — CSV from hidden inputs
-            $featuresStr      = $request->input('features');        
-            $featureImagesStr = $request->input('feature_images');  
-            $featureIdsStr    = $request->input('feature_id');      
+            $featuresStr      = $request->input('features');
+            $featureImagesStr = $request->input('feature_images');
+            $featureIdsStr    = $request->input('feature_id');
 
             if (!empty($featuresStr)) {
 
@@ -311,7 +311,7 @@ class ListingController extends Controller
                         'feature_name'  => $fname,
 
                         // ✅ old: feature_icon => now feature_image
-                        'feature_image' => $images[$i] ?? null,
+                        'feature_image' => $images[$i] ?? $iconImage,
                     ]);
                 }
             }

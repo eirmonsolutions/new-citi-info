@@ -135,10 +135,36 @@
 
     <!-- Production version -->
     <script src="https://unpkg.com/lucide@latest"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         lucide.createIcons();
     </script>
+
+    @if(session('success'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'success',
+                title: 'Submitted!',
+                text: @json(session('success')),
+                confirmButtonText: 'OK',
+            });
+        });
+    </script>
+    @endif
+
+    @if(session('error'))
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: @json(session('error')),
+                confirmButtonText: 'OK',
+            });
+        });
+    </script>
+    @endif
 
     @stack('scripts')
 </body>

@@ -35,7 +35,14 @@ class HomeController extends Controller
 
         $cityNames = ['Melbourne', 'Sydney', 'Perth', 'Brisbane'];
 
-        $cities = City::whereIn('name', $cityNames)
+        $cityIds = BusinessListing::whereNotNull('city')
+            ->select('city')
+            ->distinct()
+            ->pluck('city')
+            ->toArray();
+
+        $cities = City::whereIn('id', $cityIds)
+            ->whereIn('name', ['Melbourne', 'Sydney', 'Perth', 'Brisbane'])
             ->withCount([
                 'listings as listings_count' => function ($q) {
                     $q->where('is_allowed', 1)
@@ -44,7 +51,8 @@ class HomeController extends Controller
                 }
             ])
             ->get()
-            ->keyBy('name'); // ✅ access by city name
+            ->keyBy('name');
+
 
         return view('pages.homepage', compact('categories', 'listings', 'cities'));
     }

@@ -112,13 +112,34 @@
                     <td>
                         <div class="action-buttons">
 
-                            {{-- Pending -> Approve only --}}
+                            {{-- Pending -> View + Approve --}}
                             @if(($listing->status ?? 'pending') === 'pending' && !$listing->trashed())
-                            <form method="POST" action="{{ route('superadmin.listing.approve', $listing->id) }}">
+
+                            {{-- View --}}
+                            <a href="{{ route('superadmin.listing.view', $listing->id) }}"
+                                class="btn-icon btn-edit"
+                                title="View">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                                    <circle cx="12" cy="12" r="3" />
+                                </svg>
+                            </a>
+
+                            {{-- Approve --}}
+                            <form method="POST"
+                                action="{{ route('superadmin.listing.approve', $listing->id) }}"
+                                style="display:inline;">
                                 @csrf
                                 @method('PATCH')
-                                <button type="submit" class="theme-btn" style="padding:8px 14px;">Approve</button>
+                                <button type="submit"
+                                    class="theme-btn"
+                                    style="padding:8px 14px;">
+                                    Approve
+                                </button>
                             </form>
+
 
                             {{-- If in Trash -> Restore button --}}
                             @elseif($listing->trashed())

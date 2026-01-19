@@ -58,33 +58,22 @@ class AdminListingController extends Controller
     {
         Log::info('Admin Listing Submit Data:', $request->all());
 
-        // ✅ Accept both: (form fields) and (your JSON keys)
         $businessName = $request->input('business_name');
         $categoryId   = $request->input('category_id');
 
-        // JSON: country_id/state_id/city_id | Form: country_id/state_id/city_id OR state/city
         $countryId = $request->input('country_id');
         $stateVal  = $request->input('state') ?? $request->input('state_id');
         $cityVal   = $request->input('city')  ?? $request->input('city_id');
 
-        // JSON: full_address | Form: address
         $addressVal = $request->input('address') ?? $request->input('full_address');
-
-        // JSON: business_description | Form: description
-        $descVal = $request->input('description') ?? $request->input('business_description');
-
-        // JSON: listing_option | Form: listing_type
+        $descVal    = $request->input('description') ?? $request->input('business_description');
         $listingType = $request->input('listing_type') ?? $request->input('listing_option') ?? 'free';
 
         $request->validate([
             'business_name' => 'required|string|max:255',
             'category_id'   => 'required',
-
-            // admin form me logo required tha, lekin main store me nullable hai
-            // aap required rakhna chahte ho to nullable hata do
             'business_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'business_gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
-
             'email' => 'nullable|email',
         ]);
 
@@ -112,23 +101,20 @@ class AdminListingController extends Controller
                 $i++;
             }
 
-            // ✅ logo upload (admin form key: business_logo)
+            // ✅ logo upload
             $logoPath = null;
             if ($request->hasFile('business_logo')) {
-                // aapki main store path style:
                 $logoPath = $request->file('business_logo')->store('business/logo', 'public');
             }
 
-            // ✅ create listing (same as MAIN)
+            // ✅ create listing
             $listing = BusinessListing::create([
-                'user_id'        => auth()->id(),   // ✅ admin user_id
+                'user_id'        => auth()->id(),
                 'business_name'  => $businessName,
                 'category_id'    => $categoryId,
                 'category'       => $request->input('category') ?? null,
                 'slug'           => $slug,
 
-                // IMPORTANT: yaha columns aapke BusinessListing table ke hisaab se hone chahiye
-                // aapke MAIN store me: country/state/city/address
                 'country'        => $countryId,
                 'state'          => $stateVal,
                 'city'           => $cityVal,
@@ -147,7 +133,7 @@ class AdminListingController extends Controller
                 'submitted_at'   => now(),
             ]);
 
-            // ✅ contact (same as MAIN)
+            // ✅ contact
             if ($request->filled('contact_name') || $request->filled('phone') || $request->filled('email')) {
                 BusinessContact::create([
                     'business_id'     => $listing->id,
@@ -160,7 +146,7 @@ class AdminListingController extends Controller
                 ]);
             }
 
-            // ✅ auto create admin user + send credentials (same as MAIN)
+            // ✅ auto create admin user + send credentials
             $listingEmail = $request->input('email');
             if (!empty($listingEmail)) {
                 $user = User::where('email', $listingEmail)->first();
@@ -176,12 +162,11 @@ class AdminListingController extends Controller
                         'is_blocked' => 0,
                     ]);
 
-                    // mail send (optional: try/catch so transaction fail na ho)
                     Mail::to($listingEmail)->send(new ListingAdminCredentialsMail($user, $plainPassword));
                 }
             }
 
-            // ✅ business hours (same as MAIN)
+            // ✅ business hours
             $hours = $request->input('hours', []);
             $daysOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -200,7 +185,7 @@ class AdminListingController extends Controller
                 ]);
             }
 
-            // ✅ social links (same as MAIN)
+            // ✅ social links
             $platforms = $request->input('social_platform', []);
             $urls      = $request->input('social_url', []);
 
@@ -236,27 +221,32 @@ class AdminListingController extends Controller
                 }
             }
 
-            // ✅ FEATURES (CSV hidden inputs) (same as MAIN)
-            $featuresStr   = $request->input('features');
-            $featureIcons  = $request->input('feature_icons');
-            $featureIdsStr = $request->input('feature_id');
+            // ✅ FEATURES (FIXED: save image path into feature_image)
+            $featuresStr   = $request->input('features');         // csv names
+            $featureImages = $request->input('feature_icons');    // csv image paths (your hidden input)
+            $featureIdsStr = $request->input('feature_id');       // csv ids
 
             if (!empty($featuresStr)) {
-                $names = array_values(array_filter(array_map('trim', explode(',', $featuresStr))));
-                $icons = !empty($featureIcons) ? array_values(array_map('trim', explode(',', $featureIcons))) : [];
-                $ids   = !empty($featureIdsStr) ? array_values(array_map('trim', explode(',', $featureIdsStr))) : [];
+                $names  = array_values(array_filter(array_map('trim', explode(',', $featuresStr))));
+                $images = !empty($featureImages) ? array_values(array_map('trim', explode(',', $featureImages))) : [];
+                $ids    = !empty($featureIdsStr) ? array_values(array_map('trim', explode(',', $featureIdsStr))) : [];
 
-                foreach ($names as $i => $fname) {
+                foreach ($names as $idx => $fname) {
+                    $fid = $ids[$idx] ?? null;
+
+                    // optional fallback: Feature master icon_image
+                    $fallback = $fid ? Feature::where('id', $fid)->value('icon_image') : null;
+
                     BusinessFeature::create([
-                        'business_id'  => $listing->id,
-                        'feature_id'   => $ids[$i] ?? null,
-                        'feature_name' => $fname,
-                        'feature_icon' => $icons[$i] ?? null,
+                        'business_id'   => $listing->id,
+                        'feature_id'    => $fid,
+                        'feature_name'  => $fname,
+                        'feature_image' => $images[$idx] ?? $fallback, // ✅ important
                     ]);
                 }
             }
 
-            // ✅ services (form arrays OR JSON) (same as MAIN)
+            // ✅ services
             $sn = $request->input('service_name', []);
             if (is_array($sn) && count($sn)) {
                 foreach ($sn as $k => $name) {
@@ -295,7 +285,7 @@ class AdminListingController extends Controller
                 }
             }
 
-            // ✅ gallery upload (same as MAIN)
+            // ✅ gallery upload
             if ($request->hasFile('business_gallery')) {
                 foreach ($request->file('business_gallery') as $index => $img) {
                     $path = $img->store('business/gallery', 'public');
@@ -312,7 +302,7 @@ class AdminListingController extends Controller
                 }
             }
 
-            // ✅ video link (same as MAIN)
+            // ✅ video link
             $videoUrl = $request->input('video_link_url') ?? $request->input('youtube_video');
             if (!empty($videoUrl) || $request->filled('embed_code')) {
                 BusinessVideoLink::create([
@@ -327,6 +317,7 @@ class AdminListingController extends Controller
                 ->with('success', 'Listing submitted successfully! (Pending approval)');
         });
     }
+
 
 
     public function edit(BusinessListing $listing)
@@ -373,7 +364,9 @@ class AdminListingController extends Controller
         $addressVal = $request->input('address') ?? $request->input('full_address');
         $descVal    = $request->input('description') ?? $request->input('business_description');
 
-        $listingType = $request->input('listing_type') ?? $request->input('listing_option') ?? ($listing->listing_type ?? 'free');
+        $listingType = $request->input('listing_type')
+            ?? $request->input('listing_option')
+            ?? ($listing->listing_type ?? 'free');
 
         $request->validate([
             'business_name' => 'required|string|max:255',
@@ -396,13 +389,10 @@ class AdminListingController extends Controller
             $listingType
         ) {
 
-            // ✅ slug (only if you want to change on edit)
-            // If you want to keep old slug, comment this block
-            if ($request->filled('slug')) {
-                $baseSlug = Str::slug($request->input('slug'));
-            } else {
-                $baseSlug = Str::slug($businessName);
-            }
+            // ✅ slug unique (change on edit)
+            $baseSlug = $request->filled('slug')
+                ? Str::slug($request->input('slug'))
+                : Str::slug($businessName);
 
             $slug = $baseSlug;
             $i = 1;
@@ -437,9 +427,6 @@ class AdminListingController extends Controller
 
                 'listing_type'  => $listingType,
                 'is_featured'   => (bool)($request->input('is_featured') ?? $listing->is_featured),
-
-                // edit pe status generally same rehna chahiye
-                // 'status' => $listing->status,
             ]);
 
             // ✅ CONTACT (updateOrCreate)
@@ -464,8 +451,6 @@ class AdminListingController extends Controller
 
             foreach ($daysOrder as $day) {
                 $d = $hours[$day] ?? null;
-
-                // If checkbox OFF => inputs disabled => keys won't come => treat closed
                 $isClosed = empty($d) ? 1 : 0;
 
                 BusinessHour::create([
@@ -517,24 +502,29 @@ class AdminListingController extends Controller
                 }
             }
 
-            // ✅ FEATURES (delete + reinsert from CSV)
+            // ✅ FEATURES (delete + reinsert) — FIXED FOR IMAGE
             BusinessFeature::where('business_id', $listing->id)->delete();
 
-            $featuresStr   = $request->input('features');
-            $featureIcons  = $request->input('feature_icons');
-            $featureIdsStr = $request->input('feature_id');
+            $featuresStr    = $request->input('features');        // csv names
+            $featureImages  = $request->input('feature_icons');   // csv image paths (hidden input name)
+            $featureIdsStr  = $request->input('feature_id');      // csv ids
 
             if (!empty($featuresStr)) {
-                $names = array_values(array_filter(array_map('trim', explode(',', $featuresStr))));
-                $icons = !empty($featureIcons) ? array_values(array_map('trim', explode(',', $featureIcons))) : [];
-                $ids   = !empty($featureIdsStr) ? array_values(array_map('trim', explode(',', $featureIdsStr))) : [];
+                $names  = array_values(array_filter(array_map('trim', explode(',', $featuresStr))));
+                $images = !empty($featureImages) ? array_values(array_map('trim', explode(',', $featureImages))) : [];
+                $ids    = !empty($featureIdsStr) ? array_values(array_map('trim', explode(',', $featureIdsStr))) : [];
 
-                foreach ($names as $i => $fname) {
+                foreach ($names as $idx => $fname) {
+                    $fid = $ids[$idx] ?? null;
+
+                    // fallback: Feature master icon_image
+                    $fallback = $fid ? Feature::where('id', $fid)->value('icon_image') : null;
+
                     BusinessFeature::create([
-                        'business_id'  => $listing->id,
-                        'feature_id'   => $ids[$i] ?? null,
-                        'feature_name' => $fname,
-                        'feature_icon' => $icons[$i] ?? null,
+                        'business_id'   => $listing->id,
+                        'feature_id'    => $fid,
+                        'feature_name'  => $fname,
+                        'feature_image' => $images[$idx] ?? $fallback, // ✅ IMPORTANT
                     ]);
                 }
             }
@@ -542,7 +532,6 @@ class AdminListingController extends Controller
             // ✅ SERVICES (delete + reinsert)
             BusinessService::where('business_id', $listing->id)->delete();
 
-            // Your form uses services[0][name]...
             $services = $request->input('services', []);
             if (is_array($services)) {
                 foreach ($services as $k => $svc) {
@@ -582,9 +571,7 @@ class AdminListingController extends Controller
                 }
             }
 
-            
-
-            // ✅ VIDEO (updateOrCreate)
+            // ✅ VIDEO (updateOrCreate / delete if cleared)
             $videoUrl = $request->input('video_link_url') ?? $request->input('youtube_video');
 
             if (!empty($videoUrl) || $request->filled('embed_code')) {
@@ -597,7 +584,6 @@ class AdminListingController extends Controller
                     ]
                 );
             } else {
-                // if user cleared video, optional: delete record
                 BusinessVideoLink::where('business_id', $listing->id)->delete();
             }
 
@@ -605,6 +591,7 @@ class AdminListingController extends Controller
                 ->with('success', 'Listing updated successfully!');
         });
     }
+
 
     public function destroy(BusinessListing $listing)
     {

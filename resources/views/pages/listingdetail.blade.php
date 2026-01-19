@@ -63,7 +63,7 @@
             <div class="profile-detail-area">
                 <div class="profile-img">
                     <img
-                        src="{{ $listing->logo ? asset('storage/'.$listing->logo) : asset('assets/images/default-logo.png') }}"
+                        src="{{ $listing->logo ? asset('storage/'.$listing->logo) : asset('assets/images/favicon.jpg') }}"
                         alt="{{ $listing->business_name ?? 'Profile Image' }}">
                 </div>
                 <div class="profile-content">
@@ -315,11 +315,13 @@
 
                         <div class="icon-box icon-box-one">
                             <div class="icon">
-                                <i class="{{ $feat->feature->icon ?? $feat->feature_icon ?? 'flaticon-tag' }}"></i>
-                                <!-- <i class="{{ $feat->feature_icon }}"></i> -->
-                                <!-- <i data-lucide="{{ $feat->feature_icon }}"></i> -->
-
+                                @if(!empty($feat->feature_image))
+                                <img src="{{ asset('storage/'.$feat->feature_image) }}"
+                                    alt="{{ $feat->feature_name }}"
+                                    class="feature-icon-img" style="height:40px;width:40px;object-fit:contain;">
+                                @endif
                             </div>
+
                             <div class="info">
                                 <h6>{{ $feat->feature_name }}</h6>
                             </div>
@@ -331,8 +333,8 @@
                         </div>
                         @endforelse
                     </div>
-
                 </div>
+
 
 
                 <div class="listing-services-show">
