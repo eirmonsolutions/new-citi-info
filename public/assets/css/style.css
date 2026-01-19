@@ -4372,6 +4372,28 @@ button#submitBtn {
     transition: 0.2s ease;
 }
 
+.chip-feature-review {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: #ffe8f1;
+    /* light pink like screenshot */
+    color: #d1006c;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.chip-feature-review .chip-icon {
+    height: 30px;
+    width: 40px;
+    object-fit: contain;
+}
+
+.chip-feature-review .chip-text {
+    line-height: 1;
+}
 
 
 

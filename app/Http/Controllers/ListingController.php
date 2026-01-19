@@ -286,29 +286,36 @@ class ListingController extends Controller
                 }
             }
 
+        
             // ✅ FEATURES (save only once) — CSV from hidden inputs
-            $featuresStr   = $request->input('features');       // "Halwa,hfgfghf,parking"
-            $featureIcons  = $request->input('feature_icons');  // "flaticon-chef,flaticon-government,..."
-            $featureIdsStr = $request->input('feature_id');     // "6,4,5"
+            $featuresStr      = $request->input('features');        
+            $featureImagesStr = $request->input('feature_images');  
+            $featureIdsStr    = $request->input('feature_id');      
 
             if (!empty($featuresStr)) {
+
                 $names = array_values(array_filter(array_map('trim', explode(',', $featuresStr))));
-                $icons = !empty($featureIcons)
-                    ? array_values(array_map('trim', explode(',', $featureIcons)))
+
+                $images = !empty($featureImagesStr)
+                    ? array_values(array_map('trim', explode(',', $featureImagesStr)))
                     : [];
-                $ids   = !empty($featureIdsStr)
+
+                $ids = !empty($featureIdsStr)
                     ? array_values(array_map('trim', explode(',', $featureIdsStr)))
                     : [];
 
                 foreach ($names as $i => $fname) {
                     BusinessFeature::create([
-                        'business_id'  => $listing->id,
-                        'feature_id'   => $ids[$i] ?? null,
-                        'feature_name' => $fname,
-                        'feature_icon' => $icons[$i] ?? null,
+                        'business_id'   => $listing->id,
+                        'feature_id'    => $ids[$i] ?? null,
+                        'feature_name'  => $fname,
+
+                        // ✅ old: feature_icon => now feature_image
+                        'feature_image' => $images[$i] ?? null,
                     ]);
                 }
             }
+
 
 
 

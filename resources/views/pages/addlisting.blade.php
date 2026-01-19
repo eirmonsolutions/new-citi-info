@@ -804,18 +804,23 @@
                                         class="feature-tile"
                                         data-id="{{ $f->id }}"
                                         data-name="{{ $f->name }}"
-                                        data-icon="{{ $f->icon }}">
+                                        data-icon-image="{{ $f->icon_image }}">
                                         <span class="ft-icon">
-                                            @if(!empty($f->icon))
-                                            <i class="{{ $f->icon }}"></i>
+                                            @if(!empty($f->icon_image))
+                                            <img
+                                                src="{{ asset('storage/'.$f->icon_image) }}"
+                                                alt="{{ $f->name }}"
+                                                style="height:30px;width:40px;object-fit:contain;">
                                             @else
                                             <!-- fallback icon -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                                 <circle cx="12" cy="12" r="10"></circle>
                                                 <path d="M12 8v8M8 12h8"></path>
                                             </svg>
                                             @endif
                                         </span>
+
                                         <span class="ft-text">{{ $f->name }}</span>
                                     </button>
                                     @endforeach
@@ -830,13 +835,18 @@
 
                                 <div class="selected-chips" id="selectedChips"></div>
 
-                                {{-- hidden inputs (arrays) yahan JS append karega --}}
+                                {{-- hidden inputs --}}
                                 <div id="featuresHiddenWrap"></div>
                                 <input type="hidden" id="featureIDHidden" name="feature_id" value="">
                                 <input type="hidden" id="featuresHidden" name="features" value="">
-                                <input type="hidden" id="featureIconsHidden" name="feature_icons" value="">
 
+                                {{-- ✅ old: feature_icons (classes) removed --}}
+                                {{-- <input type="hidden" id="featureIconsHidden" name="feature_icons" value=""> --}}
+
+                                {{-- ✅ new: feature_images --}}
+                                <input type="hidden" id="featureImagesHidden" name="feature_images" value="">
                             </div>
+
                         </div>
 
                     </div>
@@ -1310,7 +1320,7 @@
                             <div class="listing-head">Listing Options</div>
 
                             <label class="opt-card active" id="optFreeWrap">
-                                <input type="radio" name="listing_option" value="free" >
+                                <input type="radio" name="listing_option" value="free">
                                 <div class="opt-body">
                                     <div class="opt-title">Free Listing</div>
                                     <div class="opt-sub">Basic listing with standard features</div>
@@ -1901,161 +1911,192 @@
         });
 
         // ====== Features Select (FIXED) ======
+        // ====== Features Select (UPDATED for icon_image) ======
         const featuresGrid = document.getElementById('featuresGrid');
         const selectedChips = document.getElementById('selectedChips');
         const selectedCount = document.getElementById('selectedCount');
 
-        const featuresHidden = document.getElementById('featuresHidden'); // CSV names
-        const featureIconsHidden = document.getElementById('featureIconsHidden'); // CSV icons
-        const featureIDHidden = document.getElementById('featureIDHidden'); // CSV icons
+        const featuresHidden = document.getElementById('featuresHidden'); // CSV names (optional)
+        const featureImagesHidden = document.getElementById('featureImagesHidden'); // ✅ CSV image paths
+        const featureIDHidden = document.getElementById('featureIDHidden'); // ✅ CSV ids
 
         const rvFeat = document.getElementById('rv_features_chips'); // Step6 review
 
-        if (!featuresGrid || !selectedChips || !selectedCount || !featuresHidden || !featureIconsHidden) {
-            return; // features section not on this page
-        }
+        if (!featuresGrid || !selectedChips || !selectedCount || !featuresHidden || !featureImagesHidden || !featureIDHidden) {
+            // features section not on this page
+        } else {
 
-        // Map key = feature_id (string), value = {name, icon}
-        const selected = new Map();
+            // Map key = feature_id (string), value = {name, icon_image}
+            const selected = new Map();
 
-        function setTileSelected(tile, isSel) {
-            tile.classList.toggle('is-selected', isSel);
-            tile.setAttribute('aria-pressed', isSel ? 'true' : 'false');
-        }
-
-        function syncHidden() {
-            const names = [];
-            const icons = [];
-            const ids = [];
-
-            selected.forEach((v, k) => { // k = feature_id
-                names.push(v.name);
-                icons.push(v.icon || '');
-                ids.push(k); // ✅ id Map key se
-            });
-
-            featuresHidden.value = names.join(',');
-            featureIconsHidden.value = icons.join(',');
-            featureIDHidden.value = ids.join(',');
-            selectedCount.textContent = String(selected.size);
-        }
-
-
-
-        function renderReviewFeatures() {
-            if (!rvFeat) return;
-
-            rvFeat.innerHTML = '';
-
-            if (selected.size === 0) {
-                rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
-                return;
+            function setTileSelected(tile, isSel) {
+                tile.classList.toggle('is-selected', isSel);
+                tile.setAttribute('aria-pressed', isSel ? 'true' : 'false');
             }
 
-            // Review chips (simple chips without remove button)
-            selected.forEach((v) => {
-                const chip = document.createElement('span');
-                chip.className = 'chip';
-                chip.textContent = v.name;
-                rvFeat.appendChild(chip);
-            });
-        }
+            function syncHidden() {
+                const names = [];
+                const images = [];
+                const ids = [];
 
-        function renderChips() {
-            selectedChips.innerHTML = '';
+                selected.forEach((v, k) => {
+                    names.push(v.name);
+                    images.push(v.icon_image || '');
+                    ids.push(k);
+                });
 
-            selected.forEach((v, id) => {
-                const chip = document.createElement('span');
-                chip.className = 'chip';
-                chip.setAttribute('data-id', id);
+                featuresHidden.value = names.join(',');
+                featureImagesHidden.value = images.join(',');
+                featureIDHidden.value = ids.join(',');
+                selectedCount.textContent = String(selected.size);
+            }
 
-                chip.innerHTML = `
-            ${v.name}
-            <button type="button" class="chip-remove" aria-label="Remove">×</button>
+            function renderReviewFeatures() {
+                if (!rvFeat) return;
+
+                rvFeat.innerHTML = '';
+
+                if (selected.size === 0) {
+                    rvFeat.innerHTML = `<span class="muted-sm">No features selected.</span>`;
+                    return;
+                }
+
+                selected.forEach((v) => {
+                    const chip = document.createElement('span');
+                    chip.className = 'chip chip-feature-review';
+
+                    const imgHtml = v.icon_image ?
+                        `<img src="/storage/${v.icon_image}" alt="" class="chip-icon">` :
+                        '';
+
+                    chip.innerHTML = `
+            ${imgHtml}
+            <span class="chip-text">${v.name}</span>
         `;
 
-                selectedChips.appendChild(chip);
-            });
-
-            syncHidden(); // count + hidden inputs update
-        }
-
-        // Click on tiles (select / deselect)
-        featuresGrid.addEventListener('click', function(e) {
-            const tile = e.target.closest('.feature-tile');
-            if (!tile) return;
-
-            const id = String(tile.getAttribute('data-id') || '').trim();
-            const name = String(tile.getAttribute('data-name') || '').trim();
-            const icon = String(tile.getAttribute('data-icon') || '').trim();
-
-            console.log({
-                id,
-                name,
-                icon
-            });
-
-            if (!id || !name) return;
-
-            if (selected.has(id)) {
-                selected.delete(id);
-                setTileSelected(tile, false);
-            } else {
-                selected.set(id, {
-                    name,
-                    icon
+                    rvFeat.appendChild(chip);
                 });
-                setTileSelected(tile, true);
             }
 
-            renderChips();
-        });
 
-        // Remove from chips
-        selectedChips.addEventListener('click', function(e) {
-            const btn = e.target.closest('.chip-remove');
-            if (!btn) return;
+            function renderChips() {
+                selectedChips.innerHTML = '';
 
-            const chip = btn.closest('.chip');
-            const id = chip?.getAttribute('data-id');
-            if (!id) return;
+                selected.forEach((v, id) => {
+                    const chip = document.createElement('span');
+                    chip.className = 'chip';
+                    chip.setAttribute('data-id', id);
 
-            // remove from map
-            selected.delete(String(id));
+                    // ✅ optional: show small image inside chip (if you want)
+                    const iconHtml = v.icon_image ?
+                        `<img src="/storage/${v.icon_image}" alt="" style="height:30px;width:40px;object-fit:contain;margin-right:6px;vertical-align:middle;">` :
+                        '';
 
-            // ✅ unselect upper tile
-            const tile = featuresGrid.querySelector(`.feature-tile[data-id="${CSS.escape(String(id))}"]`);
-            if (tile) setTileSelected(tile, false);
+                    chip.innerHTML = `
+                ${iconHtml}${v.name}
+                <button type="button" class="chip-remove" aria-label="Remove">×</button>
+            `;
 
-            renderChips();
-        });
+                    selectedChips.appendChild(chip);
+                });
 
-        // ✅ If edit page (already saved CSV in hidden) -> auto select
-        const savedNames = (featuresHidden.value || '').split(',').map(s => s.trim()).filter(Boolean);
-        const savedIcons = (featureIconsHidden.value || '').split(',').map(s => s.trim());
+                syncHidden();
+                renderReviewFeatures();
+            }
 
-        if (savedNames.length) {
-            // match by tile name (because CSV me ids nahi)
-            const tiles = featuresGrid.querySelectorAll('.feature-tile');
-            tiles.forEach((tile) => {
+            // Click on tiles (select / deselect)
+            featuresGrid.addEventListener('click', function(e) {
+                const tile = e.target.closest('.feature-tile');
+                if (!tile) return;
+
                 const id = String(tile.getAttribute('data-id') || '').trim();
                 const name = String(tile.getAttribute('data-name') || '').trim();
-                const icon = String(tile.getAttribute('data-icon') || '').trim();
+                const icon_image = String(tile.getAttribute('data-icon-image') || '').trim();
 
-                const idx = savedNames.findIndex(n => n.toLowerCase() === name.toLowerCase());
-                if (idx > -1 && id) {
+                if (!id || !name) return;
+
+                if (selected.has(id)) {
+                    selected.delete(id);
+                    setTileSelected(tile, false);
+                } else {
                     selected.set(id, {
                         name,
-                        icon: savedIcons[idx] || icon
+                        icon_image
                     });
                     setTileSelected(tile, true);
                 }
+
+                renderChips();
             });
 
-            renderChips();
-        } else {
-            renderReviewFeatures(); // initial
+            // Remove from chips
+            selectedChips.addEventListener('click', function(e) {
+                const btn = e.target.closest('.chip-remove');
+                if (!btn) return;
+
+                const chip = btn.closest('.chip');
+                const id = chip?.getAttribute('data-id');
+                if (!id) return;
+
+                selected.delete(String(id));
+
+                const tile = featuresGrid.querySelector(`.feature-tile[data-id="${CSS.escape(String(id))}"]`);
+                if (tile) setTileSelected(tile, false);
+
+                renderChips();
+            });
+
+            // ✅ If edit page (already saved) -> auto select using IDs (BEST)
+            const savedIds = (featureIDHidden.value || '').split(',').map(s => s.trim()).filter(Boolean);
+            const savedNames = (featuresHidden.value || '').split(',').map(s => s.trim()).filter(Boolean);
+            const savedImages = (featureImagesHidden.value || '').split(',').map(s => s.trim());
+
+            if (savedIds.length) {
+                const tiles = featuresGrid.querySelectorAll('.feature-tile');
+
+                tiles.forEach((tile) => {
+                    const id = String(tile.getAttribute('data-id') || '').trim();
+                    if (!id) return;
+
+                    const idx = savedIds.findIndex(x => x === id);
+                    if (idx > -1) {
+                        const name = String(tile.getAttribute('data-name') || '').trim();
+                        const icon_image = savedImages[idx] || String(tile.getAttribute('data-icon-image') || '').trim();
+
+                        selected.set(id, {
+                            name,
+                            icon_image
+                        });
+                        setTileSelected(tile, true);
+                    }
+                });
+
+                renderChips();
+            }
+            // fallback: old data (only names saved)
+            else if (savedNames.length) {
+                const tiles = featuresGrid.querySelectorAll('.feature-tile');
+                tiles.forEach((tile) => {
+                    const id = String(tile.getAttribute('data-id') || '').trim();
+                    const name = String(tile.getAttribute('data-name') || '').trim();
+                    const icon_image = String(tile.getAttribute('data-icon-image') || '').trim();
+
+                    const idx = savedNames.findIndex(n => n.toLowerCase() === name.toLowerCase());
+                    if (idx > -1 && id) {
+                        selected.set(id, {
+                            name,
+                            icon_image: savedImages[idx] || icon_image
+                        });
+                        setTileSelected(tile, true);
+                    }
+                });
+
+                renderChips();
+            } else {
+                renderReviewFeatures();
+            }
         }
+
 
     })();
 </script>
