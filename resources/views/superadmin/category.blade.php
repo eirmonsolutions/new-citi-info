@@ -171,6 +171,8 @@
 
 
 
+
+
 <!-- Modal -->
 <div class="modal fade CategoryModal" id="CategoryModal" tabindex="-1" aria-labelledby="categoryModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -336,6 +338,10 @@
         </div>
     </div>
 </div>
+
+@endsection
+
+@section('js')
 
 
 <script>
