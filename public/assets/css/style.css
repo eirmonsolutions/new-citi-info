@@ -695,6 +695,7 @@ input#rememberMe {
 .dashboard-wrapper {
     display: flex;
     position: relative;
+    height: 100%;
 }
 
 aside.sidebar-main {
