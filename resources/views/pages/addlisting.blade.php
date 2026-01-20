@@ -1316,7 +1316,7 @@
                         </div>
 
                         <!-- Listing Options -->
-                        <div class="listing-card mt-3">
+                        <!-- <div class="listing-card mt-3">
                             <div class="listing-head">Listing Options</div>
 
                             <label class="opt-card active" id="optFreeWrap">
@@ -1334,7 +1334,7 @@
                                     <div class="opt-sub">Enhanced visibility, priority placement, and additional features</div>
                                 </div>
                             </label>
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>

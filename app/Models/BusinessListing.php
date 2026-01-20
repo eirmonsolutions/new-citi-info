@@ -76,10 +76,6 @@ class BusinessListing extends Model
     }
 
 
-
-
-
-
     public function reviews()
     {
         return $this->hasMany(\App\Models\BusinessReview::class, 'business_id');
@@ -154,6 +150,7 @@ class BusinessListing extends Model
     {
         return $this->hasMany(\App\Models\Announcement::class, 'listing_id');
     }
+
 
     public function events()
     {

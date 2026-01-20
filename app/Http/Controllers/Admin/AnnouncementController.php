@@ -46,6 +46,7 @@ class AnnouncementController extends Controller
         return view('admin.announcement.create', compact('listings'));
     }
 
+
     public function store(Request $request)
     {
         $admin = auth()->user();

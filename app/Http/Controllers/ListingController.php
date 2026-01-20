@@ -146,6 +146,7 @@ class ListingController extends Controller
         return City::where('state_id', $request->state_id)->orderBy('name')->get();
     }
 
+
     public function store(Request $request)
     {
         Log::info('Form Submit Data:', $request->all());
@@ -154,19 +155,13 @@ class ListingController extends Controller
         $businessName = $request->input('business_name');
         $categoryId   = $request->input('category_id');
 
-
-        // JSON: country_id/state_id/city_id | Form: country_id/state/city (tumhare code me)
         $countryId = $request->input('country_id');
         $stateVal  = $request->input('state') ?? $request->input('state_id');
         $cityVal   = $request->input('city')  ?? $request->input('city_id');
 
-        // JSON: full_address | Form: address
         $addressVal = $request->input('address') ?? $request->input('full_address');
+        $descVal    = $request->input('description') ?? $request->input('business_description');
 
-        // JSON: business_description | Form: description
-        $descVal = $request->input('description') ?? $request->input('business_description');
-
-        // JSON: listing_option | Form: listing_type
         $listingType = $request->input('listing_type') ?? $request->input('listing_option') ?? 'free';
 
         $request->validate([
@@ -175,7 +170,9 @@ class ListingController extends Controller
             'agree_terms'   => 'accepted',
             'business_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'business_gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
-            'email' => 'nullable|email',
+
+            // ✅ make email required so we can create/assign admin user
+            'email' => 'required|email',
         ]);
 
         return DB::transaction(function () use (
@@ -187,7 +184,7 @@ class ListingController extends Controller
             $cityVal,
             $addressVal,
             $descVal,
-            $listingType,
+            $listingType
         ) {
 
             // ✅ slug
@@ -208,9 +205,33 @@ class ListingController extends Controller
                 $logoPath = $request->file('business_logo')->store('business/logo', 'public');
             }
 
-            // ✅ create listing
+            /**
+             * ✅ IMPORTANT FIX:
+             * First find/create USER by email (owner),
+             * then create listing using $user->id
+             */
+            $listingEmail = $request->input('email'); // now required from validation
+
+            $user = User::where('email', $listingEmail)->first();
+
+            if (!$user) {
+                $plainPassword = Str::random(10);
+
+                $user = User::create([
+                    'name'       => $request->input('contact_name') ?? $request->input('business_name') ?? 'Admin',
+                    'email'      => $listingEmail,
+                    'password'   => Hash::make($plainPassword),
+                    'role'       => 'admin',
+                    'is_blocked' => 0,
+                ]);
+
+                // ✅ mail send credentials only for new user
+                Mail::to($listingEmail)->send(new ListingAdminCredentialsMail($user, $plainPassword));
+            }
+
+            // ✅ create listing (NOW $user exists)
             $listing = BusinessListing::create([
-                'user_id'        => auth()->id(),
+                'user_id'       => $user->id, // ✅ FIXED
                 'business_name' => $businessName,
                 'category_id'   => $categoryId,
                 'category'      => $request->input('category') ?? null,
@@ -234,7 +255,7 @@ class ListingController extends Controller
                 'submitted_at'  => now(),
             ]);
 
-            // ✅ contact (JSON uses: contact_name, phone, email, alternate_phone, website)
+            // ✅ contact
             if ($request->filled('contact_name') || $request->filled('phone') || $request->filled('email')) {
                 BusinessContact::create([
                     'business_id'     => $listing->id,
@@ -247,60 +268,26 @@ class ListingController extends Controller
                 ]);
             }
 
-            $listingEmail = $request->email; // aapka email input name="email"
-
-            $user = User::where('email', $listingEmail)->first();
-
-            if (!$user) {
-                $plainPassword = Str::random(10);
-
-                $user = User::create([
-                    'name' => $request->contact_name ?? $request->business_name ?? 'Admin',
-                    'email' => $listingEmail,
-                    'password' => Hash::make($plainPassword),
-                    'role' => 'admin',
-                    'is_blocked' => 0,
-                ]);
-
-                // mail send
-                Mail::to($listingEmail)->send(new ListingAdminCredentialsMail($user, $plainPassword));
-            }
-
-
-
             // ✅ business hours save
             $hours = $request->input('hours', []);
-
             $daysOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
             foreach ($daysOrder as $day) {
                 $d = $hours[$day] ?? [];
-
-                // day closed agar start/end hi nahi
                 $isClosed = empty($d['start']) || empty($d['end']) ? 1 : 0;
 
                 BusinessHour::create([
                     'business_id' => $listing->id,
                     'day_of_week' => $day,
                     'is_closed'   => $isClosed,
-
-                    // open/close
                     'open_time'   => $d['start'] ?? null,
                     'close_time'  => $d['end'] ?? null,
-
-                    // lunch/break (agar user ne dala ho)
                     'break_start' => $d['lunch_start'] ?? null,
                     'break_end'   => $d['lunch_end'] ?? null,
                 ]);
             }
 
-
-
-
-            // ✅ social links:
-            // Handle BOTH:
-            // 1) Form arrays: social_platform[] + social_url[]
-            // 2) JSON direct fields: facebook, instagram, youtube, twitter, linkedin, snapchat
+            // ✅ social links
             $platforms = $request->input('social_platform', []);
             $urls      = $request->input('social_url', []);
 
@@ -336,43 +323,31 @@ class ListingController extends Controller
                 }
             }
 
-
             // ✅ FEATURES (save only once) — CSV from hidden inputs
             $featuresStr      = $request->input('features');
             $featureImagesStr = $request->input('feature_images');
             $featureIdsStr    = $request->input('feature_id');
 
             if (!empty($featuresStr)) {
-
                 $names = array_values(array_filter(array_map('trim', explode(',', $featuresStr))));
-
                 $images = !empty($featureImagesStr)
                     ? array_values(array_map('trim', explode(',', $featureImagesStr)))
                     : [];
-
                 $ids = !empty($featureIdsStr)
                     ? array_values(array_map('trim', explode(',', $featureIdsStr)))
                     : [];
 
-                foreach ($names as $i => $fname) {
+                foreach ($names as $idx => $fname) {
                     BusinessFeature::create([
                         'business_id'   => $listing->id,
-                        'feature_id'    => $ids[$i] ?? null,
+                        'feature_id'    => $ids[$idx] ?? null,
                         'feature_name'  => $fname,
-
-                        // ✅ old: feature_icon => now feature_image
-                        'feature_image' => $images[$i] ?? $iconImage,
+                        'feature_image' => $images[$idx] ?? null,
                     ]);
                 }
             }
 
-
-
-
-            // ✅ services:
-            // Handle BOTH:
-            // 1) Form arrays: service_name[]
-            // 2) JSON: services: [{name,price,duration}]
+            // ✅ services
             $sn = $request->input('service_name', []);
             if (is_array($sn) && count($sn)) {
                 foreach ($sn as $k => $name) {
@@ -411,23 +386,17 @@ class ListingController extends Controller
                 }
             }
 
-
             // ✅ gallery upload (multiple)
             if ($request->hasFile('business_gallery')) {
-
                 $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
 
                 foreach ($request->file('business_gallery') as $index => $img) {
-
                     $image = $manager->read($img->getPathname());
-
-                    // ✅ resize (max width 1200px)
                     $image->scaleDown(width: 1200);
 
                     $filename = uniqid('gallery_') . '.jpg';
-                    $path = 'business/gallery/' . $filename;   // ✅ same folder
+                    $path = 'business/gallery/' . $filename;
 
-                    // ✅ compress until <= 500 KB
                     $quality = 85;
                     do {
                         $encoded = $image->toJpeg($quality);
@@ -448,9 +417,7 @@ class ListingController extends Controller
                 }
             }
 
-
-            // ✅ video link (handle your JSON key also)
-            // JSON: youtube_video, Form: video_link_url/embed_code
+            // ✅ video link
             $videoUrl = $request->input('video_link_url') ?? $request->input('youtube_video');
 
             if (!empty($videoUrl) || $request->filled('embed_code')) {
@@ -461,9 +428,6 @@ class ListingController extends Controller
                     'provider'        => $request->input('provider'),
                 ]);
             }
-
-
-
 
             return back()->with('success', 'Your listing submitted successfully! (Pending approval)');
         });

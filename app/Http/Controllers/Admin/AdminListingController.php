@@ -35,12 +35,10 @@ class AdminListingController extends Controller
     {
         $listings = BusinessListing::where('user_id', auth()->id())
             ->latest()
-            ->get();
+            ->paginate(10);
 
         return view('admin.listing.index', compact('listings'));
     }
-
-
 
     // ✅ ADD LISTING PAGE (your 6-step design blade)
     public function create()
@@ -52,7 +50,7 @@ class AdminListingController extends Controller
         return view('admin.listing.create', compact('categories', 'countries', 'features'));
     }
 
-    // ✅ STORE (admin add karega to DB me save + pending)
+    // ✅ STORE (Dashboard admin add karega => ALWAYS current logged-in admin ki listing)
     public function store(Request $request)
     {
         Log::info('Admin Listing Submit Data:', $request->all());
@@ -79,7 +77,7 @@ class AdminListingController extends Controller
             'category_id'   => 'required',
             'business_logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'business_gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
-            'email' => 'nullable|email',
+            'email' => 'nullable|email', // ✅ contact email only (OWNER change nahi karega)
         ]);
 
         return DB::transaction(function () use (
@@ -94,9 +92,9 @@ class AdminListingController extends Controller
             $listingType
         ) {
 
-            // ✅ DEBUG: which user is creating
-            Log::info('STORE AUTH DEBUG', [
-                'auth_id' => auth()->id(),
+            // ✅ DEBUG: which admin is creating listing
+            Log::info('ADMIN STORE AUTH DEBUG', [
+                'auth_id'    => auth()->id(),
                 'auth_email' => optional(auth()->user())->email,
             ]);
 
@@ -118,44 +116,12 @@ class AdminListingController extends Controller
                 $logoPath = $request->file('business_logo')->store('business/logo', 'public');
             }
 
-            /**
-             * ✅ OWNER USER LOGIC
-             * - default owner = current logged in user
-             * - if listing email provided => assign listing to that email user (create if not exist)
-             */
+            // ✅ OWNER ALWAYS logged-in admin
             $ownerId = auth()->id();
-            $listingEmail = $request->input('email');
-
-            if (!empty($listingEmail)) {
-                $user = User::where('email', $listingEmail)->first();
-                $plainPassword = null;
-
-                if (!$user) {
-                    $plainPassword = Str::random(10);
-
-                    $user = User::create([
-                        'name'       => $request->input('contact_name')
-                            ?? $request->input('business_name')
-                            ?? 'Admin',
-                        'email'      => $listingEmail,
-                        'password'   => Hash::make($plainPassword),
-                        'role'       => 'admin',
-                        'is_blocked' => 0,
-                    ]);
-                }
-
-                // ✅ Listing belongs to that admin user (important fix)
-                $ownerId = $user->id;
-
-                // ✅ Send credentials only if user newly created
-                if (!empty($plainPassword)) {
-                    Mail::to($listingEmail)->send(new ListingAdminCredentialsMail($user, $plainPassword));
-                }
-            }
 
             // ✅ create listing
             $listing = BusinessListing::create([
-                'user_id'        => $ownerId,                 // ✅ FIXED
+                'user_id'        => $ownerId, // ✅ FIXED: ALWAYS current admin
                 'business_name'  => $businessName,
                 'category_id'    => $categoryId,
                 'category'       => $request->input('category') ?? null,
@@ -185,7 +151,7 @@ class AdminListingController extends Controller
                     'business_id'     => $listing->id,
                     'contact_name'    => $request->input('contact_name'),
                     'phone'           => $request->input('phone'),
-                    'email'           => $request->input('email'),
+                    'email'           => $request->input('email'), // ✅ contact email only
                     'alternate_phone' => $request->input('alternate_phone'),
                     'website'         => $request->input('website'),
                     'is_primary'      => true,
@@ -211,7 +177,7 @@ class AdminListingController extends Controller
                 ]);
             }
 
-            // ✅ social links (same as your current code)
+            // ✅ social links
             $platforms = $request->input('social_platform', []);
             $urls      = $request->input('social_url', []);
 
@@ -247,7 +213,7 @@ class AdminListingController extends Controller
                 }
             }
 
-            // ✅ FEATURES
+            // ✅ FEATURES (CSV)
             $featuresStr   = $request->input('features');
             $featureImages = $request->input('feature_icons');
             $featureIdsStr = $request->input('feature_id');
@@ -270,7 +236,7 @@ class AdminListingController extends Controller
                 }
             }
 
-            // ✅ SERVICES (your existing logic)
+            // ✅ SERVICES
             $sn = $request->input('service_name', []);
             if (is_array($sn) && count($sn)) {
                 foreach ($sn as $k => $name) {
@@ -342,9 +308,6 @@ class AdminListingController extends Controller
         });
     }
 
-
-
-
     public function edit(BusinessListing $listing)
     {
         abort_if($listing->user_id !== auth()->id(), 403);
@@ -353,7 +316,6 @@ class AdminListingController extends Controller
         $countries  = Country::orderBy('name')->get();
         $features   = Feature::orderBy('name')->get();
 
-        // ✅ relations load (model ke exact names)
         $listing->load([
             'categoryRel',
             'countryRel',
@@ -362,10 +324,10 @@ class AdminListingController extends Controller
             'contacts',
             'hours',
             'socialLinks',
-            'features',     // ✅ BusinessFeature rows
+            'features',
             'services',
             'gallery',
-            'videos',       // ✅ BusinessVideoLink rows
+            'videos',
         ]);
 
         return view('admin.listing.edit', compact('listing', 'categories', 'countries', 'features'));
