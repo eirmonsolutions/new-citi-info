@@ -5,6 +5,7 @@ use App\Http\Controllers\ListingPageController;
 use App\Http\Controllers\AboutPageController;
 use App\Http\Controllers\CategoryPageController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\SuperAdmin\CategoryController;
@@ -55,10 +56,10 @@ Route::post('/login', [LoginController::class, 'login'])->name('login.post');
 Route::post('/logout', [LogoutController::class, 'destroy'])
     ->name('logout');
 
+Route::get('/register', [RegisterController::class, 'show'])->name('register');
+Route::post('/register', [RegisterController::class, 'store'])->name('register.store');
 
-Route::get('/register', function () {
-    return view('auth.register');
-});
+
 
 // Route::get('/test-mail', function () {
 //     Mail::raw('Test Email OK', function ($m) {
@@ -180,6 +181,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
     Route::get('/listings/create', [AdminListingController::class, 'create'])->name('.listings.create');
     Route::post('/listings', [AdminListingController::class, 'store'])->name('.listings.store');
 });
+
 
 
 // Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])

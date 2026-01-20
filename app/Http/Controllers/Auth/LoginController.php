@@ -21,37 +21,41 @@ class LoginController extends Controller
         ]);
 
         $remember = $request->boolean('remember');
-
-        // ✅ only email + password
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            // ✅ if your table has is_blocked then check, else ignore
             $user = auth()->user();
 
             if (isset($user->is_blocked) && $user->is_blocked) {
                 Auth::logout();
+
+                if ($request->ajax()) {
+                    return response()->json(['ok' => false, 'message' => 'Your account is blocked.'], 403);
+                }
+
                 return back()->withErrors(['email' => 'Your account is blocked.'])->onlyInput('email');
             }
 
             $role = $user->role ?? 'user';
 
-            if ($role === 'superadmin') {
-                return redirect()->route('superadmin.dashboard');
+            $redirectTo = route('homepage');
+            if ($role === 'superadmin') $redirectTo = route('superadmin.dashboard');
+            if ($role === 'admin') $redirectTo = route('admin.dashboard');
+
+            if ($request->ajax()) {
+                return response()->json(['ok' => true, 'redirect_to' => $redirectTo]);
             }
 
-            if ($role === 'admin') {
-                return redirect()->route('admin.dashboard');
-            }
-
-            return redirect()->route('home');
+            return redirect()->to($redirectTo);
         }
 
-        return back()
-            ->withErrors(['email' => 'Invalid email or password'])
-            ->onlyInput('email');
+        if ($request->ajax()) {
+            return response()->json(['ok' => false, 'message' => 'Invalid email or password.'], 401);
+        }
+
+        return back()->withErrors(['email' => 'Invalid email or password'])->onlyInput('email');
     }
 
     public function logout(Request $request)

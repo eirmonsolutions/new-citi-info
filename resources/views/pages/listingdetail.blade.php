@@ -714,62 +714,70 @@
                                 </div>
 
                                 @php
-                                $social = $listing->socialLinks->pluck('url', 'platform');
-
-                                $facebook = $social['facebook'] ?? null;
-                                $instagram = $social['instagram'] ?? null;
-                                $youtube = $social['youtube'] ?? null;
-                                $twitter = $social['twitter'] ?? null;
-                                $linkedin = $social['linkedin'] ?? null;
-                                $snapchat = $social['snapchat'] ?? null;
+                                // ✅ platform => url map (trim + remove empty)
+                                $social = collect($listing->socialLinks)
+                                ->pluck('url', 'platform')
+                                ->map(fn ($url) => trim((string) $url))
+                                ->filter(); // removes null/empty/""
                                 @endphp
 
-
-
                                 <div class="social-links">
-                                    <a href="{{ $social['facebook'] ?? '#' }}" class="social-link facebook" target="_blank" rel="noopener">
+
+                                    @if($social->has('facebook'))
+                                    <a href="{{ $social['facebook'] }}" class="social-link facebook" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook-icon lucide-facebook">
                                             <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                                         </svg>
                                     </a>
+                                    @endif
 
-                                    <a href="{{ $social['instagram'] ?? '#' }}" class="social-link instagram" target="_blank" rel="noopener">
+                                    @if($social->has('instagram'))
+                                    <a href="{{ $social['instagram'] }}" class="social-link instagram" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram-icon lucide-instagram">
                                             <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
                                             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                                             <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
                                         </svg>
                                     </a>
+                                    @endif
 
-                                    <a href="{{ $social['youtube'] ?? '#' }}" class="social-link youtube" target="_blank" rel="noopener">
+                                    @if($social->has('youtube'))
+                                    <a href="{{ $social['youtube'] }}" class="social-link youtube" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-youtube-icon lucide-youtube">
                                             <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path>
                                             <path d="m10 15 5-3-5-3z"></path>
                                         </svg>
                                     </a>
+                                    @endif
 
-                                    <a href="{{ $social['twitter'] ?? '#' }}" class="social-link twitter" target="_blank" rel="noopener">
+                                    @if($social->has('twitter'))
+                                    <a href="{{ $social['twitter'] }}" class="social-link twitter" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter-icon lucide-twitter">
                                             <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
                                         </svg>
                                     </a>
+                                    @endif
 
-                                    <a href="{{ $social['linkedin'] ?? '#' }}" class="social-link linkedin" target="_blank" rel="noopener">
+                                    @if($social->has('linkedin'))
+                                    <a href="{{ $social['linkedin'] }}" class="social-link linkedin" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin-icon lucide-linkedin">
                                             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
                                             <rect width="4" height="12" x="2" y="9"></rect>
                                             <circle cx="4" cy="4" r="2"></circle>
                                         </svg>
                                     </a>
+                                    @endif
 
-                                    <a href="{{ $social['snapchat'] ?? '#' }}" class="social-link snapchat" target="_blank" rel="noopener">
+                                    @if($social->has('snapchat'))
+                                    <a href="{{ $social['snapchat'] }}" class="social-link snapchat" target="_blank" rel="noopener">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-snapchat-icon lucide-snapchat">
                                             <path d="M12 2c-3.4 0-6 2.6-6 6v2.3c0 .6-.3 1.1-.8 1.4-.6.4-1.3.7-2 .9-.7.2-1.2.7-1.2 1.3 0 .7.7 1.2 1.7 1.6 1.3.5 2.2 1.2 2.8 2.1.4.6 1 .9 1.7.9h1.1c.4 0 .7.2 1 .5.5.5 1.1.8 1.7.8s1.2-.3 1.7-.8c.3-.3.6-.5 1-.5h1.1c.7 0 1.3-.3 1.7-.9.6-.9 1.5-1.6 2.8-2.1 1-.4 1.7-.9 1.7-1.6 0-.6-.5-1.1-1.2-1.3-.7-.2-1.4-.5-2-.9-.5-.3-.8-.8-.8-1.4V8c0-3.4-2.6-6-6-6z"></path>
                                         </svg>
                                     </a>
-
+                                    @endif
 
                                 </div>
+
                             </div>
                         </div>
                     </div>

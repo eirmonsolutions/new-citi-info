@@ -3087,9 +3087,9 @@ span.profile-review-count {
 }
 
 .icon-box-one .icon {
-    min-width: 60px;
-    max-width: 60px;
-    height: 60px;
+    min-width: 80px;
+    max-width: 80px;
+    height: 80px;
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
@@ -3102,6 +3102,7 @@ span.profile-review-count {
     border: 1px solid #efefef;
     border-radius: 50%;
     margin-right: 20px;
+    background-color: #fff;
 }
 
 .icon-box-one .info h6 {
@@ -3173,6 +3174,7 @@ span.profile-review-count {
     box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     position: relative;
     margin-bottom: 20px;
+    background-color: #fff;
 }
 
 .contact-info ul {
@@ -3261,6 +3263,7 @@ span.profile-review-count {
     box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     position: relative;
     margin-bottom: 20px;
+    background-color: #fff;
 }
 
 .business-hour-list ul li span.day-title {
@@ -3295,6 +3298,7 @@ span.profile-review-count {
     box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     position: relative;
     margin-bottom: 20px;
+    background-color: #fff;
 }
 
 .btn-submit {
@@ -4352,6 +4356,7 @@ a.tp-btn-blue {
     box-shadow: 0 4px 12px rgb(0 0 0 / 10%);
     position: relative;
     margin-bottom: 20px;
+    background-color: #fff;
 }
 
 .pagination-wrap {
@@ -4400,12 +4405,127 @@ button#submitBtn {
 }
 
 
+/*  */
 
 
 
+/* User dropdown in navbar */
+.user-dd {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
 
+.profile-box {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: #fff;
+    background: #2f6df6;
+    font-size: 14px;
+}
 
+.profile-img img {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+}
 
+.dropdown-trigger {
+    border: none;
+    background: transparent;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 6px 8px;
+    border-radius: 10px;
+}
+
+.dropdown-trigger:hover {
+    background: rgba(0, 0, 0, 0.04);
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1;
+}
+
+.chev {
+    font-size: 14px;
+    transition: transform .2s ease;
+}
+
+.user-dd.open .chev {
+    transform: rotate(180deg);
+}
+
+/* Dropdown menu */
+.dropdown-menu-user {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    border-radius: 14px;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+    padding: 10px;
+    z-index: 9999;
+
+    /* animation start state */
+    opacity: 0;
+    transform: translateY(-12px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+}
+
+/* Open state: niche se upper feel */
+.user-dd.open .dropdown-menu-user {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.dd-item {
+    display: flex;
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    color: #111;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 14px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+}
+
+.dd-item:hover {
+    background: rgba(0, 0, 0, 0.05);
+}
+
+.dd-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.08);
+    margin: 8px 0;
+}
+
+.dd-danger {
+    color: #dc3545;
+}
+
+.dropdown-trigger:hover {
+    background-color: transparent;
+}
 
 
 

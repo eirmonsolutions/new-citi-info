@@ -47,7 +47,7 @@
                             <a href="/register" class="link-btn btn-2 default-bg">Register</a>
                         </div>
                         <div class="clearfix"></div>
-                        <form action="{{ route('login.post') }}" method="POST">
+                        <form action="{{ route('login.post') }}" id="loginForm" method="POST">
                             @csrf
                             <div class="form-group form-box">
                                 <label for="first_field" class="form-label">Email address</label>
@@ -101,7 +101,73 @@
     <script src="{{ asset('assets/js/ScrollTrigger.js') }}"></script>
     <!-- Custom JS -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('loginForm');
+            if (!form) return;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const btn = form.querySelector('button[type="submit"]');
+                if (btn) btn.disabled = true;
+
+                try {
+                    const res = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: new FormData(form)
+                    });
+
+                    if (res.status === 422) {
+                        const data = await res.json();
+                        const firstError = data?.errors ? Object.values(data.errors)[0][0] : 'Validation error';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: firstError
+                        });
+                        return;
+                    }
+
+                    // Unauthorized (invalid creds) - we will return json from controller
+                    const data = await res.json().catch(() => null);
+
+                    if (res.ok && data?.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Welcome!',
+                            text: 'Login successful.',
+                            confirmButtonText: 'Continue'
+                        });
+                        window.location.href = data.redirect_to || "{{ route('homepage') }}";
+                        return;
+                    }
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops!',
+                        text: data?.message || 'Invalid email or password.'
+                    });
+
+                } catch (err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Network error. Please try again.'
+                    });
+                } finally {
+                    if (btn) btn.disabled = false;
+                }
+            });
+        });
+    </script>
     @stack('scripts')
 </body>
 

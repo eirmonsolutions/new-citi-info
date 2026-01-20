@@ -47,38 +47,46 @@
                             <a href="/register" class="link-btn btn-2 default-bg">Register</a>
                         </div>
                         <div class="clearfix"></div>
-                        <form action="#" method="POST">
+                        <form id="registerForm" action="{{ route('register.store') }}" method="POST">
+                            @csrf
+
                             <div class="form-group form-box">
                                 <label for="full_name" class="form-label">Full Name</label>
                                 <input name="name" type="text" class="form-control" id="full_name"
-                                    placeholder="Full Name" aria-label="Full Name">
+                                    placeholder="Full Name" value="{{ old('name') }}">
+                                @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
 
                             <div class="form-group form-box">
                                 <label for="email" class="form-label">Email Address</label>
                                 <input name="email" type="email" class="form-control" id="email"
-                                    placeholder="Email Address" aria-label="Email Address">
+                                    placeholder="Email Address" value="{{ old('email') }}">
+                                @error('email') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
 
                             <div class="form-group form-box">
                                 <label for="second_field" class="form-label">Password</label>
                                 <input name="password" type="password" class="form-control" autocomplete="off"
-                                    id="second_field" placeholder="Password" aria-label="Password">
+                                    id="second_field" placeholder="Password">
+                                @error('password') <small class="text-danger">{{ $message }}</small> @enderror
                             </div>
 
                             <div class="checkbox form-group form-box">
                                 <div class="form-check checkbox-theme">
-                                    <input class="form-check-input" type="checkbox" value="" id="rememberMe">
+                                    <input class="form-check-input" type="checkbox" value="1" id="rememberMe"
+                                        name="agree_terms" {{ old('agree_terms') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="rememberMe">
                                         I agree to the terms of service
                                     </label>
                                 </div>
+                                @error('agree_terms') <small class="text-danger d-block">{{ $message }}</small> @enderror
                             </div>
 
                             <div class="form-group mb-0">
                                 <button type="submit" class="btn-md btn-theme w-100">Register</button>
                             </div>
                         </form>
+
 
                     </div>
                 </div>
@@ -100,7 +108,90 @@
     <!-- Custom JS -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
-    @stack('scripts')
+
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('registerForm');
+            if (!form) return;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                // checkbox validation (front-end)
+                const agree = form.querySelector('input[name="agree_terms"]');
+                if (agree && !agree.checked) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Terms Required',
+                        text: 'Please agree to the terms of service.',
+                    });
+                    return;
+                }
+
+                const btn = form.querySelector('button[type="submit"]');
+                if (btn) btn.disabled = true;
+
+                try {
+                    const res = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
+                            'Accept': 'application/json'
+                        },
+                        body: new FormData(form)
+                    });
+
+                    // Laravel validation errors (422)
+                    if (res.status === 422) {
+                        const data = await res.json();
+                        const firstError = data?.errors ? Object.values(data.errors)[0][0] : 'Validation error';
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: firstError
+                        });
+                        return;
+                    }
+
+                    // Success
+                    if (res.ok) {
+                        await Swal.fire({
+                            icon: 'success',
+                            title: 'Congratulations!',
+                            text: 'You are now registered. Now you can login.',
+                            confirmButtonText: 'Go to Login'
+                        });
+
+                        window.location.href = "{{ route('login') }}";
+                        return;
+                    }
+
+                    // Other errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Something went wrong. Please try again.'
+                    });
+
+                } catch (err) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Network error. Please try again.'
+                    });
+                } finally {
+                    if (btn) btn.disabled = false;
+                }
+            });
+        });
+    </script>
+
+
+
 </body>
 
 </html>

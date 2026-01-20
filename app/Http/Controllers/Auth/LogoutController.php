@@ -16,6 +16,6 @@ class LogoutController extends Controller
         $request->session()->regenerateToken();
 
         // Sab roles ka login same hai, so login page pe redirect
-        return redirect()->route('login');
+        return redirect()->route('homepage');
     }
 }
