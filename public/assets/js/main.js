@@ -18,3 +18,34 @@ document.addEventListener("DOMContentLoaded", function () {
         );
     });
 });
+//
+
+document.addEventListener("click", async (e) => {
+    const btn = e.target.closest(".wishlist-btn");
+    if (!btn) return;
+
+    const businessId = btn.dataset.businessId;
+
+    const res = await fetch("{{ route('wishlist.toggle') }}", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]')
+                .content,
+            Accept: "application/json",
+        },
+        body: JSON.stringify({
+            business_id: businessId,
+        }),
+    });
+
+    if (res.status === 401) {
+        window.location.href = "{{ route('login') }}";
+        return;
+    }
+
+    const data = await res.json();
+
+    if (data.saved) btn.classList.add("is-saved");
+    else btn.classList.remove("is-saved");
+});

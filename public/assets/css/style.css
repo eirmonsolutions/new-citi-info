@@ -4595,6 +4595,11 @@ button#submitBtn {
 .bh-closed{ color:#e53935; }
 
 
+.action-btn.is-saved svg {
+  stroke: red;
+  fill: red;
+}
+
 
 
 

@@ -34,50 +34,50 @@
 
                     {{-- Auth dropdown --}}
                     @auth
-@php
-    $user = auth()->user();
-    $role = $user->role ?? 'user';
+                    @php
+                    $user = auth()->user();
+                    $role = $user->role ?? 'user';
 
-    // Basic user data
-    $name   = $user->name ?? 'User';
-    $avatar = $user->avatar ?? null;
+                    // Basic user data
+                    $name = $user->name ?? 'User';
+                    $avatar = $user->avatar ?? null;
 
-    // Default display name
-    $displayName = $name;
+                    // Default display name
+                    $displayName = $name;
 
-    // Default dashboard route (safe fallback)
-    $dashboardRoute = route('homepage');
+                    // Default dashboard route (safe fallback)
+                    $dashboardRoute = route('homepage');
 
-    // SUPERADMIN
-    if ($role === 'superadmin') {
-        $displayName   = 'Super Admin';
-        $dashboardRoute = route('superadmin.dashboard');
-    }
+                    // SUPERADMIN
+                    if ($role === 'superadmin') {
+                    $displayName = 'Super Admin';
+                    $dashboardRoute = route('superadmin.dashboard');
+                    }
 
-    // ADMIN
-    if ($role === 'admin') {
+                    // ADMIN
+                    if ($role === 'admin') {
 
-        // jis user ka business admin manage karta hai
-        $businessUserId = $user->business_user_id ?? $user->id;
+                    // jis user ka business admin manage karta hai
+                    $businessUserId = $user->business_user_id ?? $user->id;
 
-        $businessName = \App\Models\BusinessListing::where('user_id', $businessUserId)
-            ->latest('id')
-            ->value('business_name');
+                    $businessName = \App\Models\BusinessListing::where('user_id', $businessUserId)
+                    ->latest('id')
+                    ->value('business_name');
 
-        if (!empty($businessName)) {
-            $displayName = $businessName;
-        }
+                    if (!empty($businessName)) {
+                    $displayName = $businessName;
+                    }
 
-        $dashboardRoute = route('admin.dashboard');
-    }
+                    $dashboardRoute = route('admin.dashboard');
+                    }
 
-    // Initials (user / business dono ke liye)
-    $parts = preg_split('/\s+/', trim($displayName));
-    $initials = strtoupper(
-        substr($parts[0] ?? 'U', 0, 1) .
-        substr($parts[1] ?? '', 0, 1)
-    );
-@endphp
+                    // Initials (user / business dono ke liye)
+                    $parts = preg_split('/\s+/', trim($displayName));
+                    $initials = strtoupper(
+                    substr($parts[0] ?? 'U', 0, 1) .
+                    substr($parts[1] ?? '', 0, 1)
+                    );
+                    @endphp
 
 
 
@@ -111,9 +111,13 @@
                             <a href="" class="dd-item">
                                 My Profile
                             </a>
-                            <a href="" class="dd-item">
-                                Wishlist (38)
+
+
+                            <a href="{{ route('wishlist.toggle') }}" class="dd-item">
+                                Wishlist (<span id="wishlistCount">{{ $wishlistCount ?? 0 }}</span>)
                             </a>
+
+
                             <a href="" class="dd-item">
                                 Notifications
                             </a>

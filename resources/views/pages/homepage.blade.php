@@ -287,13 +287,29 @@
                         </div>
                         <div class="image-overlay"></div>
 
+                        @foreach($listings as $listing)
+
+                        @php
+                        $isSaved = in_array($listing->id, $wishIds);
+                        @endphp
+
                         <div class="action-buttons">
-                            <button class="action-btn" title="Save">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-heart-icon lucide-heart">
+                            <button
+                                class="action-btn wishlist-btn {{ $isSaved ? 'is-saved' : '' }}"
+                                type="button"
+                                title="Save"
+                                data-business-id="{{ $listing->id }}">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-heart-icon">
                                     <path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
                                 </svg>
                             </button>
                         </div>
+
+                        @endforeach
+
 
                         {{-- ✅ DYNAMIC STATUS BADGE (Open/Closed/Lunch) --}}
                         @php
@@ -423,9 +439,6 @@
             @endforelse
         </div>
 </section>
-
-
-
 
 <!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
@@ -855,5 +868,9 @@
         color: #0069d9;
     }
 </style>
+
+
+
+
 
 @endsection

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\City;
 use App\Models\BusinessListing;
+use App\Models\Wishlist;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,12 @@ class HomeController extends Controller
             ->orderBy('id', 'desc')
             ->take(8)
             ->get();
+
+        $wishIds = auth()->check()
+            ? Wishlist::where('user_id', auth()->id())
+            ->pluck('business_id')
+            ->toArray()
+            : [];
 
         // ✅ FRONTEND LISTINGS (ONLY allowed + published)
         $listings = BusinessListing::with(['gallery', 'hours']) // ✅ add this
@@ -54,6 +61,6 @@ class HomeController extends Controller
             ->keyBy('name');
 
 
-        return view('pages.homepage', compact('categories', 'listings', 'cities'));
+        return view('pages.homepage', compact('categories', 'listings', 'cities', 'wishIds'));
     }
 }

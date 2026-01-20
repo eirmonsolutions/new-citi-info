@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ListingPageController;
 use App\Http\Controllers\AboutPageController;
@@ -74,6 +75,8 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register.s
 
 Route::post('/get-states', [ListingController::class, 'getStates'])->name('get.states');
 Route::post('/get-cities', [ListingController::class, 'getCities'])->name('get.cities');
+
+
 
 
 
@@ -182,7 +185,13 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
     Route::delete('/listing/{listing}', [AdminListingController::class, 'destroy'])->name('.listing.destroy');
     Route::get('/listings/create', [AdminListingController::class, 'create'])->name('.listings.create');
     Route::post('/listings', [AdminListingController::class, 'store'])->name('.listings.store');
+
+
+    // whishlist
+    Route::get('/wishlist', [WishlistController::class, 'indexAdmin'])->name('.wishlist.index');
 });
+
+
 
 
 
@@ -227,3 +236,7 @@ Route::post('/listing/{slug}/reviews', [ListingController::class, 'storeReview']
 
 Route::get('/ajax/city/by-coords', [AjaxLocationController::class, 'cityByCoords'])
     ->name('ajax.city.by-coords');
+
+
+Route::post('/wishlists/toggle', [WishlistController::class, 'toggle'])
+    ->name('wishlist.toggle');
