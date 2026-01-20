@@ -31,17 +31,16 @@ use App\Mail\ListingAdminCredentialsMail;
 
 class AdminListingController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $adminId = auth()->id();
-
-        $listings = \App\Models\BusinessListing::with('categoryRel', 'cityRel')
-            ->where('user_id', $adminId)
-            ->orderByDesc('id')
+        $listings = BusinessListing::where('user_id', auth()->id())
+            ->latest()
             ->get();
 
         return view('admin.listing.index', compact('listings'));
     }
+
+
 
     // ✅ ADD LISTING PAGE (your 6-step design blade)
     public function create()
@@ -58,6 +57,9 @@ class AdminListingController extends Controller
     {
         Log::info('Admin Listing Submit Data:', $request->all());
 
+        // ✅ MUST: user logged-in
+        abort_if(!auth()->check(), 403, 'Unauthorized');
+
         $businessName = $request->input('business_name');
         $categoryId   = $request->input('category_id');
 
@@ -67,7 +69,10 @@ class AdminListingController extends Controller
 
         $addressVal = $request->input('address') ?? $request->input('full_address');
         $descVal    = $request->input('description') ?? $request->input('business_description');
-        $listingType = $request->input('listing_type') ?? $request->input('listing_option') ?? 'free';
+
+        $listingType = $request->input('listing_type')
+            ?? $request->input('listing_option')
+            ?? 'free';
 
         $request->validate([
             'business_name' => 'required|string|max:255',
@@ -89,6 +94,12 @@ class AdminListingController extends Controller
             $listingType
         ) {
 
+            // ✅ DEBUG: which user is creating
+            Log::info('STORE AUTH DEBUG', [
+                'auth_id' => auth()->id(),
+                'auth_email' => optional(auth()->user())->email,
+            ]);
+
             // ✅ slug unique
             $baseSlug = $request->filled('slug')
                 ? Str::slug($request->input('slug'))
@@ -107,9 +118,44 @@ class AdminListingController extends Controller
                 $logoPath = $request->file('business_logo')->store('business/logo', 'public');
             }
 
+            /**
+             * ✅ OWNER USER LOGIC
+             * - default owner = current logged in user
+             * - if listing email provided => assign listing to that email user (create if not exist)
+             */
+            $ownerId = auth()->id();
+            $listingEmail = $request->input('email');
+
+            if (!empty($listingEmail)) {
+                $user = User::where('email', $listingEmail)->first();
+                $plainPassword = null;
+
+                if (!$user) {
+                    $plainPassword = Str::random(10);
+
+                    $user = User::create([
+                        'name'       => $request->input('contact_name')
+                            ?? $request->input('business_name')
+                            ?? 'Admin',
+                        'email'      => $listingEmail,
+                        'password'   => Hash::make($plainPassword),
+                        'role'       => 'admin',
+                        'is_blocked' => 0,
+                    ]);
+                }
+
+                // ✅ Listing belongs to that admin user (important fix)
+                $ownerId = $user->id;
+
+                // ✅ Send credentials only if user newly created
+                if (!empty($plainPassword)) {
+                    Mail::to($listingEmail)->send(new ListingAdminCredentialsMail($user, $plainPassword));
+                }
+            }
+
             // ✅ create listing
             $listing = BusinessListing::create([
-                'user_id'        => auth()->id(),
+                'user_id'        => $ownerId,                 // ✅ FIXED
                 'business_name'  => $businessName,
                 'category_id'    => $categoryId,
                 'category'       => $request->input('category') ?? null,
@@ -146,26 +192,6 @@ class AdminListingController extends Controller
                 ]);
             }
 
-            // ✅ auto create admin user + send credentials
-            $listingEmail = $request->input('email');
-            if (!empty($listingEmail)) {
-                $user = User::where('email', $listingEmail)->first();
-
-                if (!$user) {
-                    $plainPassword = Str::random(10);
-
-                    $user = User::create([
-                        'name'       => $request->input('contact_name') ?? $request->input('business_name') ?? 'Admin',
-                        'email'      => $listingEmail,
-                        'password'   => Hash::make($plainPassword),
-                        'role'       => 'admin',
-                        'is_blocked' => 0,
-                    ]);
-
-                    Mail::to($listingEmail)->send(new ListingAdminCredentialsMail($user, $plainPassword));
-                }
-            }
-
             // ✅ business hours
             $hours = $request->input('hours', []);
             $daysOrder = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
@@ -185,7 +211,7 @@ class AdminListingController extends Controller
                 ]);
             }
 
-            // ✅ social links
+            // ✅ social links (same as your current code)
             $platforms = $request->input('social_platform', []);
             $urls      = $request->input('social_url', []);
 
@@ -221,10 +247,10 @@ class AdminListingController extends Controller
                 }
             }
 
-            // ✅ FEATURES (FIXED: save image path into feature_image)
-            $featuresStr   = $request->input('features');         // csv names
-            $featureImages = $request->input('feature_icons');    // csv image paths (your hidden input)
-            $featureIdsStr = $request->input('feature_id');       // csv ids
+            // ✅ FEATURES
+            $featuresStr   = $request->input('features');
+            $featureImages = $request->input('feature_icons');
+            $featureIdsStr = $request->input('feature_id');
 
             if (!empty($featuresStr)) {
                 $names  = array_values(array_filter(array_map('trim', explode(',', $featuresStr))));
@@ -233,20 +259,18 @@ class AdminListingController extends Controller
 
                 foreach ($names as $idx => $fname) {
                     $fid = $ids[$idx] ?? null;
-
-                    // optional fallback: Feature master icon_image
                     $fallback = $fid ? Feature::where('id', $fid)->value('icon_image') : null;
 
                     BusinessFeature::create([
                         'business_id'   => $listing->id,
                         'feature_id'    => $fid,
                         'feature_name'  => $fname,
-                        'feature_image' => $images[$idx] ?? $fallback, // ✅ important
+                        'feature_image' => $images[$idx] ?? $fallback,
                     ]);
                 }
             }
 
-            // ✅ services
+            // ✅ SERVICES (your existing logic)
             $sn = $request->input('service_name', []);
             if (is_array($sn) && count($sn)) {
                 foreach ($sn as $k => $name) {
@@ -317,6 +341,7 @@ class AdminListingController extends Controller
                 ->with('success', 'Listing submitted successfully! (Pending approval)');
         });
     }
+
 
 
 
