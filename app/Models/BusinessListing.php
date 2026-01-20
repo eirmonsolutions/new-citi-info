@@ -87,7 +87,7 @@ class BusinessListing extends Model
 
     public function faqs()
     {
-        return $this->hasMany(\App\Models\Faq::class, 'listing_id');
+        return $this->hasMany(\App\Models\FAQ::class, 'listing_id');
     }
 
 
