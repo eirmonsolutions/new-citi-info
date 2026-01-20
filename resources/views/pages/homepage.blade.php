@@ -287,7 +287,7 @@
                         </div>
                         <div class="image-overlay"></div>
 
-                        @foreach($listings as $listing)
+                       
 
                         @php
                         $isSaved = in_array($listing->id, $wishIds);
@@ -308,7 +308,7 @@
                             </button>
                         </div>
 
-                        @endforeach
+                        
 
 
                         {{-- ✅ DYNAMIC STATUS BADGE (Open/Closed/Lunch) --}}
