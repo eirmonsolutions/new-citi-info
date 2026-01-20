@@ -11,10 +11,10 @@ class AnnouncementController extends Controller
 {
     public function index()
     {
-        $announcements = Announcement::with('listing')
-            ->latest()
+        $announcements = Announcement::where('listing_id', $listing->id)
+            ->where('is_active', 1)
             ->get();
-
+            
         return view('admin.announcement.index', compact('announcements'));
     }
 

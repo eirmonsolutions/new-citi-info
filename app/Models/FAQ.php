@@ -11,7 +11,7 @@ class FAQ extends Model
 
     public function listing()
     {
-        return $this->belongsTo(BusinessListing::class, 'listing_id');
+        return $this->belongsTo(\App\Models\BusinessListing::class, 'listing_id');
     }
 
     public function items()

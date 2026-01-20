@@ -37,4 +37,6 @@ class Announcement extends Model
             ->whereDate('start_date', '<=', $today)
             ->whereDate('end_date', '>=', $today);
     }
+
+
 }
