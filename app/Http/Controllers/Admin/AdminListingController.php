@@ -33,12 +33,12 @@ class AdminListingController extends Controller
 {
     public function index(Request $request)
     {
-        $adminId = auth()->id(); // ✅ since admin guard nahi hai
+        $adminId = auth()->id();
 
-        $listings = BusinessListing::with(['categoryRel:id,name', 'cityRel:id,name'])
-            ->where('user_id', $adminId) // ✅ user_id match
-            ->latest()
-            ->paginate(10);
+        $listings = \App\Models\BusinessListing::with('categoryRel', 'cityRel')
+            ->where('user_id', $adminId)
+            ->orderByDesc('id')
+            ->get();
 
         return view('admin.listing.index', compact('listings'));
     }

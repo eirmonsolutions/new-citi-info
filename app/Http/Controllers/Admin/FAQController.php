@@ -1,6 +1,5 @@
 <?php
 
-// app/Http/Controllers/Admin/FAQController.php
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -14,7 +13,15 @@ class FAQController extends Controller
 {
     public function index()
     {
-        $faqs = FAQ::with(['listing'])->latest()->get();
+        $admin = auth()->user();
+
+        $listingIds = BusinessListing::where('user_id', $admin->id)->pluck('id');
+
+        $faqs = FAQ::with('listing')
+            ->whereIn('listing_id', $listingIds)
+            ->latest()
+            ->get();
+
         return view('admin.faq.index', compact('faqs'));
     }
 
@@ -22,8 +29,7 @@ class FAQController extends Controller
     {
         $admin = auth()->user();
 
-        // ✅ Sirf login admin ki listings
-        $listings = \App\Models\BusinessListing::select('id', 'business_name')
+        $listings = BusinessListing::select('id', 'business_name')
             ->where('user_id', $admin->id)
             ->orderBy('business_name')
             ->get();
@@ -31,20 +37,21 @@ class FAQController extends Controller
         return view('admin.faq.create', compact('listings'));
     }
 
-
     public function store(Request $request)
     {
+        $admin = auth()->user();
+        $allowedListingIds = BusinessListing::where('user_id', $admin->id)->pluck('id')->toArray();
+
         $validated = $request->validate([
-            'listing_id'   => ['required', 'integer', 'exists:business_listings,id'],
+            'listing_id'   => ['required', 'integer', 'in:' . implode(',', $allowedListingIds)],
             'listing_name' => ['required', 'string', 'max:255'],
 
-            'faq_items'               => ['required', 'array', 'min:1'],
-            'faq_items.*.question'    => ['required', 'string', 'max:255'],
-            'faq_items.*.answer'      => ['nullable', 'string'],
+            'faq_items'            => ['required', 'array', 'min:1'],
+            'faq_items.*.question' => ['required', 'string', 'max:255'],
+            'faq_items.*.answer'   => ['nullable', 'string'],
         ]);
 
         DB::transaction(function () use ($validated) {
-
             $faq = FAQ::create([
                 'listing_id'   => $validated['listing_id'],
                 'listing_name' => $validated['listing_name'],
@@ -71,8 +78,12 @@ class FAQController extends Controller
     {
         $admin = auth()->user();
 
-        // ✅ Sirf login admin ki listings
-        $listings = \App\Models\BusinessListing::select('id', 'business_name')
+        $owns = BusinessListing::where('id', $faq->listing_id)
+            ->where('user_id', $admin->id)
+            ->exists();
+        abort_if(!$owns, 403);
+
+        $listings = BusinessListing::select('id', 'business_name')
             ->where('user_id', $admin->id)
             ->orderBy('business_name')
             ->get();
@@ -82,26 +93,29 @@ class FAQController extends Controller
         return view('admin.faq.edit', compact('faq', 'listings'));
     }
 
-
     public function update(Request $request, FAQ $faq)
     {
+        $admin = auth()->user();
+
+        $allowedListingIds = BusinessListing::where('user_id', $admin->id)->pluck('id')->toArray();
+
+        abort_if(!in_array($faq->listing_id, $allowedListingIds), 403);
+
         $validated = $request->validate([
-            'listing_id'   => ['required', 'integer', 'exists:business_listings,id'],
+            'listing_id'   => ['required', 'integer', 'in:' . implode(',', $allowedListingIds)],
             'listing_name' => ['required', 'string', 'max:255'],
 
-            'faq_items'               => ['required', 'array', 'min:1'],
-            'faq_items.*.question'    => ['required', 'string', 'max:255'],
-            'faq_items.*.answer'      => ['nullable', 'string'],
+            'faq_items'            => ['required', 'array', 'min:1'],
+            'faq_items.*.question' => ['required', 'string', 'max:255'],
+            'faq_items.*.answer'   => ['nullable', 'string'],
         ]);
 
         DB::transaction(function () use ($validated, $faq) {
-
             $faq->update([
                 'listing_id'   => $validated['listing_id'],
                 'listing_name' => $validated['listing_name'],
             ]);
 
-            // easy & safe: delete old items then insert new
             $faq->items()->delete();
 
             $rows = [];
@@ -123,7 +137,15 @@ class FAQController extends Controller
 
     public function destroy(FAQ $faq)
     {
+        $admin = auth()->user();
+
+        $owns = BusinessListing::where('id', $faq->listing_id)
+            ->where('user_id', $admin->id)
+            ->exists();
+        abort_if(!$owns, 403);
+
         $faq->delete();
+
         return redirect()->route('admin.faq.index')->with('success', 'FAQ deleted successfully.');
     }
 }
