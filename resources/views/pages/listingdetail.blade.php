@@ -357,7 +357,7 @@
                                             @endphp
                                             {{ $symbol }}{{ number_format($service->price, 2) }}
                                             @else
-                                            
+
                                             @endif
                                         </div>
                                     </li>
@@ -752,47 +752,83 @@
 
                 <div class="listing-business-hour">
                     @php
+                    use Carbon\Carbon;
+
                     $daysOrder = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 
-                    // safe: agar rows nahi hain to empty collection
                     $hoursByDay = ($listing->hours ?? collect())
                     ->keyBy(fn($h) => strtolower($h->day_of_week));
 
-                    $fmt = function ($t) {
-                    return $t ? \Carbon\Carbon::parse($t)->format('g:i A') : null;
-                    };
+                    $fmt = fn($t) => $t ? Carbon::parse($t)->format('g:i a') : null;
+
+                    $todayKey = strtolower(now()->format('l')); // monday...
+                    $todayRow = $hoursByDay->get($todayKey);
+
+                    $isClosedToday = !$todayRow || (int)($todayRow->is_closed ?? 0) === 1;
+
+                    $openStr = (!$isClosedToday) ? $fmt($todayRow->open_time) : null;
+                    $closeStr = (!$isClosedToday) ? $fmt($todayRow->close_time) : null;
+
+                    // Top label (Google-style)
+                    $topLabel = $isClosedToday
+                    ? 'Closed'
+                    : ($openStr && $closeStr ? "Open · Closes {$closeStr}" : 'Open');
+
                     @endphp
 
                     <h3 class="heading-title">Business Hour</h3>
 
-                    <div class="row mt-3">
-                        <div class="col-md-12">
-                            <div class="business-hour-list">
-                                <ul>
-                                    @foreach($daysOrder as $day)
-                                    @php $h = $hoursByDay->get($day); @endphp
-                                    <li>
-                                        <span class="day-title">{{ ucfirst($day) }}</span>
-
-                                        @if(!$h || (int)$h->is_closed === 1)
-                                        <span class="day-close">Closed</span>
-                                        @else
-                                        <span class="day-time">
-                                            {{ $fmt($h->open_time) }} - {{ $fmt($h->close_time) }}
-                                        </span>
-                                        @endif
-                                    </li>
-                                    @endforeach
-                                </ul>
+                    <div class="bh-dropdown" id="bhDropdown">
+                        <button type="button" class="bh-trigger" id="bhTrigger" aria-expanded="false">
+                            <div class="bh-left">
+                                <span class="bh-title">Hours:</span>
+                                <span class="bh-today">{{ ucfirst($todayKey) }}</span>
+                                <span class="bh-status {{ $isClosedToday ? 'is-closed' : 'is-open' }}">
+                                    {{ $topLabel }}
+                                </span>
                             </div>
+
+                            <span class="bh-caret" aria-hidden="true">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="m6 9 6 6 6-6" />
+                                </svg>
+                            </span>
+                        </button>
+
+                        <div class="bh-menu" id="bhMenu" role="menu">
+                            @foreach($daysOrder as $day)
+                            @php
+                            $h = $hoursByDay->get($day);
+                            $closed = !$h || (int)($h->is_closed ?? 0) === 1;
+
+                            $dayOpen = $closed ? null : $fmt($h->open_time ?? null);
+                            $dayClose = $closed ? null : $fmt($h->close_time ?? null);
+
+                            $line = $closed ? 'Closed' : ($dayOpen && $dayClose ? "{$dayOpen} – {$dayClose}" : 'Open');
+                            $isToday = $day === $todayKey;
+                            @endphp
+
+                            <div class="bh-row {{ $isToday ? 'is-today' : '' }}">
+                                <span class="bh-day">{{ ucfirst($day) }}</span>
+
+                                @if($closed)
+                                <span class="bh-time bh-closed">Closed</span>
+                                @else
+                                <span class="bh-time">{{ $line }}</span>
+                                @endif
+                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
 
 
 
+
                 <div class="listing-contact-form">
-                    <h3 class="heading-title">Appointment Form</h3>
+                    <h3 class="heading-title">Quick Enquiry</h3>
 
                     <div class="row mt-3">
                         <div class="col-md-12">
@@ -952,6 +988,38 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const wrap = document.getElementById('bhDropdown');
+        if (!wrap) return;
+
+        const btn = document.getElementById('bhTrigger');
+        const menu = document.getElementById('bhMenu');
+
+        const open = () => {
+            wrap.classList.add('open');
+            btn.setAttribute('aria-expanded', 'true');
+        };
+
+        const close = () => {
+            wrap.classList.remove('open');
+            btn.setAttribute('aria-expanded', 'false');
+        };
+
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            wrap.classList.contains('open') ? close() : open();
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!wrap.contains(e.target)) close();
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') close();
+        });
+    });
+</script>
 
 
 <script>
