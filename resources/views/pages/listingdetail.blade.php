@@ -346,19 +346,25 @@
                                 <ul>
                                     @forelse($listing->services as $service)
                                     <li>
-                                        <div class="services-name">{{ $service->name }}</div>
+                                        <div class="services-name">
+                                            {{ $service->name }}
+                                        </div>
 
                                         <div class="services-price">
+                                            @if(!is_null($service->price) && $service->price !== '' && $service->price > 0)
                                             @php
-                                            $symbol = $service->currency ? $service->currency : '$';
+                                            $symbol = $service->currency ?? '$';
                                             @endphp
-                                            {{ $symbol }}{{ is_numeric($service->price) ? number_format($service->price, 2) : $service->price }}
+                                            {{ $symbol }}{{ number_format($service->price, 2) }}
+                                            @else
+                                            {{-- Optional text --}}
+                                            <span class="text-muted">Contact for price</span>
+                                            @endif
                                         </div>
                                     </li>
                                     @empty
                                     <li>
                                         <div class="services-name">No services found</div>
-                                        <div class="services-price"></div>
                                     </li>
                                     @endforelse
                                 </ul>
@@ -366,6 +372,7 @@
                         </div>
                     </div>
                 </div>
+
 
                 @if($listing->faqs->count())
                 <div class="faq ">
