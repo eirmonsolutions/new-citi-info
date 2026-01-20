@@ -75,6 +75,13 @@ class BusinessListing extends Model
         });
     }
 
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\BusinessReview::class, 'business_id');
+    }
+
+
+
     public function faqs()
     {
         return $this->hasMany(\App\Models\FAQ::class, 'listing_id')->latest();

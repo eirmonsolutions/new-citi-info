@@ -403,7 +403,7 @@
                     <div class="heading-flex">
                         <h2 class="heading-title mb-0">Reviews</h2>
                         <button type="button" class="review-btn" data-bs-toggle="modal" data-bs-target="#reviewForm">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-line-icon lucide-pen-line">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M13 21h8" />
                                 <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z" />
                             </svg>
@@ -411,486 +411,426 @@
                         </button>
                     </div>
 
-                    <div class="row g-4 pb-3 mb-3">
+                    @php
+                    $total = $totalReviews ?? 0;
+                    $avg = $avgRating ?? 0;
+                    $counts = $starCounts ?? [5=>0,4=>0,3=>0,2=>0,1=>0];
+
+                    $pct = function($n) use ($total) {
+                    if ($total <= 0) return 0;
+                        return round(($n / $total) * 100, 1);
+                        };
+                        @endphp
+
+                        <div class="row g-4 pb-3 mb-3">
                         <div class="col-sm-5 col-md-3 col-lg-4">
                             <div class="review-box-flex">
-                                <h1>4.5</h1>
+                                <h1>{{ number_format($avg, 1) }}</h1>
+
                                 <div class="review-box-star-icon">
-                                    <i data-lucide="star"></i>
-                                    <i data-lucide="star"></i>
-                                    <i data-lucide="star"></i>
-                                    <i data-lucide="star"></i>
-                                    <i data-lucide="star"></i>
+                                    @for($i=1; $i<=5; $i++)
+                                        <i data-lucide="star"></i>
+                                        @endfor
                                 </div>
-                                <div class="total-review">76 reviews</div>
+
+                                <div class="total-review">{{ $total }} reviews</div>
                             </div>
                         </div>
+
                         <div class="col-sm-7 col-md-9 col-lg-8">
                             <div class="review-progress-bar-wrapper">
-                                <div class="review-progress-bar-box">
-                                    <div class="review-progress-bar-1">
-                                        5
-                                        <i data-lucide="star"></i>
-                                    </div>
-                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
-                                        <div class="progress-bar bg-warning rounded-pill" style="width: 58%"></div>
-                                    </div>
-                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">44</div>
-                                </div>
 
+                                @for($s=5; $s>=1; $s--)
                                 <div class="review-progress-bar-box">
                                     <div class="review-progress-bar-1">
-                                        4
-                                        <i data-lucide="star"></i>
+                                        {{ $s }} <i data-lucide="star"></i>
                                     </div>
-                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
-                                        <div class="progress-bar bg-warning rounded-pill" style="width: 22.4%"></div>
-                                    </div>
-                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">17</div>
-                                </div>
 
-                                <div class="review-progress-bar-box">
-                                    <div class="review-progress-bar-1">
-                                        3
-                                        <i data-lucide="star"></i>
+                                    <div class="progress w-100" role="progressbar" aria-valuenow="{{ $pct($counts[$s]) }}" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
+                                        <div class="progress-bar bg-warning rounded-pill" style="width: {{ $pct($counts[$s]) }}%"></div>
                                     </div>
-                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
-                                        <div class="progress-bar bg-warning rounded-pill" style="width: 12%"></div>
-                                    </div>
-                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">9</div>
-                                </div>
 
-                                <div class="review-progress-bar-box">
-                                    <div class="review-progress-bar-1">
-                                        2
-                                        <i data-lucide="star"></i>
+                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">
+                                        {{ $counts[$s] }}
                                     </div>
-                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
-                                        <div class="progress-bar bg-warning rounded-pill" style="width: 5%"></div>
-                                    </div>
-                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">4</div>
                                 </div>
+                                @endfor
 
-                                <div class="review-progress-bar-box">
-                                    <div class="review-progress-bar-1">
-                                        1
-                                        <i data-lucide="star"></i>
-                                    </div>
-                                    <div class="progress w-100" role="progressbar" aria-label="Five stars" aria-valuenow="58" aria-valuemin="0" aria-valuemax="100" style="height: 6px">
-                                        <div class="progress-bar bg-warning rounded-pill" style="width: 2.6%"></div>
-                                    </div>
-                                    <div class="fs-sm text-nowrap text-end" style="width: 40px;">2</div>
-                                </div>
                             </div>
                         </div>
+                </div>
+
+                <div class="review-details">
+                    @forelse($reviews as $r)
+                    <div class="review-details-box">
+                        <div class="review-info">
+                            <h6>{{ $r->name }}</h6>
+                            <span class="review-date">{{ $r->created_at->format('F d, Y') }}</span>
+                        </div>
+
+                        <div class="review-star">
+                            @for($i=1; $i<=5; $i++)
+                                <i data-lucide="star"></i>
+                                @endfor
+                        </div>
+
+                        <p>{{ $r->review }}</p>
                     </div>
+                    @empty
+                    <p class="text-muted">No reviews yet. Be the first one to review.</p>
+                    @endforelse
+                </div>
 
-                    <div class="review-details">
-                        <div class="review-details-box">
-                            <div class="review-info">
-                                <h6>Vishal Thakur</h6>
-                                <span class="review-date">November 19, 2024</span>
-                            </div>
-                            <div class="review-star">
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                            </div>
-                            <p>
-                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
-                            </p>
-                        </div>
-
-                        <div class="review-details-box">
-                            <div class="review-info">
-                                <h6>Vishal Thakur</h6>
-                                <span class="review-date">November 19, 2024</span>
-                            </div>
-                            <div class="review-star">
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                            </div>
-                            <p>
-                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
-                            </p>
-                        </div>
-
-                        <div class="review-details-box">
-                            <div class="review-info">
-                                <h6>Vishal Thakur</h6>
-                                <span class="review-date">November 19, 2024</span>
-                            </div>
-                            <div class="review-star">
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                            </div>
-                            <p>
-                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
-                            </p>
-                        </div>
-
-                        <div class="review-details-box">
-                            <div class="review-info">
-                                <h6>Vishal Thakur</h6>
-                                <span class="review-date">November 19, 2024</span>
-                            </div>
-                            <div class="review-star">
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                            </div>
-                            <p>
-                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
-                            </p>
-                        </div>
-
-                        <div class="review-details-box">
-                            <div class="review-info">
-                                <h6>Vishal Thakur</h6>
-                                <span class="review-date">November 19, 2024</span>
-                            </div>
-                            <div class="review-star">
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                                <i data-lucide="star"></i>
-                            </div>
-                            <p>
-                                From start to finish, his cooperation was incredibly smooth. The pricing was quite reasonable, and the task was completed efficiently and with a high level of cleanliness. I'm delighted that we chose Mike over the other companies we considered based on quotes.
-                            </p>
-                        </div>
-
-
-                    </div>
-
+                @if($reviews->hasPages())
+                <div class="pt-4">
                     <nav class="pt-4 mt-1 mt-sm-0" aria-label="Reviews pagination">
                         <ul class="pagination">
+
+                            {{-- Previous --}}
+                            @if($reviews->onFirstPage())
+                            <li class="page-item disabled">
+                                <span class="page-link" aria-hidden="true">&laquo;</span>
+                            </li>
+                            @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $reviews->previousPageUrl() }}" aria-label="Previous">
+                                    &laquo;
+                                </a>
+                            </li>
+                            @endif
+
+                            {{-- Page Numbers + Dots --}}
+                            @foreach ($reviews->links()->elements[0] ?? [] as $page => $url)
+                            @if ($page == $reviews->currentPage())
                             <li class="page-item active" aria-current="page">
                                 <span class="page-link">
-                                    1
+                                    {{ $page }}
                                     <span class="visually-hidden">(current)</span>
                                 </span>
                             </li>
+                            @else
                             <li class="page-item">
-                                <a class="page-link" href="#!">2</a>
+                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
                             </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#!">3</a>
-                            </li>
-                            <li class="page-item">
-                                <a class="page-link" href="#!">4</a>
-                            </li>
+                            @endif
+                            @endforeach
+
+                            {{-- If dots exist --}}
+                            @if(isset($reviews->links()->elements[1]) && is_string($reviews->links()->elements[1]))
                             <li class="page-item">
                                 <span class="page-link pe-none">...</span>
                             </li>
+                            @endif
+
+                            {{-- Next --}}
+                            @if($reviews->hasMorePages())
                             <li class="page-item">
-                                <a class="page-link" href="#!">16</a>
+                                <a class="page-link" href="{{ $reviews->nextPageUrl() }}" aria-label="Next">
+                                    &raquo;
+                                </a>
                             </li>
+                            @else
+                            <li class="page-item disabled">
+                                <span class="page-link" aria-hidden="true">&raquo;</span>
+                            </li>
+                            @endif
+
                         </ul>
                     </nav>
+                </div>
+                @endif
 
+            </div>
+
+
+
+        </div>
+
+        <div class="col-lg-12 col-xl-4">
+            <div class="top-sticky">
+
+
+
+                @if($listing->coupons->count())
+                @foreach($listing->coupons as $coupon)
+                <div class="couponBar d-none d-xl-block ">
+
+                    <div class="couponBar__content">
+
+                        <div class="couponBar__text">
+                            <strong>PROMOTION.</strong>
+                            {{ \Illuminate\Support\Str::limit($coupon->details, 90) }}
+                            Use Coupon
+                        </div>
+
+                        <div class="couponBar__right">
+                            <div class="couponCodeText">
+                                {{ $coupon->code }}
+                            </div>
+
+                            <button type="button" class="copyCouponBtn">
+                                COPY
+                            </button>
+
+
+                        </div>
+                        <div class="couponTimer"
+                            data-end="{{ \Carbon\Carbon::parse($coupon->end_date)->endOfDay()->timestamp }}">
+                            --
+                        </div>
+
+                    </div>
+
+                    <button type="button" class="closeCouponBar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+                @endforeach
+                @endif
+
+
+
+
+
+                <div class="listing-details-sidebar">
+                    <h3 class="heading-title">Contact Information</h3>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="contact-info">
+                                <ul>
+                                    <li>
+                                        <span class="contact-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
+                                                <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+                                                <circle cx="12" cy="10" r="3" />
+                                            </svg>
+                                        </span>
+
+                                        {{ $listing->address }}
+                                    </li>
+
+                                    <li>
+                                        <span class="contact-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone-call-icon lucide-phone-call">
+                                                <path d="M13 2a9 9 0 0 1 9 9" />
+                                                <path d="M13 6a5 5 0 0 1 5 5" />
+                                                <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
+                                            </svg>
+                                        </span>
+
+                                        {{ $listing->contacts->first()->phone }}
+                                    </li>
+
+                                    <li>
+                                        <span class="contact-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                                                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                                                <rect x="2" y="4" width="20" height="16" rx="2" />
+                                            </svg>
+                                        </span>
+
+                                        {{ $listing->contacts->first()->email }}
+                                    </li>
+
+                                    <li>
+                                        <span class="contact-icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe-icon lucide-globe">
+                                                <circle cx="12" cy="12" r="10" />
+                                                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                                                <path d="M2 12h20" />
+                                            </svg>
+                                        </span>
+
+                                        <a href="{{ $listing->contacts->first()->website }}" target="_blank">
+                                            {{ $listing->contacts->first()->website }}
+                                        </a>
+                                    </li>
+
+
+                                </ul>
+                            </div>
+
+                            @php
+                            // ✅ platform => url map (trim + remove empty)
+                            $social = collect($listing->socialLinks)
+                            ->pluck('url', 'platform')
+                            ->map(fn ($url) => trim((string) $url))
+                            ->filter(); // removes null/empty/""
+                            @endphp
+
+                            <div class="social-links">
+
+                                @if($social->has('facebook'))
+                                <a href="{{ $social['facebook'] }}" class="social-link facebook" target="_blank" rel="noopener">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook-icon lucide-facebook">
+                                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                                    </svg>
+                                </a>
+                                @endif
+
+                                @if($social->has('instagram'))
+                                <a href="{{ $social['instagram'] }}" class="social-link instagram" target="_blank" rel="noopener">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram-icon lucide-instagram">
+                                        <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
+                                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                        <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
+                                    </svg>
+                                </a>
+                                @endif
+
+                                @if($social->has('youtube'))
+                                <a href="{{ $social['youtube'] }}" class="social-link youtube" target="_blank" rel="noopener">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-youtube-icon lucide-youtube">
+                                        <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path>
+                                        <path d="m10 15 5-3-5-3z"></path>
+                                    </svg>
+                                </a>
+                                @endif
+
+                                @if($social->has('twitter'))
+                                <a href="{{ $social['twitter'] }}" class="social-link twitter" target="_blank" rel="noopener">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter-icon lucide-twitter">
+                                        <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
+                                    </svg>
+                                </a>
+                                @endif
+
+                                @if($social->has('linkedin'))
+                                <a href="{{ $social['linkedin'] }}" class="social-link linkedin" target="_blank" rel="noopener">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin-icon lucide-linkedin">
+                                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                                        <rect width="4" height="12" x="2" y="9"></rect>
+                                        <circle cx="4" cy="4" r="2"></circle>
+                                    </svg>
+                                </a>
+                                @endif
+
+                                @if($social->has('snapchat'))
+                                <a href="{{ $social['snapchat'] }}" class="social-link snapchat" target="_blank" rel="noopener">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-snapchat-icon lucide-snapchat">
+                                        <path d="M12 2c-3.4 0-6 2.6-6 6v2.3c0 .6-.3 1.1-.8 1.4-.6.4-1.3.7-2 .9-.7.2-1.2.7-1.2 1.3 0 .7.7 1.2 1.7 1.6 1.3.5 2.2 1.2 2.8 2.1.4.6 1 .9 1.7.9h1.1c.4 0 .7.2 1 .5.5.5 1.1.8 1.7.8s1.2-.3 1.7-.8c.3-.3.6-.5 1-.5h1.1c.7 0 1.3-.3 1.7-.9.6-.9 1.5-1.6 2.8-2.1 1-.4 1.7-.9 1.7-1.6 0-.6-.5-1.1-1.2-1.3-.7-.2-1.4-.5-2-.9-.5-.3-.8-.8-.8-1.4V8c0-3.4-2.6-6-6-6z"></path>
+                                    </svg>
+                                </a>
+                                @endif
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="map-sidebar">
+                    {{-- Map Preview --}}
+                    @if(!empty($listing->address))
+                    @php
+                    $mapQuery = urlencode($listing->address);
+                    $mapUrl = "https://www.google.com/maps?q={$mapQuery}&output=embed";
+                    @endphp
+
+                    <iframe
+                        style="border-radius: 10px;"
+                        src="{{ $mapUrl }}"
+                        width="100%"
+                        height="220"
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                    @endif
 
                 </div>
 
 
-            </div>
 
-            <div class="col-lg-12 col-xl-4">
-                <div class="top-sticky">
+                <div class="listing-business-hour">
+                    @php
+                    $daysOrder = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 
+                    // safe: agar rows nahi hain to empty collection
+                    $hoursByDay = ($listing->hours ?? collect())
+                    ->keyBy(fn($h) => strtolower($h->day_of_week));
 
+                    $fmt = function ($t) {
+                    return $t ? \Carbon\Carbon::parse($t)->format('g:i A') : null;
+                    };
+                    @endphp
 
-                    @if($listing->coupons->count())
-                    @foreach($listing->coupons as $coupon)
-                    <div class="couponBar d-none d-xl-block ">
+                    <h3 class="heading-title">Business Hour</h3>
 
-                        <div class="couponBar__content">
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="business-hour-list">
+                                <ul>
+                                    @foreach($daysOrder as $day)
+                                    @php $h = $hoursByDay->get($day); @endphp
+                                    <li>
+                                        <span class="day-title">{{ ucfirst($day) }}</span>
 
-                            <div class="couponBar__text">
-                                <strong>PROMOTION.</strong>
-                                {{ \Illuminate\Support\Str::limit($coupon->details, 90) }}
-                                Use Coupon
-                            </div>
-
-                            <div class="couponBar__right">
-                                <div class="couponCodeText">
-                                    {{ $coupon->code }}
-                                </div>
-
-                                <button type="button" class="copyCouponBtn">
-                                    COPY
-                                </button>
-
-
-                            </div>
-                            <div class="couponTimer"
-                                data-end="{{ \Carbon\Carbon::parse($coupon->end_date)->endOfDay()->timestamp }}">
-                                --
-                            </div>
-
-                        </div>
-
-                        <button type="button" class="closeCouponBar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x">
-                                <path d="M18 6 6 18" />
-                                <path d="m6 6 12 12" />
-                            </svg>
-                        </button>
-                    </div>
-                    @endforeach
-                    @endif
-
-
-
-
-
-                    <div class="listing-details-sidebar">
-                        <h3 class="heading-title">Contact Information</h3>
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="contact-info">
-                                    <ul>
-                                        <li>
-                                            <span class="contact-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
-                                                    <path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
-                                                    <circle cx="12" cy="10" r="3" />
-                                                </svg>
-                                            </span>
-
-                                            {{ $listing->address }}
-                                        </li>
-
-                                        <li>
-                                            <span class="contact-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-phone-call-icon lucide-phone-call">
-                                                    <path d="M13 2a9 9 0 0 1 9 9" />
-                                                    <path d="M13 6a5 5 0 0 1 5 5" />
-                                                    <path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
-                                                </svg>
-                                            </span>
-
-                                            {{ $listing->contacts->first()->phone }}
-                                        </li>
-
-                                        <li>
-                                            <span class="contact-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
-                                                    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-                                                    <rect x="2" y="4" width="20" height="16" rx="2" />
-                                                </svg>
-                                            </span>
-
-                                            {{ $listing->contacts->first()->email }}
-                                        </li>
-
-                                        <li>
-                                            <span class="contact-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-globe-icon lucide-globe">
-                                                    <circle cx="12" cy="12" r="10" />
-                                                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                                                    <path d="M2 12h20" />
-                                                </svg>
-                                            </span>
-
-                                            <a href="{{ $listing->contacts->first()->website }}" target="_blank">
-                                                {{ $listing->contacts->first()->website }}
-                                            </a>
-                                        </li>
-
-
-                                    </ul>
-                                </div>
-
-                                @php
-                                // ✅ platform => url map (trim + remove empty)
-                                $social = collect($listing->socialLinks)
-                                ->pluck('url', 'platform')
-                                ->map(fn ($url) => trim((string) $url))
-                                ->filter(); // removes null/empty/""
-                                @endphp
-
-                                <div class="social-links">
-
-                                    @if($social->has('facebook'))
-                                    <a href="{{ $social['facebook'] }}" class="social-link facebook" target="_blank" rel="noopener">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-facebook-icon lucide-facebook">
-                                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                                        </svg>
-                                    </a>
-                                    @endif
-
-                                    @if($social->has('instagram'))
-                                    <a href="{{ $social['instagram'] }}" class="social-link instagram" target="_blank" rel="noopener">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram-icon lucide-instagram">
-                                            <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                                            <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line>
-                                        </svg>
-                                    </a>
-                                    @endif
-
-                                    @if($social->has('youtube'))
-                                    <a href="{{ $social['youtube'] }}" class="social-link youtube" target="_blank" rel="noopener">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-youtube-icon lucide-youtube">
-                                            <path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17"></path>
-                                            <path d="m10 15 5-3-5-3z"></path>
-                                        </svg>
-                                    </a>
-                                    @endif
-
-                                    @if($social->has('twitter'))
-                                    <a href="{{ $social['twitter'] }}" class="social-link twitter" target="_blank" rel="noopener">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-twitter-icon lucide-twitter">
-                                            <path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"></path>
-                                        </svg>
-                                    </a>
-                                    @endif
-
-                                    @if($social->has('linkedin'))
-                                    <a href="{{ $social['linkedin'] }}" class="social-link linkedin" target="_blank" rel="noopener">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-linkedin-icon lucide-linkedin">
-                                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                                            <rect width="4" height="12" x="2" y="9"></rect>
-                                            <circle cx="4" cy="4" r="2"></circle>
-                                        </svg>
-                                    </a>
-                                    @endif
-
-                                    @if($social->has('snapchat'))
-                                    <a href="{{ $social['snapchat'] }}" class="social-link snapchat" target="_blank" rel="noopener">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-snapchat-icon lucide-snapchat">
-                                            <path d="M12 2c-3.4 0-6 2.6-6 6v2.3c0 .6-.3 1.1-.8 1.4-.6.4-1.3.7-2 .9-.7.2-1.2.7-1.2 1.3 0 .7.7 1.2 1.7 1.6 1.3.5 2.2 1.2 2.8 2.1.4.6 1 .9 1.7.9h1.1c.4 0 .7.2 1 .5.5.5 1.1.8 1.7.8s1.2-.3 1.7-.8c.3-.3.6-.5 1-.5h1.1c.7 0 1.3-.3 1.7-.9.6-.9 1.5-1.6 2.8-2.1 1-.4 1.7-.9 1.7-1.6 0-.6-.5-1.1-1.2-1.3-.7-.2-1.4-.5-2-.9-.5-.3-.8-.8-.8-1.4V8c0-3.4-2.6-6-6-6z"></path>
-                                        </svg>
-                                    </a>
-                                    @endif
-
-                                </div>
-
+                                        @if(!$h || (int)$h->is_closed === 1)
+                                        <span class="day-close">Closed</span>
+                                        @else
+                                        <span class="day-time">
+                                            {{ $fmt($h->open_time) }} - {{ $fmt($h->close_time) }}
+                                        </span>
+                                        @endif
+                                    </li>
+                                    @endforeach
+                                </ul>
                             </div>
                         </div>
                     </div>
-
-                    <div class="map-sidebar">
-                        {{-- Map Preview --}}
-                        @if(!empty($listing->address))
-                        @php
-                        $mapQuery = urlencode($listing->address);
-                        $mapUrl = "https://www.google.com/maps?q={$mapQuery}&output=embed";
-                        @endphp
-
-                        <iframe
-                            style="border-radius: 10px;"
-                            src="{{ $mapUrl }}"
-                            width="100%"
-                            height="220"
-                            loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade">
-                        </iframe>
-                        @endif
-
-                    </div>
+                </div>
 
 
 
-                    <div class="listing-business-hour">
-                        @php
-                        $daysOrder = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+                <div class="listing-contact-form">
+                    <h3 class="heading-title">Appointment Form</h3>
 
-                        // safe: agar rows nahi hain to empty collection
-                        $hoursByDay = ($listing->hours ?? collect())
-                        ->keyBy(fn($h) => strtolower($h->day_of_week));
-
-                        $fmt = function ($t) {
-                        return $t ? \Carbon\Carbon::parse($t)->format('g:i A') : null;
-                        };
-                        @endphp
-
-                        <h3 class="heading-title">Business Hour</h3>
-
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="business-hour-list">
-                                    <ul>
-                                        @foreach($daysOrder as $day)
-                                        @php $h = $hoursByDay->get($day); @endphp
-                                        <li>
-                                            <span class="day-title">{{ ucfirst($day) }}</span>
-
-                                            @if(!$h || (int)$h->is_closed === 1)
-                                            <span class="day-close">Closed</span>
-                                            @else
-                                            <span class="day-time">
-                                                {{ $fmt($h->open_time) }} - {{ $fmt($h->close_time) }}
-                                            </span>
-                                            @endif
-                                        </li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-
-
-                    <div class="listing-contact-form">
-                        <h3 class="heading-title">Appointment Form</h3>
-
-                        <div class="row mt-3">
-                            <div class="col-md-12">
-                                <div class="contact-form-wrapper">
-                                    <form action="" class="row form-grid">
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label class="form-label" for="user_name">Enter Your Name <span class="required">*</span></label>
-                                                <input type="text" id="user_name" name="user_name" placeholder="John Doe">
-                                            </div>
+                    <div class="row mt-3">
+                        <div class="col-md-12">
+                            <div class="contact-form-wrapper">
+                                <form action="" class="row form-grid">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="form-label" for="user_name">Enter Your Name <span class="required">*</span></label>
+                                            <input type="text" id="user_name" name="user_name" placeholder="John Doe">
                                         </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label class="form-label" for="user_email">Enter Your Email <span class="required">*</span></label>
-                                                <input type="text" id="user_email" name="user_email" placeholder="abcd@gmail.com">
-                                            </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="form-label" for="user_email">Enter Your Email <span class="required">*</span></label>
+                                            <input type="text" id="user_email" name="user_email" placeholder="abcd@gmail.com">
                                         </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label class="form-label" for="user_phone">Enter Your Phone Number <span class="required">*</span></label>
-                                                <input type="text" id="user_phone" name="user_phone" placeholder="800-123-4567">
-                                            </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label class="form-label" for="user_phone">Enter Your Phone Number <span class="required">*</span></label>
+                                            <input type="text" id="user_phone" name="user_phone" placeholder="800-123-4567">
                                         </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label for="user_message" class="form-label">
-                                                    Message
-                                                </label>
-                                                <textarea id="user_message" name="user_message" class="form-control textarea-field" placeholder="Describe your business, services, and specialties" rows="4"></textarea>
-                                            </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label for="user_message" class="form-label">
+                                                Message
+                                            </label>
+                                            <textarea id="user_message" name="user_message" class="form-control textarea-field" placeholder="Describe your business, services, and specialties" rows="4"></textarea>
                                         </div>
-                                        <div class="col-md-12">
-                                            <div class="submit-btn">
-                                                <button type="submit" class="btn-submit">Send Message</button>
-                                            </div>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <div class="submit-btn">
+                                            <button type="submit" class="btn-submit">Send Message</button>
                                         </div>
-                                    </form>
-                                </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </section>
 
@@ -904,29 +844,58 @@
                 <h5 class="modal-title fs-5" id="reviewFormModalLabel">Write a review</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
+
             <div class="modal-body pb-3">
-                <form action="" class="row form-grid">
+                <form action="{{ route('listing.reviews.store', $listing->slug) }}"
+                    method="POST"
+                    class="row form-grid"
+                    id="reviewSubmitForm">
+                    @csrf
+
+                    {{-- If guest: allow name/email --}}
+                    @guest
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label class="form-label" for="user_name">Enter Your Name <span class="required">*</span></label>
-                            <input type="text" id="user_name" name="user_name" placeholder="John Doe">
+                            <label class="form-label">Enter Your Name <span class="required">*</span></label>
+                            <input type="text" name="name" value="{{ old('name') }}" placeholder="John Doe">
+                            @error('name') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
+
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label class="form-label" for="user_email">Enter Your Email <span class="required">*</span></label>
-                            <input type="text" id="user_email" name="user_email" placeholder="abcd@gmail.com">
+                            <label class="form-label">Enter Your Email <span class="required">*</span></label>
+                            <input type="text" name="email" value="{{ old('email') }}" placeholder="abcd@gmail.com">
+                            @error('email') <small class="text-danger">{{ $message }}</small> @enderror
                         </div>
                     </div>
+                    @endguest
+
+                    {{-- If auth: show readonly --}}
+                    @auth
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-label">Your Name</label>
+                            <input type="text" value="{{ auth()->user()->name }}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="form-label">Your Email</label>
+                            <input type="text" value="{{ auth()->user()->email }}" readonly>
+                        </div>
+                    </div>
+                    @endauth
+
                     <div class="col-md-12">
                         <div class="form-group">
                             <label class="form-label">Rating <span class="required">*</span></label>
 
-                            <div class="custom-select" data-select id="categorySelect">
+                            <div class="custom-select" data-select id="ratingSelect">
                                 <button type="button" class="select-trigger" data-trigger>
                                     <span class="select-placeholder" data-label>Select rating</span>
                                     <span class="select-icon">
-                                        {{-- your svg icon --}}
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -936,78 +905,107 @@
                                 </button>
 
                                 <div class="select-panel" data-panel>
-
-
-                                    <ul class="select-options" data-options id="categoryOptions">
-
-                                        <li class="select-option"
-                                            data-id=""
-                                            data-value="">
-                                            <i data-lucide="star"></i>
-                                        </li>
-
-                                        <li class="select-option"
-                                            data-id=""
-                                            data-value="">
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                        </li>
-
-                                        <li class="select-option"
-                                            data-id=""
-                                            data-value="">
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                        </li>
-
-                                        <li class="select-option"
-                                            data-id=""
-                                            data-value="">
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                        </li>
-
-                                        <li class="select-option"
-                                            data-id=""
-                                            data-value="">
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                            <i data-lucide="star"></i>
-                                        </li>
-
+                                    <ul class="select-options" data-options>
+                                        @for($i=1; $i<=5; $i++)
+                                            <li class="select-option" data-value="{{ $i }}">
+                                            @for($s=1; $s<=$i; $s++)
+                                                <i data-lucide="star"></i>
+                                                @endfor
+                                                </li>
+                                                @endfor
                                     </ul>
                                 </div>
 
-                                {{-- IMPORTANT: submit this --}}
-                                <input type="hidden" name="category_id" data-hidden />
+                                {{-- ✅ MUST submit --}}
+                                <input type="hidden" name="rating" id="ratingHidden" value="{{ old('rating') }}">
                             </div>
 
-                            <div class="error-message"></div>
+                            @error('rating') <small class="text-danger d-block">{{ $message }}</small> @enderror
                         </div>
                     </div>
+
                     <div class="col-md-12">
                         <div class="form-group">
-                            <label for="user_message" class="form-label">
-                                Review
-                            </label>
-                            <textarea id="user_message" name="user_message" class="form-control textarea-field" placeholder="Your review must be at least 50 characters." rows="4"></textarea>
+                            <label class="form-label">Review <span class="required">*</span></label>
+                            <textarea name="review"
+                                class="form-control textarea-field"
+                                placeholder="Your review must be at least 50 characters."
+                                rows="4">{{ old('review') }}</textarea>
+                            @error('review') <small class="text-danger d-block">{{ $message }}</small> @enderror
                         </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Submit review</button>
                     </div>
 
                 </form>
             </div>
-            <div class="modal-footer">
-                <button type="reset" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" class="btn btn-primary">Submit review</button>
-            </div>
         </div>
     </div>
 </div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const select = document.querySelector('#ratingSelect');
+        if (!select) return;
+
+        const trigger = select.querySelector('[data-trigger]');
+        const panel = select.querySelector('[data-panel]');
+        const label = select.querySelector('[data-label]');
+        const hidden = document.getElementById('ratingHidden');
+
+        function closePanel() {
+            panel.style.display = 'none';
+        }
+
+        function openPanel() {
+            panel.style.display = 'block';
+        }
+
+        closePanel();
+
+        trigger.addEventListener('click', function(e) {
+            e.preventDefault();
+            const isOpen = panel.style.display === 'block';
+            isOpen ? closePanel() : openPanel();
+        });
+
+        select.querySelectorAll('.select-option').forEach(opt => {
+            opt.addEventListener('click', function() {
+                const val = this.dataset.value;
+                hidden.value = val;
+
+                // show "Selected rating: X"
+                label.textContent = `Rating: ${val}`;
+
+                closePanel();
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!select.contains(e.target)) closePanel();
+        });
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+@if(session('swal_success'))
+<script>
+    Swal.fire({
+        icon: 'success',
+        title: 'Done!',
+        text: @json(session('swal_success')),
+        confirmButtonText: 'OK'
+    });
+</script>
+@endif
+
 
 
 <script>

@@ -27,6 +27,8 @@ use App\Http\Controllers\FrontSearchController;
 use App\Http\Controllers\AjaxLocationController;
 // use App\Http\Controllers\Auth\GoogleAuthController;
 
+use App\Http\Controllers\BusinessReviewController;
+
 Route::get('/add-listing', [ListingController::class, 'create'])->name('listing.create');
 Route::get('/submit-listing', [ListingController::class, 'create'])->name('listing.submit');
 Route::post('/submit-listing', [ListingController::class, 'store'])->name('listing.store');
@@ -214,6 +216,11 @@ Route::get('/category/{category}', [FrontSearchController::class, 'listingCatego
 Route::get('/ajax/category-suggest', [FrontSearchController::class, 'categorySuggest'])->name('ajax.category.suggest');
 Route::get('/ajax/city-suggest', [FrontSearchController::class, 'citySuggest'])->name('ajax.city.suggest');
 Route::get('/search', [FrontSearchController::class, 'searchByText'])->name('search.byText');
+
+Route::post('/listing/{slug}/reviews', [ListingController::class, 'storeReview'])
+    ->name('listing.reviews.store')
+    ->middleware('auth');
+
 
 // Route::get('/{city}/{category}', [FrontSearchController::class, 'listingByCityCategory'])
 //     ->name('city.category');

@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-
+use App\Models\BusinessReview;
 
 
 class ListingController extends Controller
@@ -64,18 +64,68 @@ class ListingController extends Controller
                     ->latest();
             },
 
-            // ✅ ADD THIS (Coupons)
             'coupons' => function ($q) use ($today) {
                 $q->where('is_active', 1)
                     ->whereDate('start_date', '<=', $today)
                     ->whereDate('end_date', '>=', $today)
                     ->latest();
-            }
+            },
+        ])
+            ->where('slug', $slug)
+            ->firstOrFail();
 
-        ])->where('slug', $slug)->firstOrFail();
 
-        return view('pages.listingdetail', compact('listing'));
+        // ✅ Reviews Base Query (approved only)
+        $reviewsBase = $listing->reviews()->where('is_approved', true);
+
+        // ✅ Pagination (5 per page)
+        $reviews = (clone $reviewsBase)->paginate(5);
+
+        // ✅ Stats
+        $totalReviews = (clone $reviewsBase)->count();
+        $avgRating    = $totalReviews ? round((clone $reviewsBase)->avg('rating'), 1) : 0;
+
+        $starCounts = [
+            5 => (clone $reviewsBase)->where('rating', 5)->count(),
+            4 => (clone $reviewsBase)->where('rating', 4)->count(),
+            3 => (clone $reviewsBase)->where('rating', 3)->count(),
+            2 => (clone $reviewsBase)->where('rating', 2)->count(),
+            1 => (clone $reviewsBase)->where('rating', 1)->count(),
+        ];
+
+        return view('pages.listingdetail', compact(
+            'listing',
+            'reviews',
+            'totalReviews',
+            'avgRating',
+            'starCounts'
+        ));
     }
+
+    public function storeReview(Request $request, $slug)
+    {
+        $listing = BusinessListing::where('slug', $slug)->firstOrFail();
+
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'review' => 'required|string|min:10',
+        ]);
+
+        BusinessReview::create([
+            'business_id'  => $listing->id,
+            'user_id'      => auth()->id(),
+            'name'         => auth()->user()->name,
+            'email'        => auth()->user()->email,
+            'rating'       => (int) $request->rating,
+            'review'       => $request->review,
+            'is_approved'  => 1, // ✅ immediate show (change to 0 if admin approval)
+        ]);
+
+        return redirect()
+            ->route('listingdetail', $listing->slug)
+            ->with('swal_success', 'Review submitted successfully!');
+    }
+
 
     public function create()
     {
@@ -411,6 +461,9 @@ class ListingController extends Controller
                     'provider'        => $request->input('provider'),
                 ]);
             }
+
+
+
 
             return back()->with('success', 'Your listing submitted successfully! (Pending approval)');
         });
