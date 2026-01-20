@@ -357,8 +357,7 @@
                                             @endphp
                                             {{ $symbol }}{{ number_format($service->price, 2) }}
                                             @else
-                                            {{-- Optional text --}}
-                                            <span class="text-muted">Contact for price</span>
+                                            
                                             @endif
                                         </div>
                                     </li>
