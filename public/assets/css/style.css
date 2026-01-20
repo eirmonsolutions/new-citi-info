@@ -2958,6 +2958,9 @@ section.profile-details {
     width: 70px;
     height: 70px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .profile-img img {
