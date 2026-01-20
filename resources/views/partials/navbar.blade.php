@@ -113,7 +113,7 @@
                             </a>
 
 
-                            <a href="{{ route('wishlist.toggle') }}" class="dd-item">
+                            <a href="" class="dd-item">
                                 Wishlist (<span id="wishlistCount">{{ $wishlistCount ?? 0 }}</span>)
                             </a>
 
