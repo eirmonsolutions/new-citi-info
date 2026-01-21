@@ -130,6 +130,9 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
 
 
 Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
+
+    Route::get('/wishlist', [WishlistController::class, 'indexAdmin'])->name('.wishlist.index');
+    
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
     })->name('.dashboard');
@@ -192,7 +195,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 
 
     // whishlist
-    Route::get('/wishlist', [WishlistController::class, 'indexAdmin'])->name('.wishlist.index');
+
 });
 
 
