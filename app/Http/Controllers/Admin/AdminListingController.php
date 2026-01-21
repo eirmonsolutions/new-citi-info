@@ -25,7 +25,7 @@ use App\Models\BusinessFeature;
 use App\Models\BusinessService;
 use App\Models\BusinessGallery;
 use App\Models\BusinessVideoLink;
-
+use Illuminate\Support\Facades\Storage;
 use App\Mail\ListingAdminCredentialsMail;
 
 
@@ -625,5 +625,23 @@ class AdminListingController extends Controller
 
         return redirect()->route('admin.listing.index')
             ->with('success', 'Listing deleted successfully!');
+    }
+
+    public function deleteGallery(BusinessGallery $gallery)
+    {
+        // ✅ security: only owner admin
+        if (!$gallery->business || $gallery->business->user_id != auth()->id()) {
+            return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+        }
+
+        // ✅ delete file from storage/public
+        if ($gallery->image_path && Storage::disk('public')->exists($gallery->image_path)) {
+            Storage::disk('public')->delete($gallery->image_path);
+        }
+
+        // ✅ delete db row
+        $gallery->delete();
+
+        return response()->json(['success' => true]);
     }
 }

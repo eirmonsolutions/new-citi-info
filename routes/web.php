@@ -185,6 +185,10 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
     Route::delete('/listing/{listing}', [AdminListingController::class, 'destroy'])->name('.listing.destroy');
     Route::get('/listings/create', [AdminListingController::class, 'create'])->name('.listings.create');
     Route::post('/listings', [AdminListingController::class, 'store'])->name('.listings.store');
+    Route::delete('/listings/gallery/{gallery}', [AdminListingController::class, 'deleteGallery'])
+        ->name('.listings.gallery.delete');
+
+
 
 
     // whishlist

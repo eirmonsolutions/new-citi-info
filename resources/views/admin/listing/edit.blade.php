@@ -1090,7 +1090,7 @@
                         </div>
 
                         <!-- Listing Options -->
-                        <div class="listing-card mt-3">
+                        <!-- <div class="listing-card mt-3">
                             <div class="listing-head">Listing Options</div>
 
                             <label class="opt-card {{ $oldOpt === 'free' ? 'active' : '' }}" id="optFreeWrap">
@@ -1108,7 +1108,7 @@
                                     <div class="opt-sub">Enhanced visibility, priority placement, and additional features</div>
                                 </div>
                             </label>
-                        </div>
+                        </div> -->
 
                     </div>
                 </div>
@@ -1254,9 +1254,27 @@
         const stateOptions = document.getElementById('stateOptions');
         const cityOptions = document.getElementById('cityOptions');
 
-        function disableSelect(select, placeholderText) {
+        function setSelectValue(select, text, value) {
+            const label = select.querySelector('[data-label]');
+            const hidden = select.querySelector('[data-hidden]');
+            if (label) label.textContent = text;
+            if (hidden) hidden.value = value;
+            select.classList.remove('is-open');
+        }
+
+        function disableSelect(select, placeholderText, keepHidden = false) {
             select.classList.add('is-disabled');
-            setSelectValue(select, placeholderText, '');
+
+            // ✅ keepHidden=true => hidden value wipe nahi hogi
+            const hidden = select.querySelector('[data-hidden]');
+            const currentVal = hidden ? hidden.value : '';
+
+            if (keepHidden) {
+                setSelectValue(select, placeholderText, currentVal);
+            } else {
+                setSelectValue(select, placeholderText, '');
+            }
+
             const optionsWrap = select.querySelector('[data-options]');
             if (optionsWrap) optionsWrap.innerHTML = '';
         }
@@ -1265,53 +1283,125 @@
             select.classList.remove('is-disabled');
         }
 
-        // Start: state & city disabled
-        disableSelect(stateSelect, 'Select your state');
-        disableSelect(citySelect, 'Select your city');
+        async function loadStates(countryId, selectedStateId = null) {
+            disableSelect(stateSelect, 'Loading states...');
+            disableSelect(citySelect, 'Select your city'); // city reset
 
-        // COUNTRY option click (static list)
+            const res = await fetch("{{ route('get.states') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    country_id: countryId
+                })
+            });
+
+            const states = await res.json();
+
+            stateOptions.innerHTML = states.map(st =>
+                `<li class="select-option" data-id="${st.id}">${st.name}</li>`
+            ).join('');
+
+            enableSelect(stateSelect);
+
+            if (selectedStateId) {
+                const st = states.find(x => String(x.id) === String(selectedStateId));
+                if (st) setSelectValue(stateSelect, st.name, st.id);
+                else setSelectValue(stateSelect, 'Select your state', '');
+            } else {
+                setSelectValue(stateSelect, 'Select your state', '');
+            }
+
+            return states;
+        }
+
+        async function loadCities(stateId, selectedCityId = null) {
+            disableSelect(citySelect, 'Loading cities...');
+
+            const res = await fetch("{{ route('get.cities') }}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                },
+                body: JSON.stringify({
+                    state_id: stateId
+                })
+            });
+
+            const cities = await res.json();
+
+            cityOptions.innerHTML = cities.map(ct =>
+                `<li class="select-option" data-id="${ct.id}">${ct.name}</li>`
+            ).join('');
+
+            enableSelect(citySelect);
+
+            if (selectedCityId) {
+                const ct = cities.find(x => String(x.id) === String(selectedCityId));
+                if (ct) setSelectValue(citySelect, ct.name, ct.id);
+                else setSelectValue(citySelect, 'Select your city', '');
+            } else {
+                setSelectValue(citySelect, 'Select your city', '');
+            }
+
+            return cities;
+        }
+
+        // ✅ Initial state: by default state/city disabled
+        disableSelect(stateSelect, 'Select your state', true);
+        disableSelect(citySelect, 'Select your city', true);
+
+        // ✅ Edit page prefill: DB values se auto load
+        const existingCountryId = countrySelect?.querySelector('[data-hidden]')?.value || '';
+        const existingStateId = stateSelect?.querySelector('[data-hidden]')?.value || '';
+        const existingCityId = citySelect?.querySelector('[data-hidden]')?.value || '';
+
+        (async () => {
+            try {
+                // agar country selected hai => states load + preselect state
+                if (existingCountryId) {
+                    await loadStates(existingCountryId, existingStateId);
+
+                    // agar state selected hai => cities load + preselect city
+                    if (existingStateId) {
+                        await loadCities(existingStateId, existingCityId);
+                    } else {
+                        disableSelect(citySelect, 'Select your city');
+                    }
+                } else {
+                    // country empty => keep disabled
+                    disableSelect(stateSelect, 'Select your state');
+                    disableSelect(citySelect, 'Select your city');
+                }
+            } catch (e) {
+                console.error(e);
+                disableSelect(stateSelect, 'Select your state');
+                disableSelect(citySelect, 'Select your city');
+            }
+        })();
+
+        // ✅ COUNTRY click => load states
         countrySelect.querySelectorAll('.select-option').forEach(opt => {
             opt.addEventListener('click', async () => {
                 const countryId = opt.dataset.id;
                 setSelectValue(countrySelect, opt.textContent.trim(), countryId);
 
-                // reset & disable city, enable state after load
-                disableSelect(stateSelect, 'Loading states...');
-                disableSelect(citySelect, 'Select your city');
-
                 try {
-                    const res = await fetch("{{ route('get.states') }}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            country_id: countryId
-                        })
-                    });
-
-                    const states = await res.json();
-
-                    let html = '';
-                    states.forEach(st => {
-                        html += `<li class="select-option" data-id="${st.id}" data-value="${st.id}">${st.name}</li>`;
-                    });
-                    stateOptions.innerHTML = html;
-
-                    enableSelect(stateSelect);
-                    setSelectValue(stateSelect, 'Select your state', '');
-                    stateSelect.classList.remove('is-open');
-
-                } catch (err) {
+                    await loadStates(countryId, null); // state reset
+                } catch (e) {
+                    console.error(e);
                     disableSelect(stateSelect, 'Select your state');
-                    console.error(err);
+                    disableSelect(citySelect, 'Select your city');
                 }
             });
         });
 
-        // STATE option click (dynamic => event delegation)
+        // ✅ STATE click (event delegation)
         stateOptions.addEventListener('click', async (e) => {
             const opt = e.target.closest('.select-option');
             if (!opt) return;
@@ -1319,40 +1409,15 @@
             const stateId = opt.dataset.id;
             setSelectValue(stateSelect, opt.textContent.trim(), stateId);
 
-            disableSelect(citySelect, 'Loading cities...');
-
             try {
-                const res = await fetch("{{ route('get.cities') }}", {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        state_id: stateId
-                    })
-                });
-
-                const cities = await res.json();
-
-                let html = '';
-                cities.forEach(ct => {
-                    html += `<li class="select-option" data-id="${ct.id}" data-value="${ct.id}">${ct.name}</li>`;
-                });
-                cityOptions.innerHTML = html;
-
-                enableSelect(citySelect);
-                setSelectValue(citySelect, 'Select your city', '');
-                citySelect.classList.remove('is-open');
-
-            } catch (err) {
+                await loadCities(stateId, null); // city reset
+            } catch (e) {
+                console.error(e);
                 disableSelect(citySelect, 'Select your city');
-                console.error(err);
             }
         });
 
-        // CITY option click (dynamic)
+        // ✅ CITY click
         cityOptions.addEventListener('click', (e) => {
             const opt = e.target.closest('.select-option');
             if (!opt) return;
@@ -1765,15 +1830,50 @@
         galleryCountText.textContent = `${existingCount + selectedFiles.length} photos ready to showcase`;
     }
 
+    // ✅ EXISTING DB images delete
     galleryPreview.querySelectorAll('.gallery-item:not([data-new="1"]) .gallery-remove-btn').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            const item = e.target.closest('.gallery-item');
-            if (item) item.remove();
+        btn.addEventListener('click', async (e) => {
+            e.preventDefault();
 
-            const existingCount = galleryPreview.querySelectorAll('.gallery-item:not([data-new="1"])').length;
-            galleryCountText.textContent = `${existingCount + selectedFiles.length} photos ready to showcase`;
+            const item = e.target.closest('.gallery-item');
+            if (!item) return;
+
+            const id = item.getAttribute('data-id'); // ✅ your HTML uses data-id
+            if (!id) return;
+
+            try {
+                const deleteUrl = `{{ route('admin.listings.gallery.delete', ':id') }}`.replace(':id', id);
+
+                const res = await fetch(deleteUrl, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await res.json();
+
+                if (!res.ok || !data.success) {
+                    alert(data.message || 'Delete failed');
+                    return;
+                }
+
+                // ✅ remove from UI
+                item.remove();
+
+                // ✅ update count
+                const existingCount = galleryPreview.querySelectorAll('.gallery-item:not([data-new="1"])').length;
+                galleryCountText.textContent = `${existingCount + selectedFiles.length} photos ready to showcase`;
+
+            } catch (err) {
+                console.error(err);
+                alert('Something went wrong');
+            }
         });
     });
+
+
 
 
 
@@ -1876,6 +1976,8 @@
         const countryId = document.querySelector('[name="country_id"]')?.value || '';
         const stateId = document.querySelector('[name="state_id"]')?.value || '';
         const cityId = document.querySelector('[name="city_id"]')?.value || '';
+
+
 
         const address = document.querySelector('[name="full_address"]')?.value || '—';
         const description = document.querySelector('[name="business_description"]')?.value || '—';
