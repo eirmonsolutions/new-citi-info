@@ -193,8 +193,6 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 
     // whishlist
     Route::get('/wishlist', [WishlistController::class, 'indexAdmin'])->name('.wishlist.index');
-    Route::post('/wishlists/toggle', [WishlistController::class, 'toggle'])
-        ->name('wishlist.toggle');
 });
 
 
@@ -242,3 +240,6 @@ Route::post('/listing/{slug}/reviews', [ListingController::class, 'storeReview']
 
 Route::get('/ajax/city/by-coords', [AjaxLocationController::class, 'cityByCoords'])
     ->name('ajax.city.by-coords');
+
+Route::post('/wishlists/toggle', [WishlistController::class, 'toggle'])
+    ->name('wishlist.toggle');
