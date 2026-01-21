@@ -32,12 +32,20 @@ class HomeController extends Controller
             : [];
 
         // ✅ FRONTEND LISTINGS (ONLY allowed + published)
-        $listings = BusinessListing::with(['gallery', 'hours']) // ✅ add this
+        // ✅ FRONTEND LISTINGS (ONLY allowed + published) + rating avg/count
+        $listings = BusinessListing::with(['gallery', 'hours'])
+            ->withAvg(['reviews as avg_rating' => function ($q) {
+                $q->where('is_approved', 1);
+            }], 'rating')
+            ->withCount(['reviews as ratings_count' => function ($q) {
+                $q->where('is_approved', 1);
+            }])
             ->where('status', 'published')
             ->where('is_allowed', 1)
             ->latest()
             ->take(6)
             ->get();
+
 
 
         $cityNames = ['Melbourne', 'Sydney', 'Perth', 'Brisbane'];

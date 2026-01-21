@@ -25,8 +25,11 @@ document.addEventListener("click", async (e) => {
     if (!btn) return;
 
     const businessId = btn.dataset.businessId;
+    const url = document
+        .querySelector('meta[name="wishlist-toggle-url"]')
+        .getAttribute("content");
 
-    const res = await fetch("{{ route('wishlist.toggle') }}", {
+    const res = await fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -40,7 +43,7 @@ document.addEventListener("click", async (e) => {
     });
 
     if (res.status === 401) {
-        window.location.href = "{{ route('login') }}";
+        window.location.href = "/login";
         return;
     }
 

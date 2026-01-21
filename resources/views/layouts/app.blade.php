@@ -9,6 +9,7 @@
 
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="wishlist-toggle-url" content="{{ route('wishlist.toggle') }}">
 
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/aos.css') }}" rel="stylesheet">

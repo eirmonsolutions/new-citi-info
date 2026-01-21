@@ -23,7 +23,7 @@
             : true; // wishlist page pe already saved
             @endphp
 
-            <div class="col-lg-6 col-xl-4">
+            <div class="whishlist-wrapper">
                 <div class="front-listing-box">
                     <div class="front-listing-img">
                         <div class="listing-slider-wrapper mySwiper mb-5">
