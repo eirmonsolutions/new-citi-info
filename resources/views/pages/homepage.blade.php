@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
 
 <div id="toastContainer" class="toast-container position-fixed top-0 end-0 p-3" style="z-index:99999;"></div>
-<!-- <meta name="wishlist-toggle-url" content="{{ Route::has('wishlist.toggle') ? route('wishlist.toggle') : '' }}"> -->
+<meta name="wishlist-toggle-url" content="{{ Route::has('wishlist.toggle') ? route('wishlist.toggle') : '' }}">
 
 <!-- Banner / Search Area -->
 <section class="banner-area">
