@@ -34,7 +34,7 @@
             <div class="row login-box">
                 <div class="col-lg-6 bg-color-15 pad-0 none-992 align-self-center bg-img">
                     <div class="info clearfix">
-                        <img src="{{ asset('assets/images/login-img.png') }}" alt="bg" class="img-fluid">
+                        <img src="{{ asset('assets/images/login-img.png') }}" alt="login-img" class="img-fluid">
                     </div>
                 </div>
                 <div class="col-lg-6 pad-0 form-info">
@@ -71,14 +71,14 @@
                             <div class="form-group mb-0">
                                 <button type="submit" class="btn-md btn-theme w-100">Login</button>
                             </div>
-                            <div class="form-group mt-3">
+                            <!-- <div class="form-group mt-3">
                                 <a href="" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center">
                                     <img src="https://developers.google.com/identity/images/g-logo.png"
                                         alt="Google"
                                         style="width:18px; margin-right:10px;">
                                     Login with Google
                                 </a>
-                            </div>
+                            </div> -->
 
                         </form>
 

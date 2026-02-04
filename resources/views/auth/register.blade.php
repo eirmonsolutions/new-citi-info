@@ -34,7 +34,7 @@
             <div class="row login-box">
                 <div class="col-lg-6 bg-color-15 pad-0 none-992 align-self-center bg-img">
                     <div class="info clearfix">
-                        <img src="{{ asset('assets/images/login-img.png') }}" alt="bg" class="img-fluid">
+                        <img src="{{ asset('assets/images/login-img.png') }}" alt="register-img" class="img-fluid">
                     </div>
                 </div>
                 <div class="col-lg-6 pad-0 form-info">
