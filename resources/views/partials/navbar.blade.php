@@ -38,15 +38,14 @@
                     $user = auth()->user();
                     $role = $user->role ?? 'user';
 
-                    // Basic user data
                     $name = $user->name ?? 'User';
                     $avatar = $user->avatar ?? null;
 
                     // Default display name
                     $displayName = $name;
 
-                    // Default dashboard route (safe fallback)
-                    $dashboardRoute = route('homepage');
+                    // ✅ Default dashboard route for NORMAL USER
+                    $dashboardRoute = route('user.dashboard');
 
                     // SUPERADMIN
                     if ($role === 'superadmin') {
@@ -54,10 +53,9 @@
                     $dashboardRoute = route('superadmin.dashboard');
                     }
 
-                    // ADMIN
+                    // ADMIN / LISTER
                     if ($role === 'admin') {
 
-                    // jis user ka business admin manage karta hai
                     $businessUserId = $user->business_user_id ?? $user->id;
 
                     $businessName = \App\Models\BusinessListing::where('user_id', $businessUserId)
@@ -71,13 +69,14 @@
                     $dashboardRoute = route('admin.dashboard');
                     }
 
-                    // Initials (user / business dono ke liye)
+                    // Initials
                     $parts = preg_split('/\s+/', trim($displayName));
                     $initials = strtoupper(
                     substr($parts[0] ?? 'U', 0, 1) .
                     substr($parts[1] ?? '', 0, 1)
                     );
                     @endphp
+
 
 
 

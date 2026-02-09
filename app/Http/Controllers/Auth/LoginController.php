@@ -20,29 +20,48 @@ class LoginController extends Controller
             'password' => 'required|min:6',
         ]);
 
-        $remember = $request->boolean('remember');
+        $remember    = $request->boolean('remember');
         $credentials = $request->only('email', 'password');
 
         if (Auth::attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            $user = auth()->user();
+            $user = Auth::user();
 
-            if (isset($user->is_blocked) && $user->is_blocked) {
+            // ✅ Blocked user check
+            if (!empty($user->is_blocked)) {
                 Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
 
                 if ($request->ajax()) {
-                    return response()->json(['ok' => false, 'message' => 'Your account is blocked.'], 403);
+                    return response()->json([
+                        'ok'      => false,
+                        'message' => 'Your account is blocked.'
+                    ], 403);
                 }
 
-                return back()->withErrors(['email' => 'Your account is blocked.'])->onlyInput('email');
+                return back()
+                    ->withErrors(['email' => 'Your account is blocked.'])
+                    ->onlyInput('email');
             }
 
+            // ✅ Role based redirect
             $role = $user->role ?? 'user';
 
-            $redirectTo = route('homepage');
-            if ($role === 'superadmin') $redirectTo = route('superadmin.dashboard');
-            if ($role === 'admin') $redirectTo = route('admin.dashboard');
+            if ($role === 'superadmin') {
+                $redirectTo = route('superadmin.dashboard');
+            } elseif ($role === 'admin') {
+                $redirectTo = route('admin.dashboard');
+            } else {
+                // user / lister / any other role
+                $redirectTo = route('user.dashboard');
+            }
+
+            // ✅ If user was trying to access a protected page first
+            // (works when using middleware auth)
+            $intended = redirect()->intended($redirectTo)->getTargetUrl();
+            $redirectTo = $intended ?: $redirectTo;
 
             if ($request->ajax()) {
                 return response()->json(['ok' => true, 'redirect_to' => $redirectTo]);
@@ -55,15 +74,8 @@ class LoginController extends Controller
             return response()->json(['ok' => false, 'message' => 'Invalid email or password.'], 401);
         }
 
-        return back()->withErrors(['email' => 'Invalid email or password'])->onlyInput('email');
-    }
-
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('login');
+        return back()
+            ->withErrors(['email' => 'Invalid email or password'])
+            ->onlyInput('email');
     }
 }

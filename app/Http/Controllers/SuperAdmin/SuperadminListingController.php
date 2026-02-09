@@ -5,7 +5,7 @@ namespace App\Http\Controllers\SuperAdmin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BusinessListing;
-
+use App\Models\User;
 
 
 class SuperadminListingController extends Controller
@@ -39,11 +39,22 @@ class SuperadminListingController extends Controller
 
     public function approve(BusinessListing $listing)
     {
-        $listing->status = 'published';
-        $listing->save();
+        // ✅ publish listing + allow + approved time
+        $listing->update([
+            'status'      => 'published',
+            'is_allowed'  => 1,
+            'approved_at' => now(),
+        ]);
 
-        return back()->with('success', 'Listing Approved Successfully!');
+        // ✅ user role admin (only if normal user)
+        $user = User::find($listing->user_id);
+        if ($user && ($user->role ?? 'user') === 'user') {
+            $user->update(['role' => 'admin']);
+        }
+
+        return back()->with('success', 'Listing approved and published. User role updated to admin.');
     }
+
 
     public function show(BusinessListing $listing)
     {

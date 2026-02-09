@@ -13,6 +13,7 @@ use App\Http\Controllers\SuperAdmin\CategoryController;
 use App\Http\Controllers\SuperAdmin\FeatureController;
 use App\Http\Controllers\SuperAdmin\SuperadminListingController;
 use App\Http\Controllers\SuperAdmin\SuperadminAddListingController;
+use App\Http\Controllers\UserAddListingController;
 use App\Http\Controllers\ListingController;
 use App\Models\Feature;
 use App\Models\Category;
@@ -79,6 +80,19 @@ Route::post('/get-cities', [ListingController::class, 'getCities'])->name('get.c
 
 
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', function () {
+        return view('user.dashboard'); // resources/views/user/dashboard.blade.php
+    })->name('user.dashboard');
+
+    Route::get('/wishlist', [WishlistController::class, 'indexAdmin'])->name('wishlist.index');
+
+    Route::get('/user/add-listing', [UserAddListingController::class, 'index'])
+        ->name('user.addlisting.create');
+
+    Route::post('/user/add-listing', [UserAddListingController::class, 'store'])
+        ->name('user.addlisting.store');
+});
 
 
 
@@ -136,7 +150,7 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
 
 Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 
-    Route::get('/wishlist', [WishlistController::class, 'indexAdmin'])->name('.wishlist.index');
+
 
     Route::get('/dashboard', function () {
         return view('admin.dashboard');
