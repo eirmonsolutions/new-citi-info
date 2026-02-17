@@ -427,13 +427,38 @@
 
                         <div class="testimonial">
                             <div class="testimonial-content">
-                                <img src="{{ $listing->logo ? asset('storage/'.$listing->logo) : 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&h=500' }}" alt="{{ $listing->business_name }}" class="testimonial-avatar">
+
+                                <img
+                                    src="{{ $listing->logo ? asset('storage/'.$listing->logo) : 'https://citiinfo.com.au/assets/images/favicon.jpg' }}"
+                                    alt="{{ $listing->business_name }}"
+                                    class="testimonial-avatar">
+
                                 <div class="testimonial-text">
-                                    <p>"I haven't had pizza in like 5 minutes!! talking with my colleague after our office lunch"</p>
-                                    <span class="testimonial-author">Mike Johnson</span>
+
+                                    @if(($listing->ratings_count ?? 0) > 0 && $listing->ratings->count())
+
+                                    <p>"{{ $listing->ratings->first()->review ?? 'Great service!' }}"</p>
+                                    <span class="testimonial-author">
+                                        {{ $listing->ratings->first()->user_name ?? 'Verified Customer' }}
+                                    </span>
+
+                                    @else
+
+                                    {{-- DEFAULT PROFESSIONAL MESSAGE --}}
+                                    <p>
+                                        "Be the first to share your experience with {{ $listing->business_name }}.
+                                        Your review helps others make better decisions!"
+                                    </p>
+                                    <span class="testimonial-author">
+                                        No reviews yet
+                                    </span>
+
+                                    @endif
+
                                 </div>
                             </div>
                         </div>
+
 
                         <div class="location">
                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin">

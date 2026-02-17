@@ -101,15 +101,45 @@
                         </div>
 
                         {{-- DESCRIPTION --}}
+                        @php
+                        // Latest review fetch
+                        $latestReview = $listing->reviews()->latest()->first();
+                        @endphp
+
                         <div class="testimonial">
                             <div class="testimonial-content">
-                                <img src="{{ $listing->logo ? asset('storage/'.$listing->logo) : 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&h=500' }}" alt="{{ $listing->business_name }}" class="testimonial-avatar">
+
+                                <img
+                                    src="{{ $listing->logo ? asset('storage/'.$listing->logo) : 'https://citiinfo.com.au/assets/images/favicon.jpg' }}"
+                                    alt="{{ $listing->business_name }}"
+                                    class="testimonial-avatar">
+
                                 <div class="testimonial-text">
-                                    <p>"I haven't had pizza in like 5 minutes!! talking with my colleague after our office lunch"</p>
-                                    <span class="testimonial-author">Mike Johnson</span>
+
+                                    @if($latestReview)
+
+                                    <p>"{{ $latestReview->review }}"</p>
+                                    <span class="testimonial-author">
+                                        {{ $latestReview->name ?? 'Customer' }}
+                                    </span>
+
+                                    @else
+
+                                    {{-- Professional Default Message --}}
+                                    <p>
+                                        "No reviews yet — be the first to share your experience with {{ $listing->business_name }}.
+                                        Your feedback helps others choose with confidence."
+                                    </p>
+                                    <span class="testimonial-author">
+                                        No reviews yet
+                                    </span>
+
+                                    @endif
+
                                 </div>
                             </div>
                         </div>
+
 
                         {{-- CITY --}}
                         <div class="location">
