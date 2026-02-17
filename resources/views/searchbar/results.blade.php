@@ -112,8 +112,19 @@
                 <ul>
                   <li>
                     <i data-lucide="star"></i>
-                    <span class="profile-review-number">4.5</span>
-                    <span class="profile-review-count">(26)</span>
+
+                    @php
+                    $avg = $listing->avg_rating ? number_format($listing->avg_rating, 1) : '0.0';
+                    $count = (int) ($listing->ratings_count ?? 0);
+                    @endphp
+
+                    <span class="profile-review-number">{{ $avg }}</span>
+
+                    @if($count > 0)
+                    <span class="profile-review-count">({{ $count }})</span>
+                    @else
+                    <span class="profile-review-count">(0)</span>
+                    @endif
                   </li>
 
                   <li>

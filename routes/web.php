@@ -243,8 +243,7 @@ Route::get('/clear-all-cache-now', function () {
     return 'All caches cleared! <a href="/">Go Home</a>';
 })->name('clear.all');
 
-Route::get('/category/{category}', [FrontSearchController::class, 'listingCategory'])
-    ->name('list.category');
+Route::get('/category/{category}', [FrontSearchController::class, 'listingCategory'])->name('list.category');
 
 
 // AJAX suggest

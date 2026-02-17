@@ -186,7 +186,7 @@ class FrontSearchController extends Controller
     {
         $term = $request->get('term');
 
-        \Log::info('Search term:', [$term]);
+        Log::info('Search term:', [$term]);
 
         // 🔹 Categories
         $categories = Category::query()
@@ -214,8 +214,8 @@ class FrontSearchController extends Controller
                 'slug'
             ]);
 
-        \Log::info('Categories:', $categories->toArray());
-        \Log::info('Businesses:', $businesses->toArray());
+        Log::info('Categories:', $categories->toArray());
+        Log::info('Businesses:', $businesses->toArray());
 
         return response()->json([
             'categories' => $categories,
