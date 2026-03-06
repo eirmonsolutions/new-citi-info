@@ -269,7 +269,7 @@
 
             <form id="editCategoryForm" method="POST" enctype="multipart/form-data" class="modal-body">
                 @csrf
-
+                @method('PUT')
                 <div class="form-group">
                     <label class="form-label">Category Name</label>
                     <input type="text" name="name" id="editName" class="form-input"
@@ -338,10 +338,6 @@
         </div>
     </div>
 </div>
-
-@endsection
-
-@section('js')
 
 
 <script>
