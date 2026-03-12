@@ -485,13 +485,15 @@
                                             <div class="time-box">
                                                 <input type="time"
                                                     name="hours[{{ $dayKey }}][start]"
-                                                    value="{{ old("hours.$dayKey.start", $h->open_time ?? '') }}">
+                                                    value="{{ old('hours.' . $dayKey . '.start', $h->open_time ?? '') }}">
                                             </div>
+
                                             <div class="to-text">to</div>
+
                                             <div class="time-box">
                                                 <input type="time"
                                                     name="hours[{{ $dayKey }}][end]"
-                                                    value="{{ old("hours.$dayKey.end", $h->close_time ?? '') }}">
+                                                    value="{{ old('hours.' . $dayKey . '.end', $h->close_time ?? '') }}">
                                             </div>
                                         </div>
 
@@ -511,7 +513,9 @@
                                                         name="hours[{{ $dayKey }}][lunch_start]"
                                                         value="{{ $lunchStartVal }}">
                                                 </div>
+
                                                 <div class="to-text">to</div>
+
                                                 <div class="time-box">
                                                     <input type="time"
                                                         name="hours[{{ $dayKey }}][lunch_end]"
@@ -1710,63 +1714,6 @@
 <!-- services step -->
 
 
-<script>
-    (function() {
-        // ====== Services (your existing code) ======
-        const servicesWrap = document.getElementById('servicesWrap');
-        const addServiceBtn = document.getElementById('addServiceBtn');
-
-        function reIndexServices() {
-            const rows = servicesWrap.querySelectorAll('.service-row');
-            rows.forEach((row, i) => {
-                row.querySelectorAll('input').forEach(inp => {
-                    inp.name = inp.name
-                        .replace(/services\[\d+\]\[name\]/, `services[${i}][name]`)
-                        .replace(/services\[\d+\]\[price\]/, `services[${i}][price]`)
-                        .replace(/services\[\d+\]\[duration\]/, `services[${i}][duration]`);
-                });
-            });
-        }
-
-        servicesWrap?.addEventListener('click', function(e) {
-            const btn = e.target.closest('.delete-service');
-            if (!btn) return;
-            const rows = servicesWrap.querySelectorAll('.service-row');
-            if (rows.length === 1) return;
-            btn.closest('.service-row').remove();
-            reIndexServices();
-        });
-
-        addServiceBtn?.addEventListener('click', function() {
-            const idx = servicesWrap.querySelectorAll('.service-row').length;
-            const div = document.createElement('div');
-            div.className = 'service-card service-row';
-            div.innerHTML = `
-      <div class="service-grid">
-        <div class="fg">
-          <label>Service Name</label>
-          <input type="text" name="services[${idx}][name]" placeholder="e.g., Haircut, Massage">
-        </div>
-        <div class="fg">
-          <label>Price</label>
-          <input type="text" name="services[${idx}][price]" placeholder="e.g., $25">
-        </div>
-        <div class="fg">
-          <label>Duration (mins)</label>
-          <input type="number" name="services[${idx}][duration]" value="30" min="0">
-        </div>
-        <button type="button" class="delete-service" title="Remove">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="red" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/>
-          </svg>
-        </button>
-      </div>
-    `;
-            servicesWrap.appendChild(div);
-        });
-
-    })();
-</script>
 
 
 <!-- media step js -->
