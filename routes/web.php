@@ -103,7 +103,7 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
 
     Route::get('/category', [CategoryController::class, 'index'])->name('.category.index');
     Route::post('/category', [CategoryController::class, 'store'])->name('.category.store');
-    Route::post('/category/{id}/update', [CategoryController::class, 'update'])->name('.category.update');
+    Route::put('/category/{id}/update', [CategoryController::class, 'update'])->name('.category.update');
     Route::delete('/category/{category}', [CategoryController::class, 'destroy'])->name('.category.destroy');
     Route::patch('/category/{id}/toggle-status', [CategoryController::class, 'toggleStatus'])->name('.category.toggle-status');
     Route::patch('/category/{id}/toggle-home', [CategoryController::class, 'toggleHome'])
@@ -112,7 +112,8 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
 
     Route::get('/feature', [FeatureController::class, 'index'])->name('.feature.index');
     Route::post('/feature', [FeatureController::class, 'store'])->name('.feature.store');
-    Route::post('/feature/{feature}/update', [FeatureController::class, 'update'])->name('.feature.update');
+    Route::get('/feature/{feature}/edit', [FeatureController::class, 'edit'])->name('.feature.edit');
+    Route::put('/feature/{feature}/update', [FeatureController::class, 'update'])->name('.feature.update');
     Route::delete('/feature/{feature}', [FeatureController::class, 'destroy'])->name('.feature.destroy');
     Route::patch('/feature/{feature}/toggle-status', [FeatureController::class, 'toggleStatus'])->name('.feature.toggle-status');
 
