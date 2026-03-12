@@ -1715,9 +1715,6 @@
 
 
 
-
-<!-- media step js -->
-
 <script>
     // Gallery preview (shows thumbnails like your screenshot)
     const galleryInput = document.getElementById("business_gallery");
@@ -1982,6 +1979,28 @@
             <div class="t">${s.price || '—'} ${s.dur ? `• ${s.dur} mins` : ''}</div>
           </div>`
                 ).join('');
+            }
+        }
+
+        // ✅ Features Review
+        const rvFeatures = document.getElementById('rv_features_chips');
+        if (rvFeatures) {
+            const activeFeatures = Array.from(document.querySelectorAll('#featuresGrid .feature-tile.active'));
+
+            if (!activeFeatures.length) {
+                rvFeatures.innerHTML = `<span class="muted-sm">No features selected.</span>`;
+            } else {
+                rvFeatures.innerHTML = activeFeatures.map(feature => {
+                    const name = feature.dataset.name || '';
+                    const icon = feature.dataset.iconImage || '';
+
+                    return `
+                        <span class="chip">
+                            ${icon ? `<img src="/storage/${icon}" alt="${name}" style="height:18px;width:22px;object-fit:contain;margin-right:6px;vertical-align:middle;">` : ''}
+                            <span>${name}</span>
+                        </span>
+                    `;
+                }).join('');
             }
         }
 
