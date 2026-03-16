@@ -64,9 +64,11 @@
   <div class="container">
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">City</a></li>
-        <li class="breadcrumb-item"><a href="#">Category</a></li>
-        <li class="breadcrumb-item active" aria-current="page"> + Listings</li>
+        <li class="breadcrumb-item"><a href="/">Home</a></li>
+        <li class="breadcrumb-item"><a href="/categories">Category</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          {{ $categoryRow->name ?? $catName ?? 'Listings' }}
+        </li>
       </ol>
     </nav>
   </div>
