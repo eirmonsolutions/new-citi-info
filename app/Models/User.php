@@ -23,6 +23,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'is_auto_created',
     ];
 
 
@@ -49,5 +50,4 @@ class User extends Authenticatable
             'is_blocked' => 'boolean',
         ];
     }
-
 }

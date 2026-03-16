@@ -8,11 +8,14 @@ class Category extends Model
 {
     protected $fillable = [
         'name',
+        'title',
+        'description',
+        'keyword',
         'icon',
         'image',
         'categoryimage',
         'is_active',
-        'is_home', // ✅ homepage show flag
+        'is_home',
     ];
 
     protected $casts = [

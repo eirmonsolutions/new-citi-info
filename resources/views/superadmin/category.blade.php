@@ -96,6 +96,9 @@
                                 data-bs-toggle="modal"
                                 data-bs-target="#editCategoryModal"
                                 data-id="{{ $cat->id }}"
+                                data-title="{{ $cat->title }}"
+                                data-description="{{ $cat->description }}"
+                                data-keyword="{{ $cat->keyword }}"
                                 data-name="{{ $cat->name }}"
                                 data-active="{{ $cat->is_active ? 1 : 0 }}"
                                 data-image="{{ $cat->image ? asset('storage/'.$cat->image) : '' }}"
@@ -192,6 +195,27 @@
                         placeholder="Enter category name" required>
                 </div>
 
+                {{-- ✅ Meta Title --}}
+                <div class="form-group">
+                    <label for="categoryTitle" class="form-label">Meta Title</label>
+                    <input type="text" id="categoryTitle" name="title" class="form-input"
+                        placeholder="Enter meta title">
+                </div>
+
+                {{-- ✅ Meta Description --}}
+                <div class="form-group">
+                    <label for="categoryDescription" class="form-label">Meta Description</label>
+                    <textarea id="categoryDescription" name="description" class="form-input"
+                        rows="4" placeholder="Enter meta description"></textarea>
+                </div>
+
+                {{-- ✅ Meta Keyword --}}
+                <div class="form-group">
+                    <label for="categoryKeyword" class="form-label">Meta Keyword</label>
+                    <textarea id="categoryKeyword" name="keyword" class="form-input"
+                        rows="3" placeholder="Enter meta keywords comma separated"></textarea>
+                </div>
+
                 {{-- ✅ Category Icon Image --}}
                 <div class="form-group">
                     <label class="form-label">Category Icon Image</label>
@@ -274,6 +298,27 @@
                     <label class="form-label">Category Name</label>
                     <input type="text" name="name" id="editName" class="form-input"
                         placeholder="Enter category name" required>
+                </div>
+
+                {{-- ✅ Edit Meta Title --}}
+                <div class="form-group">
+                    <label class="form-label">Meta Title</label>
+                    <input type="text" name="title" id="editTitle" class="form-input"
+                        placeholder="Enter meta title">
+                </div>
+
+                {{-- ✅ Edit Meta Description --}}
+                <div class="form-group">
+                    <label class="form-label">Meta Description</label>
+                    <textarea name="description" id="editDescription" class="form-input"
+                        rows="4" placeholder="Enter meta description"></textarea>
+                </div>
+
+                {{-- ✅ Edit Meta Keyword --}}
+                <div class="form-group">
+                    <label class="form-label">Meta Keyword</label>
+                    <textarea name="keyword" id="editKeyword" class="form-input"
+                        rows="3" placeholder="Enter meta keywords comma separated"></textarea>
                 </div>
 
                 {{-- ✅ Edit Category Icon Image --}}
@@ -407,15 +452,22 @@
         btn.addEventListener('click', function() {
             const id = this.dataset.id;
             const name = this.dataset.name || '';
+            const title = this.dataset.title || '';
+            const description = this.dataset.description || '';
+            const keyword = this.dataset.keyword || '';
             const active = this.dataset.active === '1';
 
             const image = this.dataset.image || '';
             const categoryimage = this.dataset.categoryimage || '';
 
+            // ✅ fill text fields
             document.getElementById('editName').value = name;
+            document.getElementById('editTitle').value = title;
+            document.getElementById('editDescription').value = description;
+            document.getElementById('editKeyword').value = keyword;
             document.getElementById('editActive').checked = active;
 
-            // category image preview (existing)
+            // ✅ category image preview (existing)
             const imgPreview = document.getElementById('editPreview');
             if (image) {
                 imgPreview.src = image;
@@ -425,7 +477,7 @@
                 imgPreview.style.display = 'none';
             }
 
-            // icon image preview (existing)
+            // ✅ icon image preview (existing)
             const iconPreview = document.getElementById('editIconPreview');
             if (categoryimage) {
                 iconPreview.src = categoryimage;
@@ -435,13 +487,12 @@
                 iconPreview.style.display = 'none';
             }
 
-            // set action
+            // ✅ set form action
             let url = `{{ route('superadmin.category.update', ':id') }}`;
             url = url.replace(':id', id);
             document.getElementById('editCategoryForm').action = url;
 
-
-            // reset file inputs (optional)
+            // ✅ reset file inputs
             document.getElementById('editImage').value = '';
             document.getElementById('editCategoryIconFile').value = '';
         });
@@ -473,10 +524,28 @@
         preview.src = URL.createObjectURL(file);
         preview.style.display = 'inline-block';
     });
+
+    // ✅ Reset edit modal when closed
+    document.getElementById('editCategoryModal')?.addEventListener('hidden.bs.modal', function() {
+        document.getElementById('editCategoryForm').reset();
+
+        const imgPreview = document.getElementById('editPreview');
+        const iconPreview = document.getElementById('editIconPreview');
+
+        if (imgPreview) {
+            imgPreview.src = '';
+            imgPreview.style.display = 'none';
+        }
+
+        if (iconPreview) {
+            iconPreview.src = '';
+            iconPreview.style.display = 'none';
+        }
+
+        document.getElementById('editImage').value = '';
+        document.getElementById('editCategoryIconFile').value = '';
+    });
 </script>
-
-
-
 
 
 

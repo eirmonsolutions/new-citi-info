@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Listing Page')
+@section('title', 'Business Categories – Australia Local Business Directory | Citiinfo')
+
+@section('meta_description', 'Explore business categories on Citiinfo Australia. Find restaurants, salons, plumbers, hospitals, skip bin hire, towing services, real estate agents and more local businesses across Australia.')
+
+@section('meta_keywords', '')
 
 @section('content')
 
@@ -8,7 +12,7 @@
 <section class="banner-area">
     <div class="container">
         <div class="banner-text">
-            <h1>Explore categories</h1>
+            <h1>Explore Business Categories in Australia</h1>
         </div>
     </div>
 </section>
@@ -19,7 +23,7 @@
         <div class="row justify-content-center">
             <div class="col-lg-6">
                 <div class="section-title">
-                    <h2>Destination Categories</h2>
+                    <h2>Browse Business Categories Across Australia</h2>
                 </div>
             </div>
         </div>

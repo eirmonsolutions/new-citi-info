@@ -1,13 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Home Page')
+@section('title', 'Citiinfo Pricing Plans | Business Listing Packages Australia')
+
+@section('meta_description', 'Explore Citiinfo pricing plans to promote your business across Australia. Choose affordable business listing packages and connect with customers in major cities.')
+
+@section('meta_keywords', '')
 
 @section('content')
 
 <section class="banner-area-other">
     <div class="container">
         <div class="banner-text">
-            <h1>Pricing Plans</h1>
+            <h1>Business Listing Pricing Plans</h1>
         </div>
     </div>
 </section>
@@ -20,7 +24,7 @@
     <div class="container">
         <div class="pricing-wrapper">
             <div class="section-title">
-                <h2>Choose Your Product</h2>
+                <h2>Choose the Right Plan for Your Business</h2>
             </div>
             <div class="tpprice-shape">
                 <div class="tppricing-shape-one">

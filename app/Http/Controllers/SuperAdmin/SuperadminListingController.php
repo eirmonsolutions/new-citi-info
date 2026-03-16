@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\BusinessListing;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use App\Mail\ListingAdminCredentialsMail;
 
 
 class SuperadminListingController extends Controller
@@ -39,20 +43,38 @@ class SuperadminListingController extends Controller
 
     public function approve(BusinessListing $listing)
     {
-        // ✅ publish listing + allow + approved time
         $listing->update([
             'status'      => 'published',
             'is_allowed'  => 1,
             'approved_at' => now(),
         ]);
 
-        // ✅ user role admin (only if normal user)
         $user = User::find($listing->user_id);
-        if ($user && ($user->role ?? 'user') === 'user') {
-            $user->update(['role' => 'admin']);
+
+        if ($user) {
+            if ((bool) $user->is_auto_created === true) {
+                $plainPassword = Str::random(10);
+
+                $user->update([
+                    'password' => Hash::make($plainPassword),
+                    'role'     => 'admin',
+                ]);
+
+                Mail::to($user->email)->send(
+                    new ListingAdminCredentialsMail($user, $plainPassword, $listing, true)
+                );
+            } else {
+                $user->update([
+                    'role' => 'admin',
+                ]);
+
+                Mail::to($user->email)->send(
+                    new ListingAdminCredentialsMail($user, null, $listing, false)
+                );
+            }
         }
 
-        return back()->with('success', 'Listing approved and published. User role updated to admin.');
+        return back()->with('success', 'Listing approved and published. Approval email sent successfully.');
     }
 
 

@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Home Page')
+@section('title', 'Australia Business Directory | Free Business Listings & Local Services')
+
+@section('meta_description', 'Citiinfo is an Australia business directory to find local businesses, services, restaurants, salons and plumbers. Add your business free and reach customers across Australia.')
+
+@section('meta_keywords', 'business directory australia, local business directory australia, australia business directory, free business listing sites australia, business listing website')
 
 @section('content')
 
@@ -14,7 +18,7 @@
 <section class="banner-area">
     <div class="container">
         <div class="banner-text">
-            <h1>Explore top-rated certified pros nearby</h1>
+            <h1>Australia Business Directory – Find Local Businesses & Services Near You</h1>
             <form action="{{ route('search.redirect') }}" method="POST" autocomplete="off">
                 @csrf
                 <input type="hidden" name="category_id" id="category_id" value="">

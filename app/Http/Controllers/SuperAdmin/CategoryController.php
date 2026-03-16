@@ -22,7 +22,6 @@ class CategoryController extends Controller
     {
         $cat = Category::findOrFail($id);
 
-        // if turning ON, check max 6
         if (!$cat->is_home) {
             $count = Category::where('is_home', 1)->count();
             if ($count >= 8) {
@@ -36,7 +35,6 @@ class CategoryController extends Controller
         return back()->with('success', 'Homepage categories updated!');
     }
 
-
     // ✅ ONLY for main category image (compress to <= 500KB)
     private function compressAndStoreMainImage(
         UploadedFile $file,
@@ -47,13 +45,11 @@ class CategoryController extends Controller
         $manager = new ImageManager(new Driver());
         $image   = $manager->read($file->getPathname());
 
-        // resize down (keep aspect ratio)
         $image->scaleDown(width: $maxWidth);
 
         $filename = uniqid('cat_') . '.jpg';
         $path     = $folder . '/' . $filename;
 
-        // compress loop
         $quality = 85;
         do {
             $encoded = $image->toJpeg($quality);
@@ -69,16 +65,22 @@ class CategoryController extends Controller
     {
         $data = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
-            'categoryimage' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'], // ✅ NO compress
-            'image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'], // allow bigger, we compress anyway
+            'title'         => ['nullable', 'string', 'max:255'],
+            'description'   => ['nullable', 'string'],
+            'keyword'       => ['nullable', 'string'],
+            'categoryimage' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'is_active'     => ['nullable', 'in:0,1'],
         ]);
 
         $category = new Category();
-        $category->name      = $data['name'];
-        $category->is_active = (bool)($data['is_active'] ?? 0);
+        $category->name        = $data['name'];
+        $category->title       = $data['title'] ?? null;
+        $category->description = $data['description'] ?? null;
+        $category->keyword     = $data['keyword'] ?? null;
+        $category->is_active   = (bool)($data['is_active'] ?? 0);
 
-        // ✅ ICON IMAGE (NO COMPRESS) -> normal store
+        // ✅ ICON IMAGE (NO COMPRESS)
         if ($request->hasFile('categoryimage')) {
             $category->categoryimage = $request->file('categoryimage')->store('category-icon', 'public');
         }
@@ -102,15 +104,21 @@ class CategoryController extends Controller
     {
         $category = Category::findOrFail($id);
 
-        $request->validate([
+        $data = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
-            'categoryimage' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'], // ✅ NO compress
-            'image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'], // allow bigger, we compress anyway
+            'title'         => ['nullable', 'string', 'max:255'],
+            'description'   => ['nullable', 'string'],
+            'keyword'       => ['nullable', 'string'],
+            'categoryimage' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image'         => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'is_active'     => ['nullable', 'in:0,1'],
         ]);
 
-        $category->name      = $request->name;
-        $category->is_active = $request->is_active ?? 0;
+        $category->name        = $data['name'];
+        $category->title       = $data['title'] ?? null;
+        $category->description = $data['description'] ?? null;
+        $category->keyword     = $data['keyword'] ?? null;
+        $category->is_active   = $data['is_active'] ?? 0;
 
         // ✅ ICON IMAGE update (NO COMPRESS)
         if ($request->hasFile('categoryimage')) {

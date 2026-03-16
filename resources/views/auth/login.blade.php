@@ -139,14 +139,22 @@
                     // Unauthorized (invalid creds) - we will return json from controller
                     const data = await res.json().catch(() => null);
 
+
                     if (res.ok && data?.ok) {
-                        await Swal.fire({
+                        Swal.fire({
                             icon: 'success',
                             title: 'Welcome!',
-                            text: 'Login successful.',
-                            confirmButtonText: 'Continue'
+                            text: 'Redirecting to dashboard...',
+                            timer: 3000, // 3 sec
+                            timerProgressBar: true,
+                            showConfirmButton: false,
+                            allowOutsideClick: false
                         });
-                        window.location.href = data.redirect_to || "{{ route('homepage') }}";
+
+                        setTimeout(() => {
+                            window.location.href = data.redirect_to || "{{ route('homepage') }}";
+                        }, 3000);
+
                         return;
                     }
 

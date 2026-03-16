@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Home Page')
+@section('title', $categoryRow->title ?? $categoryRow->name ?? 'Listings')
+
+@section('meta_description', $categoryRow->description ?? '')
+
+@section('meta_keywords', $categoryRow->keyword ?? '')
 
 @section('content')
 

@@ -28,7 +28,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
 use App\Models\BusinessReview;
-
+use App\Mail\ListingSubmittedMail;
+use App\Mail\NewListingAdminNotificationMail;
 
 class ListingController extends Controller
 {
@@ -172,7 +173,7 @@ class ListingController extends Controller
             'business_gallery.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
 
             // ✅ make email required so we can create/assign admin user
-            'email' => 'required|email',
+            'email' => auth()->check() ? 'nullable|email' : 'required|email',
         ]);
 
         return DB::transaction(function () use (
@@ -205,55 +206,57 @@ class ListingController extends Controller
                 $logoPath = $request->file('business_logo')->store('business/logo', 'public');
             }
 
-            /**
-             * ✅ IMPORTANT FIX:
-             * First find/create USER by email (owner),
-             * then create listing using $user->id
-             */
-            $listingEmail = $request->input('email'); // now required from validation
+            $listingEmail = auth()->check()
+                ? auth()->user()->email
+                : $request->input('email');
 
-            $user = User::where('email', $listingEmail)->first();
+            $user = auth()->check()
+                ? auth()->user()
+                : User::where('email', $listingEmail)->first();
 
             if (!$user) {
                 $plainPassword = Str::random(10);
 
                 $user = User::create([
-                    'name'       => $request->input('contact_name') ?? $request->input('business_name') ?? 'Admin',
-                    'email'      => $listingEmail,
-                    'password'   => Hash::make($plainPassword),
-                    'role'       => 'admin',
-                    'is_blocked' => 0,
+                    'name'            => $request->input('contact_name') ?? $request->input('business_name') ?? 'Admin',
+                    'email'           => $listingEmail,
+                    'password'        => Hash::make($plainPassword),
+                    'role'            => 'user',
+                    'is_blocked'      => 0,
+                    'is_auto_created' => true,
                 ]);
-
-                // ✅ mail send credentials only for new user
-                Mail::to($listingEmail)->send(new ListingAdminCredentialsMail($user, $plainPassword));
             }
 
             // ✅ create listing (NOW $user exists)
             $listing = BusinessListing::create([
-                'user_id'       => $user->id, // ✅ FIXED
+                'user_id'       => $user->id,
                 'business_name' => $businessName,
                 'category_id'   => $categoryId,
                 'category'      => $request->input('category') ?? null,
                 'slug'          => $slug,
-
                 'country'       => $countryId,
                 'state'         => $stateVal,
                 'city'          => $cityVal,
                 'address'       => $addressVal,
-
                 'latitude'      => $request->input('latitude'),
                 'longitude'     => $request->input('longitude'),
-
                 'description'   => $descVal,
                 'logo'          => $logoPath,
-
                 'listing_type'  => $listingType,
                 'is_featured'   => (bool)($request->input('is_featured') ?? false),
-
                 'status'        => 'pending',
                 'submitted_at'  => now(),
             ]);
+
+            Mail::to($listingEmail)->send(new ListingSubmittedMail($listing));
+
+            // admin ko mail
+            $adminEmails = array_filter([
+                'vishaleirmon15896@gmail.com',
+                'info@eirmonsolutions.com.au',
+            ]);
+
+            Mail::to($adminEmails)->send(new NewListingAdminNotificationMail($listing));
 
             // ✅ contact
             if ($request->filled('contact_name') || $request->filled('phone') || $request->filled('email')) {
@@ -261,7 +264,7 @@ class ListingController extends Controller
                     'business_id'     => $listing->id,
                     'contact_name'    => $request->input('contact_name'),
                     'phone'           => $request->input('phone'),
-                    'email'           => $request->input('email'),
+                    'email' => $listingEmail,
                     'alternate_phone' => $request->input('alternate_phone'),
                     'website'         => $request->input('website'),
                     'is_primary'      => true,

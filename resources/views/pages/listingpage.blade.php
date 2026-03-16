@@ -1,13 +1,17 @@
 @extends('layouts.app')
 
-@section('title', 'Listing Page')
+@section('title', 'Business Listings Australia – Find Local Services & Companies')
+
+@section('meta_description', 'Business listings across Australia on Citiinfo. Discover restaurants, car rentals, towing services, salons, plumbers and other local businesses in Melbourne, Sydney, Brisbane and more')
+
+@section('meta_keywords', '')
 
 @section('content')
 
 <section class="banner-area">
     <div class="container">
         <div class="banner-text">
-            <h1>Explore top-rated Listings</h1>
+            <h1>Explore Top Rated Business Listings in Australia</h1>
         </div>
     </div>
 </section>

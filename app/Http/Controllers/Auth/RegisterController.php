@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
@@ -22,14 +23,14 @@ class RegisterController extends Controller
             'agree_terms' => ['accepted'],
         ]);
 
-        \App\Models\User::create([
-            'name'     => $validated['name'],
-            'email'    => $validated['email'],
-            'password' => $validated['password'],
-            'role'     => 'user',
+        User::create([
+            'name'            => $validated['name'],
+            'email'           => $validated['email'],
+            'password'        => Hash::make($validated['password']),
+            'role'            => 'user',
+            'is_auto_created' => false,
         ]);
 
-        // ✅ If AJAX
         if ($request->ajax()) {
             return response()->json(['ok' => true]);
         }

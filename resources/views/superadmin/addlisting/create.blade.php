@@ -8,7 +8,7 @@
 
 <section class="main-top-progress-bar sticky-progess-bar">
     <div class="top-progress-bar">
-        <div class="container">
+        <div class="">
             <div class="progess-area-list ">
                 <div class="progess-box active">
                     <div class="step-circle">1</div>
@@ -44,7 +44,7 @@
     </div>
 
     <div class="step-area">
-        <div class="container">
+        <div class="row">
 
             <form action="{{ route('superadmin.addlisting.store') }}" method="POST" enctype="multipart/form-data" class="row">
                 @csrf
