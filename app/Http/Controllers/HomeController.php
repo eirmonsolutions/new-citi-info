@@ -33,7 +33,7 @@ class HomeController extends Controller
 
         // ✅ FRONTEND LISTINGS (ONLY allowed + published)
         // ✅ FRONTEND LISTINGS (ONLY allowed + published) + rating avg/count
-        $listings = BusinessListing::with(['gallery', 'hours'])
+        $listings = BusinessListing::with(['gallery', 'hours', 'contacts'])
             ->withAvg(['reviews as avg_rating' => function ($q) {
                 $q->where('is_approved', 1);
             }], 'rating')

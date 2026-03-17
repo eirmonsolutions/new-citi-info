@@ -26,10 +26,7 @@ class FrontSearchController extends Controller
         ]);
 
         // 🔹 Find category by slug
-        $categoryRow = Category::whereRaw(
-            "LOWER(REPLACE(TRIM(name),' ','-')) = ?",
-            [$catSlug]
-        )->first();
+        $categoryRow = Category::where('slug', $catSlug)->first();
 
         $query = BusinessListing::query();
 
@@ -53,7 +50,15 @@ class FrontSearchController extends Controller
             ->where('status', 'published')
             ->whereNull('deleted_at');
 
-        $listings = $query->latest()->paginate(12);
+        $listings = $query->with(['gallery', 'hours', 'cityRel', 'contacts'])
+            ->withAvg(['reviews as avg_rating' => function ($q) {
+                $q->where('is_approved', 1);
+            }], 'rating')
+            ->withCount(['reviews as ratings_count' => function ($q) {
+                $q->where('is_approved', 1);
+            }])
+            ->latest()
+            ->paginate(12);
 
         // 🔹 Data fetch log
         Log::info('Listing category data fetched', [
@@ -124,7 +129,15 @@ class FrontSearchController extends Controller
             $query->where('city', (int)$cityId);
         }
 
-        $listings = $query->latest()->paginate(12);
+        $listings = $query->with(['gallery', 'hours', 'cityRel', 'contacts'])
+            ->withAvg(['reviews as avg_rating' => function ($q) {
+                $q->where('is_approved', 1);
+            }], 'rating')
+            ->withCount(['reviews as ratings_count' => function ($q) {
+                $q->where('is_approved', 1);
+            }])
+            ->latest()
+            ->paginate(12);
 
         return view('searchbar.results', [
             'listings'     => $listings,
@@ -147,10 +160,7 @@ class FrontSearchController extends Controller
 
 
 
-        $categoryRow = Category::whereRaw(
-            "LOWER(REPLACE(TRIM(name),' ','-')) = ?",
-            [strtolower($category)]
-        )->first();
+        $categoryRow = Category::where('slug', strtolower($category))->first();
 
 
         $query = BusinessListing::query()
@@ -166,7 +176,15 @@ class FrontSearchController extends Controller
 
 
 
-        $listings = $query->latest()->paginate(12);
+        $listings = $query->with(['gallery', 'hours', 'cityRel', 'contacts'])
+            ->withAvg(['reviews as avg_rating' => function ($q) {
+                $q->where('is_approved', 1);
+            }], 'rating')
+            ->withCount(['reviews as ratings_count' => function ($q) {
+                $q->where('is_approved', 1);
+            }])
+            ->latest()
+            ->paginate(12);
 
 
 

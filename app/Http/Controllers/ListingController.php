@@ -50,6 +50,9 @@ class ListingController extends Controller
             'stateRel',
             'countryRel',
             'faqs.items',
+            'contacts',
+            'socialLinks',
+            'services',
 
             'announcements' => function ($q) use ($today) {
                 $q->where('is_active', 1)
@@ -72,6 +75,8 @@ class ListingController extends Controller
                     ->latest();
             },
         ])
+            ->withAvg(['reviews as avg_rating' => fn($q) => $q->where('is_approved', 1)], 'rating')
+            ->withCount(['reviews as total_reviews' => fn($q) => $q->where('is_approved', 1)])
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -82,16 +87,24 @@ class ListingController extends Controller
         // ✅ Pagination (5 per page)
         $reviews = (clone $reviewsBase)->paginate(5);
 
-        // ✅ Stats
-        $totalReviews = (clone $reviewsBase)->count();
-        $avgRating    = $totalReviews ? round((clone $reviewsBase)->avg('rating'), 1) : 0;
+        // ✅ Stats from eager loaded data
+        $totalReviews = $listing->total_reviews;
+        $avgRating    = round($listing->avg_rating ?? 0, 1);
+
+        $stars = DB::table('business_reviews')
+            ->select('rating', DB::raw('count(*) as total'))
+            ->where('business_id', $listing->id)
+            ->where('is_approved', 1)
+            ->groupBy('rating')
+            ->pluck('total', 'rating')
+            ->toArray();
 
         $starCounts = [
-            5 => (clone $reviewsBase)->where('rating', 5)->count(),
-            4 => (clone $reviewsBase)->where('rating', 4)->count(),
-            3 => (clone $reviewsBase)->where('rating', 3)->count(),
-            2 => (clone $reviewsBase)->where('rating', 2)->count(),
-            1 => (clone $reviewsBase)->where('rating', 1)->count(),
+            5 => $stars[5] ?? 0,
+            4 => $stars[4] ?? 0,
+            3 => $stars[3] ?? 0,
+            2 => $stars[2] ?? 0,
+            1 => $stars[1] ?? 0,
         ];
 
         return view('pages.listingdetail', compact(
@@ -389,34 +402,15 @@ class ListingController extends Controller
                 }
             }
 
-            // ✅ gallery upload (multiple)
+            // ✅ gallery upload (multiple) - OFFLOADED TO QUEUE
             if ($request->hasFile('business_gallery')) {
-                $manager = new \Intervention\Image\ImageManager(new \Intervention\Image\Drivers\Gd\Driver());
-
                 foreach ($request->file('business_gallery') as $index => $img) {
-                    $image = $manager->read($img->getPathname());
-                    $image->scaleDown(width: 1200);
+                    // Store temporarily in local disk
+                    $tempName = uniqid('temp_') . '.' . $img->getClientOriginalExtension();
+                    $tempPath = $img->storeAs('temp-uploads', $tempName, 'local');
 
-                    $filename = uniqid('gallery_') . '.jpg';
-                    $path = 'business/gallery/' . $filename;
-
-                    $quality = 85;
-                    do {
-                        $encoded = $image->toJpeg($quality);
-                        $quality -= 5;
-                    } while (strlen((string)$encoded) > (500 * 1024) && $quality > 30);
-
-                    \Storage::disk('public')->put($path, (string)$encoded);
-
-                    BusinessGallery::create([
-                        'business_id' => $listing->id,
-                        'image_path'  => $path,
-                        'caption'     => null,
-                        'alt_text'    => null,
-                        'is_cover'    => $index === 0,
-                        'sort_order'  => $index,
-                        'uploaded_at' => now(),
-                    ]);
+                    // Dispatch job
+                    \App\Jobs\ProcessListingGalleryImage::dispatch($listing->id, $tempPath, $index);
                 }
             }
 

@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
             $userId = auth()->id();
 
             $wishlistCount = $userId
-                ? Wishlist::where('user_id', $userId)->count()
+                ? \Cache::remember("wishlist_count_{$userId}", 600, fn() => Wishlist::where('user_id', $userId)->count())
                 : 0;
 
             $view->with('wishlistCount', $wishlistCount);

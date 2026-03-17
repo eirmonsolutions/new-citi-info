@@ -7,7 +7,9 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-class NewListingAdminNotificationMail extends Mailable
+use Illuminate\Contracts\Queue\ShouldQueue;
+
+class NewListingAdminNotificationMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
