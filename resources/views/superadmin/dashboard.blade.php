@@ -1,6 +1,6 @@
 @extends('layouts.superadmin')
 
-@section('title', 'Dashboard')
+@section('title', 'Superadmin Dashboard')
 
 @section('content')
 
