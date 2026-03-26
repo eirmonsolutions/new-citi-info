@@ -100,6 +100,15 @@ class SuperadminListingController extends Controller
             ->with('success', 'Listing restored successfully!');
     }
 
+    public function pendingCount()
+    {
+        $count = BusinessListing::where('status', 'pending')->count();
+
+        return response()->json([
+            'count' => $count
+        ]);
+    }
+
 
     // ✅ Allow/Disallow toggle
     public function toggleAllow(BusinessListing $listing)

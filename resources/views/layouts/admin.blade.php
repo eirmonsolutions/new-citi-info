@@ -169,7 +169,6 @@
     <script src="{{ asset('assets/js/gsap.js') }}"></script>
     <script src="{{ asset('assets/js/gsap-animation.js') }}"></script>
     <script src="{{ asset('assets/js/splitText.js') }}"></script>
-    <script src="{{ asset('assets/js/ScrollTrigger.js') }}"></script>
     <!-- Custom JS -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <!-- Development version -->

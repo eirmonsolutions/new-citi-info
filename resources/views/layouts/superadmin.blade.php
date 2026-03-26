@@ -127,7 +127,6 @@
     <script src="{{ asset('assets/js/gsap.js') }}"></script>
     <script src="{{ asset('assets/js/gsap-animation.js') }}"></script>
     <script src="{{ asset('assets/js/splitText.js') }}"></script>
-    <script src="{{ asset('assets/js/ScrollTrigger.js') }}"></script>
     <!-- Custom JS -->
     <script src="{{ asset('assets/js/main.js') }}"></script>
     <!-- Development version -->
@@ -165,6 +164,61 @@
         });
     </script>
     @endif
+
+
+
+    <script>
+        let lastPendingCount = 0;
+
+        function loadPendingListingCount(showNotify = false) {
+            $.ajax({
+                url: "{{ route('superadmin.listing.pendingCount') }}",
+                type: "GET",
+                success: function(response) {
+                    let count = response.count ?? 0;
+                    let badge = $('#listingCountBadge');
+
+                    if (count > 0) {
+                        badge.text(count).show();
+                    } else {
+                        badge.hide();
+                    }
+
+                    // optional notification when count increases
+                    if (showNotify && count > lastPendingCount) {
+                        let diff = count - lastPendingCount;
+
+                        if ("Notification" in window && Notification.permission === "granted") {
+                            new Notification("New Listing Alert", {
+                                body: diff + " new listing received."
+                            });
+                        }
+
+                        // optional small sound
+                        let audio = new Audio("{{ asset('notification.mp3') }}");
+                        audio.play().catch(function() {});
+                    }
+
+                    lastPendingCount = count;
+                },
+                error: function() {
+                    console.log('Failed to fetch pending listing count.');
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            loadPendingListingCount(false);
+
+            if ("Notification" in window && Notification.permission !== "granted") {
+                Notification.requestPermission();
+            }
+
+            setInterval(function() {
+                loadPendingListingCount(true);
+            }, 5000); // every 5 seconds
+        });
+    </script>
 
     @stack('scripts')
 </body>

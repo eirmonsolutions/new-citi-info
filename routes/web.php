@@ -101,6 +101,9 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
         return view('superadmin.dashboard');
     })->name('.dashboard');
 
+    Route::get('/listing/pending-count', [SuperadminListingController::class, 'pendingCount'])
+        ->name('.listing.pendingCount');
+
     Route::get('/category', [CategoryController::class, 'index'])->name('.category.index');
     Route::post('/category', [CategoryController::class, 'store'])->name('.category.store');
     Route::put('/category/{id}/update', [CategoryController::class, 'update'])->name('.category.update');
