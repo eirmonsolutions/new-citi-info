@@ -68,7 +68,7 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register.s
 
 // Route::get('/test-mail', function () {
 //     Mail::raw('Test Email OK', function ($m) {
-//         $m->to('vishaleirmon15896@gmail.com')
+//         $m->to('manshu.developer@gmail.com')
 //             ->subject('Test Mail');
 //     });
 

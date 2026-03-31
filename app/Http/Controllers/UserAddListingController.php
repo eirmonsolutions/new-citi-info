@@ -11,7 +11,7 @@ use App\Models\State;
 use App\Models\City;
 use App\Models\Category;
 use App\Models\Feature;
-
+use Illuminate\Support\Facades\Mail;
 use App\Models\BusinessListing;
 use App\Models\BusinessContact;
 use App\Models\BusinessSocialLink;
@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+
+use App\Mail\ListingSubmittedMail;
+use App\Mail\NewListingAdminNotificationMail;
 
 class UserAddListingController extends Controller
 {
@@ -152,6 +155,13 @@ class UserAddListingController extends Controller
                     'is_primary'      => true,
                 ]);
             }
+              $listingEmail = $contactEmail ?: $user->email;
+
+            $adminEmails = array_filter([
+                'vishaleirmon15896@gmail.com',
+                'info@eirmonsolutions.com.au',
+            ]);
+              
 
             // ✅ business hours
             $hours = $request->input('hours', []);
@@ -274,6 +284,12 @@ class UserAddListingController extends Controller
                     'provider'        => $request->input('provider'),
                 ]);
             }
+               Mail::to($listingEmail)->send(new ListingSubmittedMail($listing));
+                 foreach ($adminEmails as $adminEmail) {
+                    Mail::to($adminEmail)->send(new NewListingAdminNotificationMail($listing));
+                }
+
+
 
             return back()->with('success', 'Listing added successfully! Now waiting for SuperAdmin approval.');
         });
