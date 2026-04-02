@@ -141,7 +141,7 @@
 
                                             <div class="services-price">
                                                 @php
-                                                $symbol = $service->currency ? $service->currency : '$';
+                                                $symbol = $service->currency ? $service->currency : '';
                                                 @endphp
                                                 {{ $symbol }}{{ is_numeric($service->price) ? number_format($service->price, 2) : $service->price }}
                                             </div>
