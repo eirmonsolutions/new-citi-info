@@ -127,9 +127,7 @@
                     <div class="alert alert-warning">No listings found.</div>
                     @endforelse
 
-                    <div class="mt-3">
-                        {{ $listings->links() }}
-                    </div>
+                    
 
                 </div>
             </div>
