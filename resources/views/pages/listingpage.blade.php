@@ -45,25 +45,25 @@
 
                         {{-- LOCATION --}}
                         <div class="filter-field filter-select" data-type="location" id="locationSelect">
-                            <span class="fi fi-pin"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                            <span class="fi fi-pin">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                                     <path d="M12 22s7-4.4 7-11a7 7 0 1 0-14 0c0 6.6 7 11 7 11Z" stroke="currentColor" stroke-width="2" />
                                     <circle cx="12" cy="11" r="2.5" stroke="currentColor" stroke-width="2" />
-                                </svg> </span>
+                                </svg>
+                            </span>
 
                             <div class="pill-wrap" id="locationPillWrap"></div>
 
-                            <!-- ✅ NEW: typing input -->
                             <input type="text" id="locationSearch" class="pill-input" placeholder="Type city..." autocomplete="off">
 
                             <input type="hidden" name="location" id="locationInput" value="{{ request('location') }}">
 
-
-
                             <div class="dropdown" id="locationDropdown">
-                                @php $cities = ['Chicago','New York','Boston','Los Angeles']; @endphp
-                                @foreach($cities as $c)
+                                @forelse($cities as $c)
                                 <button type="button" class="dd-item" data-value="{{ $c }}">{{ $c }}</button>
-                                @endforeach
+                                @empty
+                                <button type="button" class="dd-item" disabled>No cities found</button>
+                                @endforelse
                             </div>
                         </div>
 
