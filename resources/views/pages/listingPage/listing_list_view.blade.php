@@ -28,7 +28,7 @@
                                     @else
                                     <div class="swiper-slide listing-slider-single">
                                         <img loading="lazy"
-                                            src="{{ $listing->logo ? asset('storage/'.$listing->logo) : 'https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?auto=format&fit=crop&w=800&h=500' }}"
+                                            src="{{ $listing->logo ? asset('storage/'.$listing->logo) }}"
                                             alt="{{ $listing->business_name }}">
                                     </div>
                                     @endif
