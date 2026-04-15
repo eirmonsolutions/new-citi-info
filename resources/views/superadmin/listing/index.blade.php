@@ -54,6 +54,7 @@
                     <th>Business Name</th>
                     <th>Category</th>
                     <th>Location (City)</th>
+                    <th>Date</th>
                     <th>Status</th>
                     <th>Action</th>
                 </tr>
@@ -90,6 +91,10 @@
 
                     <td>
                         {{ $listing->cityRel->name ?? '-' }}
+                    </td>
+
+                    <td>
+                        {{ $listing->created_at ? $listing->created_at->format('d M Y') : '-' }}
                     </td>
 
                     <td>
@@ -191,7 +196,7 @@
             </tbody>
         </table>
 
-       
+
     </section>
 
 </main>
