@@ -28,7 +28,7 @@
                                     @else
                                     <div class="swiper-slide listing-slider-single">
                                         <img loading="lazy"
-                                            src="{{ $listing->logo ? asset('storage/'.$listing->logo) }}"
+                                            src="{{ $listing->logo ? asset('storage/'.$listing->logo) : '' }}"
                                             alt="{{ $listing->business_name }}">
                                     </div>
                                     @endif
