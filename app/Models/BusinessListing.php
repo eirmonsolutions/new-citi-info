@@ -37,6 +37,7 @@ class BusinessListing extends Model
         'approved_at',
         'expires_at',
         'views_count',
+        'show_on_homepage',
         'clicks_count',
     ];
 

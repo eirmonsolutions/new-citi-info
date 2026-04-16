@@ -8,9 +8,7 @@
 
 @section('content')
 
-<link
-  rel="stylesheet"
-  href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
+
 
 <div class="search-bar">
   <div class="container">
@@ -94,16 +92,28 @@
           @forelse($listings as $listing)
           <div class="listing-search-area-box">
             <div class="listing-search-box-img-area">
-              <div class="listing-slider-wrapper mySwiper mb-5">
+              <div class="listing-slider-wrapper mySwiper">
                 <div class="swiper-wrapper">
-                  @foreach($listing->gallery as $img)
+
+                  @php
+                  $gallery = $listing->gallery ?? collect([]);
+                  @endphp
+
+                  @if($gallery->count())
+                  @foreach($gallery as $img)
                   <div class="swiper-slide listing-slider-single">
-                    <img
-                      loading="lazy"
+                    <img loading="lazy"
                       src="{{ asset('storage/'.$img->image_path) }}"
                       alt="{{ $img->alt_text ?? $listing->business_name }}">
                   </div>
                   @endforeach
+                  @else
+                  <div class="swiper-slide listing-slider-single">
+                    <img loading="lazy"
+                      src="{{ $listing->logo ? asset('storage/'.$listing->logo) : '' }}"
+                      alt="{{ $listing->business_name }}">
+                  </div>
+                  @endif
 
                 </div>
               </div>
@@ -238,15 +248,13 @@
 
 
 
-
+{{-- ✅ Swiper (only for list view) --}}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js"></script>
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-
-    document.querySelectorAll(".mySwiper").forEach(function(swiperEl, index) {
-
-      // 🔹 Random delay between 3s – 8s
+    document.querySelectorAll(".mySwiper").forEach(function(swiperEl) {
       const randomDelay = Math.floor(Math.random() * (15000 - 8000 + 1)) + 3000;
 
       new Swiper(swiperEl, {
@@ -254,31 +262,15 @@
         spaceBetween: 12,
         loop: true,
         speed: 900,
-
         autoplay: {
-          delay: randomDelay, // ✅ RANDOM TIME
-          disableOnInteraction: false,
+          delay: randomDelay,
+          disableOnInteraction: false
         },
-
         grabCursor: true,
         simulateTouch: true,
         effect: "slide",
-
-        breakpoints: {
-          0: {
-            slidesPerView: 1
-          },
-          768: {
-            slidesPerView: 1
-          },
-          1024: {
-            slidesPerView: 1
-          },
-        },
       });
-
     });
-
   });
 </script>
 

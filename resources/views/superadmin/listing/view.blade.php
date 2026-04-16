@@ -50,9 +50,15 @@
                             <ul>
                                 <li>
                                     <i data-lucide="star"></i>
-                                    <span class="profile-review-number">4.5</span>
-                                    <span class="profile-review-count">(26)</span>
+                                    <span class="profile-review-number">{{ number_format($avgRating ?? 0, 1) }}</span>
+
+                                    @if(($totalReviews ?? 0) > 0)
+                                    <span class="profile-review-count">({{ $totalReviews }})</span>
+                                    @else
+                                    <span class="profile-review-count">(No ratings)</span>
+                                    @endif
                                 </li>
+
                                 <li>
                                     <i data-lucide="map-pin"></i>
                                     <span class="profile-review-count">
@@ -110,7 +116,7 @@
                                         <img src="{{ asset('storage/'.$feat->feature_image) }}"
                                             alt="{{ $feat->feature_name }}"
                                             style="height:40px;width:40px;object-fit:contain;">
-                                       
+
                                         @endif
                                     </div>
                                     <div class="info">

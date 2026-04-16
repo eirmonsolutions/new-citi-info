@@ -32,10 +32,9 @@
             </thead>
 
             <tbody id="featureTableBody">
-
                 @forelse($features as $feature)
                 <tr>
-                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ $features->firstItem() + $loop->index }}</td>
 
                     <td>{{ $feature->name }}</td>
 
@@ -66,8 +65,6 @@
 
                     <td>
                         <div class="action-buttons">
-
-                            {{-- EDIT --}}
                             <button
                                 type="button"
                                 class="btn-icon btn-edit"
@@ -86,7 +83,6 @@
                                 </svg>
                             </button>
 
-                            {{-- DELETE --}}
                             <form method="POST"
                                 action="{{ route('superadmin.feature.destroy', $feature) }}"
                                 class="deletefeatureForm d-inline">
@@ -105,7 +101,6 @@
                                     </svg>
                                 </button>
                             </form>
-
                         </div>
                     </td>
                 </tr>
@@ -114,9 +109,40 @@
                     <td colspan="5" class="text-center">No features found.</td>
                 </tr>
                 @endforelse
-
             </tbody>
         </table>
+
+        @if($features->hasPages())
+        <div class="pagination-wrap">
+            <nav aria-label="Feature Pagination">
+                <ul class="pagination">
+
+                    <li class="page-item {{ $features->onFirstPage() ? 'disabled' : '' }}">
+                        <a class="page-link"
+                            href="{{ $features->previousPageUrl() ?? '#' }}"
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    @foreach ($features->getUrlRange(1, $features->lastPage()) as $page => $url)
+                    <li class="page-item {{ $features->currentPage() == $page ? 'active' : '' }}">
+                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                    </li>
+                    @endforeach
+
+                    <li class="page-item {{ $features->hasMorePages() ? '' : 'disabled' }}">
+                        <a class="page-link"
+                            href="{{ $features->nextPageUrl() ?? '#' }}"
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+        @endif
     </section>
 
 

@@ -9,7 +9,6 @@
         <h1>User List</h1>
     </div>
 
-
     <section class="table-section table-responsive">
         <table class="table">
             <thead>
@@ -56,7 +55,7 @@
                     <td>
                         <form method="POST"
                             action="{{ route('superadmin.user.destroy', $user) }}"
-                            onsubmit="return confirm('Delete this user permanently?');">
+                            class="deleteUserForm">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn-icon btn-delete" title="Delete">
@@ -70,24 +69,51 @@
                                 </svg>
                             </button>
                         </form>
-
                     </td>
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center">No users found.</td>
+                    <td colspan="7" class="text-center">No users found.</td>
                 </tr>
                 @endforelse
             </tbody>
         </table>
 
-        <div class="mt-3">
-            {{ $users->links() }}
+        @if($users->hasPages())
+        <div class="pagination-wrap mt-3">
+            <nav aria-label="Users Pagination">
+                <ul class="pagination">
+
+                    <li class="page-item {{ $users->onFirstPage() ? 'disabled' : '' }}">
+                        <a class="page-link"
+                            href="{{ $users->previousPageUrl() ?? '#' }}"
+                            aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+
+                    @foreach ($users->getUrlRange(1, $users->lastPage()) as $page => $url)
+                    <li class="page-item {{ $users->currentPage() == $page ? 'active' : '' }}">
+                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                    </li>
+                    @endforeach
+
+                    <li class="page-item {{ $users->hasMorePages() ? '' : 'disabled' }}">
+                        <a class="page-link"
+                            href="{{ $users->nextPageUrl() ?? '#' }}"
+                            aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
         </div>
+        @endif
+
     </section>
 
 </main>
-
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -112,6 +138,5 @@
         });
     });
 </script>
-
 
 @endsection

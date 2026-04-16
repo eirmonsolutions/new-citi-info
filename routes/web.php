@@ -132,11 +132,16 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
     Route::delete('/listing/{listing}', [SuperadminListingController::class, 'destroy'])
         ->name('.listing.destroy');
 
+
+
     Route::patch('/listing/{id}/restore', [SuperadminListingController::class, 'restore'])
         ->name('.listing.restore');
 
     Route::patch('/listing/{listing}/toggle-allow', [SuperadminListingController::class, 'toggleAllow'])
         ->name('.listing.toggleAllow');
+
+    Route::patch('/listing/{listing}/toggle-homepage', [SuperadminListingController::class, 'toggleHomepage'])
+        ->name('.listing.toggleHomepage');
 
     Route::get('/user', [SuperadminUserController::class, 'index'])->name('.user.index');
 

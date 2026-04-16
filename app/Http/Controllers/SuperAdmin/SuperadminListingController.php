@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use App\Mail\ListingAdminCredentialsMail;
 
-
 class SuperadminListingController extends Controller
 {
     public function index(Request $request)
@@ -25,13 +24,13 @@ class SuperadminListingController extends Controller
         if ($status === 'trash') {
             $query->onlyTrashed();
         } elseif ($status !== 'all') {
-            $query->where('status', $status); // pending/published/expired
+            $query->where('status', $status);
         }
 
         $listings = $query->paginate(10)->withQueryString();
 
         $counts = [
-            'all'       => BusinessListing::count(), // default excludes trashed automatically when SoftDeletes enabled
+            'all'       => BusinessListing::count(),
             'published' => BusinessListing::where('status', 'published')->count(),
             'pending'   => BusinessListing::where('status', 'pending')->count(),
             'expired'   => BusinessListing::where('status', 'expired')->count(),
@@ -77,7 +76,6 @@ class SuperadminListingController extends Controller
         return back()->with('success', 'Listing approved and published. Approval email sent successfully.');
     }
 
-
     public function show(BusinessListing $listing)
     {
         return view('superadmin.listing.view', compact('listing'));
@@ -85,7 +83,14 @@ class SuperadminListingController extends Controller
 
     public function destroy(BusinessListing $listing)
     {
-        $listing->delete(); // ✅ soft delete
+        // trash me jaate hi homepage se bhi hata do
+        if ($listing->show_on_homepage) {
+            $listing->show_on_homepage = 0;
+            $listing->save();
+        }
+
+        $listing->delete();
+
         return back()->with('success', 'Listing moved to Trash!');
     }
 
@@ -94,7 +99,6 @@ class SuperadminListingController extends Controller
         $listing = BusinessListing::withTrashed()->findOrFail($id);
         $listing->restore();
 
-        // 🔥 Redirect to ALL (or Published)
         return redirect()
             ->route('superadmin.listing.index', ['status' => 'all'])
             ->with('success', 'Listing restored successfully!');
@@ -109,16 +113,49 @@ class SuperadminListingController extends Controller
         ]);
     }
 
-
-    // ✅ Allow/Disallow toggle
     public function toggleAllow(BusinessListing $listing)
     {
         $listing->is_allowed = !$listing->is_allowed;
+
+        // agar disallow hua to homepage se bhi hata do
+        if (!$listing->is_allowed && $listing->show_on_homepage) {
+            $listing->show_on_homepage = 0;
+        }
+
         $listing->save();
 
         $message = $listing->is_allowed
             ? 'Listing allowed successfully!'
             : 'Listing disallowed successfully!';
+
+        return back()->with('success', $message);
+    }
+
+    public function toggleHomepage(BusinessListing $listing)
+    {
+        // sirf published + allowed listing hi homepage par ja sake
+        if ($listing->status !== 'published' || !$listing->is_allowed) {
+            return back()->with('error', 'Only published and allowed listings can be shown on homepage.');
+        }
+
+        // agar abhi OFF hai aur ON karna hai to max 6 check karo
+        if (!$listing->show_on_homepage) {
+            $homepageCount = BusinessListing::where('show_on_homepage', 1)
+                ->where('status', 'published')
+                ->where('is_allowed', 1)
+                ->count();
+
+            if ($homepageCount >= 6) {
+                return back()->with('error', 'Maximum 6 listings can be shown on homepage.');
+            }
+        }
+
+        $listing->show_on_homepage = !$listing->show_on_homepage;
+        $listing->save();
+
+        $message = $listing->show_on_homepage
+            ? 'Listing added to homepage successfully!'
+            : 'Listing removed from homepage successfully!';
 
         return back()->with('success', $message);
     }

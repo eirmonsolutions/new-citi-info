@@ -14,6 +14,7 @@ class HomeController extends Controller
         // ✅ Categories with listing count
         $categories = Category::where('is_active', 1)
             ->where('is_home', 1)
+
             ->withCount([
                 'businessListings as listings_count' => function ($q) {
                     $q->where('is_allowed', 1)
@@ -42,6 +43,7 @@ class HomeController extends Controller
             }])
             ->where('status', 'published')
             ->where('is_allowed', 1)
+            ->where('show_on_homepage', 1)
             ->latest()
             ->take(6)
             ->get();

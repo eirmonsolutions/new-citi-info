@@ -49,6 +49,7 @@
                 <tr>
                     @if(in_array($status, ['all','published']))
                     <th>Allow</th>
+                    <th>Homepage (Max 6)</th>
                     @endif
                     <th>#</th>
                     <th>Business Name</th>
@@ -73,6 +74,20 @@
 
                             <label class="switch">
                                 <input type="checkbox" onchange="this.form.submit()" {{ $listing->is_allowed ? 'checked' : '' }}>
+                                <span class="slider round"></span>
+                            </label>
+                        </form>
+                    </td>
+
+                    <td>
+                        <form method="POST" action="{{ route('superadmin.listing.toggleHomepage', $listing) }}">
+                            @csrf
+                            @method('PATCH')
+
+                            <label class="switch">
+                                <input type="checkbox"
+                                    onchange="this.form.submit()"
+                                    {{ $listing->show_on_homepage ? 'checked' : '' }}>
                                 <span class="slider round"></span>
                             </label>
                         </form>
@@ -189,12 +204,47 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="6" class="text-center">No listings found.</td>
+                    <td colspan="{{ in_array($status, ['all','published']) ? 9 : 7 }}" class="text-center">
+                        No listings found.
+                    </td>
                 </tr>
                 @endforelse
 
             </tbody>
         </table>
+
+        @if($listings->hasPages())
+        <div class="pagination-wrap">
+            <nav aria-label="Listing Pagination">
+                <ul class="pagination">
+
+                    {{-- Previous --}}
+                    <li class="page-item {{ $listings->onFirstPage() ? 'disabled' : '' }}">
+                        <a class="page-link"
+                            href="{{ $listings->previousPageUrl() ?? '#' }}">
+                            &laquo;
+                        </a>
+                    </li>
+
+                    {{-- Pages --}}
+                    @foreach ($listings->getUrlRange(1, $listings->lastPage()) as $page => $url)
+                    <li class="page-item {{ $listings->currentPage() == $page ? 'active' : '' }}">
+                        <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                    </li>
+                    @endforeach
+
+                    {{-- Next --}}
+                    <li class="page-item {{ $listings->hasMorePages() ? '' : 'disabled' }}">
+                        <a class="page-link"
+                            href="{{ $listings->nextPageUrl() ?? '#' }}">
+                            &raquo;
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+        </div>
+        @endif
 
 
     </section>
