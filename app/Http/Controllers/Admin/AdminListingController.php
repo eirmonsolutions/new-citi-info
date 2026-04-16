@@ -304,7 +304,7 @@ class AdminListingController extends Controller
             }
 
             return redirect()->route('admin.listing.index')
-                ->with('success', 'Listing submitted successfully! (Pending approval)');
+                ->with('success', 'Listing submitted successfully! (Waiting for a approval)');
         });
     }
 

@@ -426,7 +426,7 @@ class ListingController extends Controller
                 ]);
             }
 
-            return back()->with('success', 'Your listing submitted successfully! (Pending approval)');
+            return back()->with('success', 'Your listing submitted successfully! (Waiting for a approval)');
         });
     }
 }

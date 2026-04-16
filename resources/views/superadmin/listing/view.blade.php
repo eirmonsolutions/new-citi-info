@@ -104,36 +104,46 @@
                         </p>
                     </div>
 
+                    @php
+                    $filteredFeatures = $listing->features->filter(function ($feat) {
+                    return !empty(trim($feat->feature_name ?? '')) || !empty($feat->feature_image);
+                    });
+                    @endphp
+
+                    @if($filteredFeatures->count() > 0)
                     <div class="listing-feature-show">
                         <h2 class="heading-title">Features</h2>
 
-                        <div class="row mt-4">
-                            @forelse($listing->features as $feat)
-                            <div class="col-lg-4 col-md-6 col-sm-12">
-                                <div class="icon-box icon-box-one">
-                                    <div class="icon">
-                                        @if(!empty($feat->feature_image))
-                                        <img src="{{ asset('storage/'.$feat->feature_image) }}"
-                                            alt="{{ $feat->feature_name }}"
-                                            style="height:40px;width:40px;object-fit:contain;">
+                        <div class="features-box-grid mt-4">
+                            @foreach($filteredFeatures as $feat)
+                            <div class="icon-box icon-box-one">
+                                <div class="icon">
+                                    @if(!empty($feat->feature_image))
+                                    <img src="{{ asset('storage/'.$feat->feature_image) }}"
+                                        alt="{{ $feat->feature_name }}"
+                                        class="feature-icon-img"
+                                        style="height:40px;width:40px;object-fit:contain;">
+                                    @endif
+                                </div>
 
-                                        @endif
-                                    </div>
-                                    <div class="info">
-                                        <h6>{{ $feat->feature_name }}</h6>
-                                    </div>
+                                <div class="info">
+                                    <h6>{{ $feat->feature_name }}</h6>
                                 </div>
                             </div>
-                            @empty
-                            <div class="col-12">
-                                <p class="muted-sm">No features available.</p>
-                            </div>
-                            @endforelse
+                            @endforeach
                         </div>
                     </div>
+                    @endif
 
 
 
+                    @php
+                    $filteredServices = $listing->services->filter(function ($service) {
+                    return !empty(trim($service->name ?? ''));
+                    });
+                    @endphp
+
+                    @if($filteredServices->count() > 0)
                     <div class="listing-services-show">
                         <h2 class="heading-title">Our Services</h2>
 
@@ -141,28 +151,28 @@
                             <div class="col-lg-12">
                                 <div class="services-list">
                                     <ul>
-                                        @forelse($listing->services as $service)
+                                        @foreach($filteredServices as $service)
                                         <li>
-                                            <div class="services-name">{{ $service->name }}</div>
+                                            <div class="services-name">
+                                                {{ $service->name }}
+                                            </div>
 
                                             <div class="services-price">
+                                                @if(!is_null($service->price) && $service->price !== '' && $service->price > 0)
                                                 @php
-                                                $symbol = $service->currency ? $service->currency : '';
+                                                $symbol = $service->currency ?? '$';
                                                 @endphp
-                                                {{ $symbol }}{{ is_numeric($service->price) ? number_format($service->price, 2) : $service->price }}
+                                                {{ $symbol }}{{ number_format($service->price, 2) }}
+                                                @endif
                                             </div>
                                         </li>
-                                        @empty
-                                        <li>
-                                            <div class="services-name">No services found</div>
-                                            <div class="services-price"></div>
-                                        </li>
-                                        @endforelse
+                                        @endforeach
                                     </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    @endif
 
 
                 </div>
