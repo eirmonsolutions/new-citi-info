@@ -69,7 +69,7 @@
                             <ul>
                                 <li><a href="/about">About Us</a></li>
                                 <li><a href="/pricing-plans">Pricing Plans</a></li>
-                                <li><a href="#">Blogs</a></li>
+                                <li><a href="/blog">Blogs</a></li>
                                 <li><a href="#">Sitemap</a></li>
                                 <li><a href="#">Terms of Service</a></li>
                                 <li><a href="#">Privacy Policy</a></li>

@@ -1,8 +1,8 @@
 @media (min-width: 320px) and (max-width: 767px) {
 
     .banner-text h1 {
-        font-size: 40px;
-        line-height: 50px;
+        font-size: 30px !important;
+        line-height: 40px !important;
     }
 
     .banner-form {

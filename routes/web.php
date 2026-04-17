@@ -51,6 +51,15 @@ Route::get('/pricing-plans', function () {
     return view('pages.pricingpage');
 });
 
+Route::get('/blog', function () {
+    return view('pages.blogpage');
+});
+
+
+Route::get('/citiinfo-australia-business-directory', function () {
+    return view('pages.blog-details.blog-1');
+});
+
 
 Route::get('/listing', [ListingPageController::class, 'index'])->name('listingpage');
 Route::get('/categories', [CategoryPageController::class, 'index'])->name('categorypage');

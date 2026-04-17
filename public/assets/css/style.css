@@ -4708,61 +4708,156 @@ button#submitBtn {
 }
 
 
+section.blog-section {
+    position: relative;
+    padding: 60px 0;
+}
 
 
+.blog-img img {
+    width: 100%;
+    border-radius: 12px 12px 0 0;
+}
 
 
+.blog-box {
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+}
+
+.blog-content {
+    padding: 20px;
+}
+
+.post-meta {
+    margin-bottom: 12px;
+}
+
+.post-meta {
+    margin-bottom: 12px;
+    color: #000;
+    font-weight: 500;
+    font-size: 12px;
+}
+
+span.item-meta.post-date {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.blog-content h3 a {
+    color: var(--primary-color);
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.blog-content h3 {
+    line-height: 22px;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    transition: all .4s;
+    margin-bottom: 12px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+.blog-content p {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+    color: #344054;
+    margin-bottom: 12px;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word;
+}
+
+.blog-btn a.listing-btn {
+    width: fit-content;
+}
+
+section.blog-details-section {
+    padding: 60px 0;
+}
+
+.tags-area ul {
+    padding-left: 0 !important;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 16px;
+}
+
+.tags-area ul li {
+    display: inline-block;
+    margin: 0 16px 0 0;
+    color: #3d4c5e;
+}
+
+.tags-area ul li a {
+    color: #3d4c5e;
+    font-size: 15px;
+    line-height: 16px;
+    font-weight: 400;
+}
+
+.tags-area ul li a img {
+    margin: -2px 6px 0 0;
+    max-width: 16px;
+}
+
+.space16 {
+    height: 16px;
+}
+
+.blog-details-content p {
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 400;
+    color: #344054;
+    margin-bottom: 15px;
+}
+
+.blog-details-content h3 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
 
 
+.blog-details-content h4 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
 
+.blog-details-content ul {
+    margin-bottom: 15px;
+    padding-left: 15px;
+    list-style: disc;
+}
 
+.blog-details-content ul li {
+    font-size: 14px;
+    font-weight: 400;
+    color: #344054;
+    margin-bottom: 6px;
+}
 
+.blog-details-content ul.check-style {
+    padding-left: 0;
+    list-style: none;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+button.accordion-button {
+    box-shadow: none !important;
+}
 
 
 
