@@ -133,29 +133,18 @@ class SuperadminListingController extends Controller
 
     public function toggleHomepage(BusinessListing $listing)
     {
-        // sirf published + allowed listing hi homepage par ja sake
+        // sirf published + allowed listing hi homepage pool me ja sake
         if ($listing->status !== 'published' || !$listing->is_allowed) {
             return back()->with('error', 'Only published and allowed listings can be shown on homepage.');
         }
 
-        // agar abhi OFF hai aur ON karna hai to max 6 check karo
-        if (!$listing->show_on_homepage) {
-            $homepageCount = BusinessListing::where('show_on_homepage', 1)
-                ->where('status', 'published')
-                ->where('is_allowed', 1)
-                ->count();
-
-            if ($homepageCount >= 6) {
-                return back()->with('error', 'Maximum 6 listings can be shown on homepage.');
-            }
-        }
-
+        // ✅ max 6 wali condition hata di
         $listing->show_on_homepage = !$listing->show_on_homepage;
         $listing->save();
 
         $message = $listing->show_on_homepage
-            ? 'Listing added to homepage successfully!'
-            : 'Listing removed from homepage successfully!';
+            ? 'Listing added to homepage pool successfully!'
+            : 'Listing removed from homepage pool successfully!';
 
         return back()->with('success', $message);
     }

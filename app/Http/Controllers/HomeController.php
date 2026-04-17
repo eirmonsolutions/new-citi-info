@@ -31,8 +31,7 @@ class HomeController extends Controller
                 ->toArray()
             : [];
 
-        // ✅ Homepage listings:
-        // admin jitni marzi ON kare, frontend par random 6 hi dikhengi
+        // ✅ Homepage par sirf random 6 listings
         $listings = BusinessListing::with(['gallery', 'hours', 'contacts'])
             ->withAvg(['reviews as avg_rating' => function ($q) {
                 $q->where('is_approved', 1);
