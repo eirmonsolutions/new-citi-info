@@ -14,7 +14,6 @@ class HomeController extends Controller
         // ✅ Categories with listing count
         $categories = Category::where('is_active', 1)
             ->where('is_home', 1)
-
             ->withCount([
                 'businessListings as listings_count' => function ($q) {
                     $q->where('is_allowed', 1)
@@ -28,12 +27,12 @@ class HomeController extends Controller
 
         $wishIds = auth()->check()
             ? Wishlist::where('user_id', auth()->id())
-            ->pluck('business_id')
-            ->toArray()
+                ->pluck('business_id')
+                ->toArray()
             : [];
 
-        // ✅ FRONTEND LISTINGS (ONLY allowed + published)
-        // ✅ FRONTEND LISTINGS (ONLY allowed + published) + rating avg/count
+        // ✅ Homepage listings:
+        // admin jitni marzi ON kare, frontend par random 6 hi dikhengi
         $listings = BusinessListing::with(['gallery', 'hours', 'contacts'])
             ->withAvg(['reviews as avg_rating' => function ($q) {
                 $q->where('is_approved', 1);
@@ -44,11 +43,9 @@ class HomeController extends Controller
             ->where('status', 'published')
             ->where('is_allowed', 1)
             ->where('show_on_homepage', 1)
-            ->latest()
+            ->inRandomOrder()
             ->take(6)
             ->get();
-
-
 
         $cityNames = ['Melbourne', 'Sydney', 'Perth', 'Brisbane'];
 
@@ -59,7 +56,7 @@ class HomeController extends Controller
             ->toArray();
 
         $cities = City::whereIn('id', $cityIds)
-            ->whereIn('name', ['Melbourne', 'Sydney', 'Perth', 'Brisbane'])
+            ->whereIn('name', $cityNames)
             ->withCount([
                 'listings as listings_count' => function ($q) {
                     $q->where('is_allowed', 1)
@@ -69,7 +66,6 @@ class HomeController extends Controller
             ])
             ->get()
             ->keyBy('name');
-
 
         return view('pages.homepage', compact('categories', 'listings', 'cities', 'wishIds'));
     }
