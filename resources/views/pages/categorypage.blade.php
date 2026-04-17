@@ -52,12 +52,12 @@
                                 <button type="button" class="sort-btn" id="sortBtn">
                                     <span id="sortValue">
                                         @php
-                                            $sortLabels = [
-                                                'name_asc' => 'Name (A-Z)',
-                                                'name_desc' => 'Name (Z-A)',
-                                                'date_asc' => 'Date (Oldest)',
-                                                'date_desc' => 'Date (Newest)',
-                                            ];
+                                        $sortLabels = [
+                                        'name_asc' => 'Name (A-Z)',
+                                        'name_desc' => 'Name (Z-A)',
+                                        'date_asc' => 'Date (Oldest)',
+                                        'date_desc' => 'Date (Newest)',
+                                        ];
                                         @endphp
                                         {{ $sortLabels[request('sort', 'name_asc')] ?? 'Name (A-Z)' }}
                                     </span>
@@ -74,20 +74,21 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-
-                <div class="filter-bar">
-                    <div class="filter-right">
-                        <div class="results">
-                            Showing
-                            <span id="resultsCount">{{ $categories->count() }}</span>
-                            of
-                            <span id="resultsTotal">{{ $categories->total() }}</span>
-                            results
+                        <div class="filter-bar">
+                            <div class="filter-right">
+                                <div class="results">
+                                    Showing
+                                    <span id="resultsCount">{{ $categories->count() }}</span>
+                                    of
+                                    <span id="resultsTotal">{{ $categories->total() }}</span>
+                                    results
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+
             </div>
         </form>
     </div>
@@ -108,52 +109,52 @@
             <div class="row">
                 <div class="category-item-grid">
                     @forelse($categories as $category)
-                        <div class="category-item category-item-two">
-                            <div class="category-img">
+                    <div class="category-item category-item-two">
+                        <div class="category-img">
+                            <img
+                                src="{{ $category->image ? asset('storage/' . $category->image) : asset('assets/images/saloon.jpg') }}"
+                                alt="{{ $category->name }}"
+                                loading="lazy"
+                                decoding="async">
+
+                            <div class="category-overlay">
+                                <div class="category-content">
+                                    <a href="{{ route('list.category', ['category' => \Illuminate\Support\Str::slug($category->name)]) }}">
+                                        <i class="ti-link"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="info">
+                            <div class="icon">
+                                @if(!empty($category->categoryimage))
                                 <img
-                                    src="{{ $category->image ? asset('storage/' . $category->image) : asset('assets/images/saloon.jpg') }}"
+                                    src="{{ asset('storage/' . $category->categoryimage) }}"
                                     alt="{{ $category->name }}"
                                     loading="lazy"
-                                    decoding="async">
-
-                                <div class="category-overlay">
-                                    <div class="category-content">
-                                        <a href="{{ route('list.category', ['category' => \Illuminate\Support\Str::slug($category->name)]) }}">
-                                            <i class="ti-link"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                                    decoding="async"
+                                    style="width:40px;height:40px;object-fit:contain;filter: brightness(0);">
+                                @else
+                                <span>-</span>
+                                @endif
                             </div>
 
-                            <div class="info">
-                                <div class="icon">
-                                    @if(!empty($category->categoryimage))
-                                        <img
-                                            src="{{ asset('storage/' . $category->categoryimage) }}"
-                                            alt="{{ $category->name }}"
-                                            loading="lazy"
-                                            decoding="async"
-                                            style="width:40px;height:40px;object-fit:contain;filter: brightness(0);">
-                                    @else
-                                        <span>-</span>
-                                    @endif
-                                </div>
+                            <h3 class="title">
+                                <a href="{{ route('list.category', ['category' => \Illuminate\Support\Str::slug($category->name)]) }}">
+                                    {{ $category->name }}
+                                </a>
+                            </h3>
 
-                                <h3 class="title">
-                                    <a href="{{ route('list.category', ['category' => \Illuminate\Support\Str::slug($category->name)]) }}">
-                                        {{ $category->name }}
-                                    </a>
-                                </h3>
-
-                                <span class="listing">
-                                    {{ $category->listings_count }} Listing{{ $category->listings_count != 1 ? 's' : '' }}
-                                </span>
-                            </div>
+                            <span class="listing">
+                                {{ $category->listings_count }} Listing{{ $category->listings_count != 1 ? 's' : '' }}
+                            </span>
                         </div>
+                    </div>
                     @empty
-                        <div class="col-12 text-center">
-                            <p>No categories found.</p>
-                        </div>
+                    <div class="col-12 text-center">
+                        <p>No categories found.</p>
+                    </div>
                     @endforelse
                 </div>
             </div>
@@ -162,35 +163,35 @@
         {{-- ✅ PAGINATION --}}
         <div id="paginationWrapper">
             @if($categories->hasPages())
-                <div class="pagination-wrap">
-                    <nav aria-label="Category Pagination">
-                        <ul class="pagination">
+            <div class="pagination-wrap">
+                <nav aria-label="Category Pagination">
+                    <ul class="pagination">
 
-                            <li class="page-item {{ $categories->onFirstPage() ? 'disabled' : '' }}">
-                                <a class="page-link"
-                                    href="{{ $categories->previousPageUrl() ?? '#' }}"
-                                    aria-label="Previous">
-                                    <span aria-hidden="true">&laquo;</span>
-                                </a>
-                            </li>
+                        <li class="page-item {{ $categories->onFirstPage() ? 'disabled' : '' }}">
+                            <a class="page-link"
+                                href="{{ $categories->previousPageUrl() ?? '#' }}"
+                                aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
 
-                            @foreach ($categories->getUrlRange(1, $categories->lastPage()) as $page => $url)
-                                <li class="page-item {{ $categories->currentPage() == $page ? 'active' : '' }}">
-                                    <a class="page-link" href="{{ $url }}">{{ $page }}</a>
-                                </li>
-                            @endforeach
+                        @foreach ($categories->getUrlRange(1, $categories->lastPage()) as $page => $url)
+                        <li class="page-item {{ $categories->currentPage() == $page ? 'active' : '' }}">
+                            <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                        </li>
+                        @endforeach
 
-                            <li class="page-item {{ $categories->hasMorePages() ? '' : 'disabled' }}">
-                                <a class="page-link"
-                                    href="{{ $categories->nextPageUrl() ?? '#' }}"
-                                    aria-label="Next">
-                                    <span aria-hidden="true">&raquo;</span>
-                                </a>
-                            </li>
+                        <li class="page-item {{ $categories->hasMorePages() ? '' : 'disabled' }}">
+                            <a class="page-link"
+                                href="{{ $categories->nextPageUrl() ?? '#' }}"
+                                aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
 
-                        </ul>
-                    </nav>
-                </div>
+                    </ul>
+                </nav>
+            </div>
             @endif
         </div>
 
@@ -201,39 +202,39 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const sortBtn = document.getElementById('sortBtn');
-    const sortDropdown = document.getElementById('sortDropdown');
-    const sortInput = document.getElementById('sortInput');
-    const sortValue = document.getElementById('sortValue');
-    const ddItems = document.querySelectorAll('.dd-item');
-    const searchInput = document.getElementById('searchInput');
+    document.addEventListener('DOMContentLoaded', function() {
+        const sortBtn = document.getElementById('sortBtn');
+        const sortDropdown = document.getElementById('sortDropdown');
+        const sortInput = document.getElementById('sortInput');
+        const sortValue = document.getElementById('sortValue');
+        const ddItems = document.querySelectorAll('.dd-item');
+        const searchInput = document.getElementById('searchInput');
 
-    let debounceTimer;
+        let debounceTimer;
 
-    function slugify(text) {
-        return text.toString().toLowerCase().trim()
-            .replace(/&/g, 'and')
-            .replace(/[^\w\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-');
-    }
+        function slugify(text) {
+            return text.toString().toLowerCase().trim()
+                .replace(/&/g, 'and')
+                .replace(/[^\w\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-');
+        }
 
-    function buildCategoryHtml(items) {
-        if (!items.length) {
-            return `
+        function buildCategoryHtml(items) {
+            if (!items.length) {
+                return `
                 <div class="row">
                     <div class="col-12 text-center">
                         <p>No categories found.</p>
                     </div>
                 </div>
             `;
-        }
+            }
 
-        let html = `<div class="row"><div class="category-item-grid">`;
+            let html = `<div class="row"><div class="category-item-grid">`;
 
-        items.forEach(category => {
-            html += `
+            items.forEach(category => {
+                html += `
                 <div class="category-item category-item-two">
                     <div class="category-img">
                         <img
@@ -269,27 +270,27 @@ document.addEventListener('DOMContentLoaded', function () {
                     </div>
                 </div>
             `;
-        });
+            });
 
-        html += `</div></div>`;
-        return html;
-    }
-
-    function buildPagination(currentPage, lastPage, q, sort) {
-        if (lastPage <= 1) {
-            return '';
+            html += `</div></div>`;
+            return html;
         }
 
-        let html = `
+        function buildPagination(currentPage, lastPage, q, sort) {
+            if (lastPage <= 1) {
+                return '';
+            }
+
+            let html = `
             <div class="pagination-wrap">
                 <nav aria-label="Category Pagination">
                     <ul class="pagination">
         `;
 
-        const prevPage = currentPage - 1;
-        const nextPage = currentPage + 1;
+            const prevPage = currentPage - 1;
+            const nextPage = currentPage + 1;
 
-        html += `
+            html += `
             <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
                 <a class="page-link ajax-page-link" href="#" data-page="${prevPage}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
@@ -297,15 +298,15 @@ document.addEventListener('DOMContentLoaded', function () {
             </li>
         `;
 
-        for (let page = 1; page <= lastPage; page++) {
-            html += `
+            for (let page = 1; page <= lastPage; page++) {
+                html += `
                 <li class="page-item ${currentPage === page ? 'active' : ''}">
                     <a class="page-link ajax-page-link" href="#" data-page="${page}">${page}</a>
                 </li>
             `;
-        }
+            }
 
-        html += `
+            html += `
             <li class="page-item ${currentPage === lastPage ? 'disabled' : ''}">
                 <a class="page-link ajax-page-link" href="#" data-page="${nextPage}" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
@@ -313,79 +314,79 @@ document.addEventListener('DOMContentLoaded', function () {
             </li>
         `;
 
-        html += `</ul></nav></div>`;
-        return html;
-    }
-
-    function fetchCategories(page = 1) {
-        const q = searchInput.value;
-        const sort = sortInput.value;
-
-        fetch(`{{ url()->current() }}?q=${encodeURIComponent(q)}&sort=${encodeURIComponent(sort)}&page=${page}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
-        })
-        .then(res => res.json())
-        .then(response => {
-            document.getElementById('categoryResults').innerHTML = buildCategoryHtml(response.data);
-            document.getElementById('paginationWrapper').innerHTML = buildPagination(response.current_page, response.last_page, q, sort);
-            document.getElementById('resultsCount').textContent = response.data.length;
-            document.getElementById('resultsTotal').textContent = response.total;
-        })
-        .catch(error => {
-            console.error('Search error:', error);
-        });
-    }
-
-    if (sortBtn) {
-        sortBtn.addEventListener('click', function () {
-            sortDropdown.style.display = sortDropdown.style.display === 'block' ? 'none' : 'block';
-        });
-    }
-
-    ddItems.forEach(item => {
-        item.addEventListener('click', function () {
-            const value = this.getAttribute('data-value');
-            const text = this.textContent.trim();
-
-            sortInput.value = value;
-            sortValue.textContent = text;
-            sortDropdown.style.display = 'none';
-
-            fetchCategories(1);
-        });
-    });
-
-    document.addEventListener('click', function (e) {
-        const sortSelect = document.getElementById('sortSelect');
-        if (sortSelect && !sortSelect.contains(e.target)) {
-            sortDropdown.style.display = 'none';
+            html += `</ul></nav></div>`;
+            return html;
         }
-    });
 
-    searchInput.addEventListener('keyup', function () {
-        clearTimeout(debounceTimer);
+        function fetchCategories(page = 1) {
+            const q = searchInput.value;
+            const sort = sortInput.value;
 
-        debounceTimer = setTimeout(() => {
-            fetchCategories(1);
-        }, 400);
-    });
-
-    document.addEventListener('click', function (e) {
-        if (e.target.classList.contains('ajax-page-link')) {
-            e.preventDefault();
-
-            const parentLi = e.target.closest('.page-item');
-            if (parentLi.classList.contains('disabled') || parentLi.classList.contains('active')) {
-                return;
-            }
-
-            const page = e.target.getAttribute('data-page');
-            fetchCategories(page);
+            fetch(`{{ url()->current() }}?q=${encodeURIComponent(q)}&sort=${encodeURIComponent(sort)}&page=${page}`, {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                .then(res => res.json())
+                .then(response => {
+                    document.getElementById('categoryResults').innerHTML = buildCategoryHtml(response.data);
+                    document.getElementById('paginationWrapper').innerHTML = buildPagination(response.current_page, response.last_page, q, sort);
+                    document.getElementById('resultsCount').textContent = response.data.length;
+                    document.getElementById('resultsTotal').textContent = response.total;
+                })
+                .catch(error => {
+                    console.error('Search error:', error);
+                });
         }
+
+        if (sortBtn) {
+            sortBtn.addEventListener('click', function() {
+                sortDropdown.style.display = sortDropdown.style.display === 'block' ? 'none' : 'block';
+            });
+        }
+
+        ddItems.forEach(item => {
+            item.addEventListener('click', function() {
+                const value = this.getAttribute('data-value');
+                const text = this.textContent.trim();
+
+                sortInput.value = value;
+                sortValue.textContent = text;
+                sortDropdown.style.display = 'none';
+
+                fetchCategories(1);
+            });
+        });
+
+        document.addEventListener('click', function(e) {
+            const sortSelect = document.getElementById('sortSelect');
+            if (sortSelect && !sortSelect.contains(e.target)) {
+                sortDropdown.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('keyup', function() {
+            clearTimeout(debounceTimer);
+
+            debounceTimer = setTimeout(() => {
+                fetchCategories(1);
+            }, 400);
+        });
+
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('ajax-page-link')) {
+                e.preventDefault();
+
+                const parentLi = e.target.closest('.page-item');
+                if (parentLi.classList.contains('disabled') || parentLi.classList.contains('active')) {
+                    return;
+                }
+
+                const page = e.target.getAttribute('data-page');
+                fetchCategories(page);
+            }
+        });
     });
-});
 </script>
 @endpush
