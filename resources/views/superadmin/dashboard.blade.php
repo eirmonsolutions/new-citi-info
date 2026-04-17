@@ -4,10 +4,23 @@
 
 @section('content')
 
-
-
 <main class="main-dashboard">
-    <h1>Hi Super Admin, <span class="text-color"> Good Afternoon...!</span></h1>
+
+    @php
+        $hour = now()->hour;
+
+        if ($hour < 12) {
+            $greeting = 'Good Morning';
+        } elseif ($hour < 17) {
+            $greeting = 'Good Afternoon';
+        } else {
+            $greeting = 'Good Evening';
+        }
+    @endphp
+
+    <h1>
+        Hi Super Admin, <span class="text-color">{{ $greeting }}...!</span>
+    </h1>
 
     <section class="dashboard-boxes">
         <div class="row">
@@ -25,16 +38,15 @@
                             </svg>
                         </div>
                         <div class="stat-change customers-change">
-                            <span>1010</span>
+                            <span>{{ $totalListings ?? 0 }}</span>
                         </div>
                     </div>
                     <div class="stat-content">
-                        <!-- <h3>2,543</h3> -->
                         <div class="stat-number-row">
-                            <p class="stat-number">User Views</p>
-                            <button class="stat-button customers-button">
+                            <p class="stat-number">Total Listing</p>
+                            <a href="{{ route('superadmin.listing.index') }}" class="stat-button customers-button">
                                 <span>More info</span>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -54,16 +66,15 @@
                             </svg>
                         </div>
                         <div class="stat-change drivers-change">
-                            <span>500</span>
+                            <span>{{ $totalCategories ?? 0 }}</span>
                         </div>
                     </div>
                     <div class="stat-content">
-                        <!-- <h3>1,520</h3> -->
                         <div class="stat-number-row">
-                            <p class="stat-number">Customer Leads</p>
-                            <button class="stat-button drivers-button">
+                            <p class="stat-number">Total Category</p>
+                            <a href="{{ route('superadmin.category.index') }}" class="stat-button drivers-button">
                                 <span>More info</span>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -79,16 +90,15 @@
                             </svg>
                         </div>
                         <div class="stat-change vehicles-change">
-                            <span>980</span>
+                            <span>{{ $totalFeatures ?? 0 }}</span>
                         </div>
                     </div>
                     <div class="stat-content">
-                        <!-- <h3>890</h3> -->
                         <div class="stat-number-row">
-                            <p class="stat-number">Customer Reviews</p>
-                            <button class="stat-button vehicles-button">
+                            <p class="stat-number">Total Features</p>
+                            <a href="{{ route('superadmin.feature.index') }}" class="stat-button vehicles-button">
                                 <span>More Info</span>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -108,29 +118,22 @@
                             </svg>
                         </div>
                         <div class="stat-change invoices-change">
-                            <i data-lucide="trending-up"></i>
-                            <span>850</span>
+                            <span>{{ $totalUsers ?? 0 }}</span>
                         </div>
                     </div>
                     <div class="stat-content">
-                        <!-- <h3>1,200</h3> -->
                         <div class="stat-number-row">
-                            <p class="stat-number">Invoices</p>
-                            <button class="stat-button invoices-button">
+                            <p class="stat-number">Total Users</p>
+                            <a href="{{ route('superadmin.user.index') }}" class="stat-button invoices-button">
                                 <span>More info</span>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
             </div>
 
-
         </div>
     </section>
 </main>
-
-
-
-
 
 @endsection

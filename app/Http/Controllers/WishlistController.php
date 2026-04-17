@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 
 class WishlistController extends Controller
 {
-
     public function indexAdmin()
     {
         $userId = auth()->id();
@@ -22,17 +21,19 @@ class WishlistController extends Controller
         return view('admin.wishlist.index', compact('listings'));
     }
 
-
     public function toggle(Request $request)
     {
         $userId = auth()->id() ?? auth('admin')->id();
 
         if (!$userId) {
-            return response()->json(['message' => 'Login required'], 401);
+            return response()->json([
+                'success' => false,
+                'message' => 'Login required'
+            ], 401);
         }
 
         $request->validate([
-            'business_id' => 'required|integer',
+            'business_id' => 'required|integer|exists:business_listings,id',
         ]);
 
         $businessId = (int) $request->business_id;
@@ -43,7 +44,13 @@ class WishlistController extends Controller
 
         if ($existing) {
             $existing->delete();
-            return response()->json(['saved' => false]);
+
+            return response()->json([
+                'success' => true,
+                'saved' => false,
+                'action' => 'removed',
+                'message' => 'Listing removed from wishlist.'
+            ]);
         }
 
         Wishlist::create([
@@ -51,7 +58,12 @@ class WishlistController extends Controller
             'business_id' => $businessId,
         ]);
 
-        return response()->json(['saved' => true]);
+        return response()->json([
+            'success' => true,
+            'saved' => true,
+            'action' => 'added',
+            'message' => 'Listing added to wishlist.'
+        ]);
     }
 
     public function index()
@@ -64,7 +76,7 @@ class WishlistController extends Controller
 
         $wishBusinessIds = Wishlist::where('user_id', $userId)->pluck('business_id');
 
-        $listings = \App\Models\BusinessListing::whereIn('id', $wishBusinessIds)
+        $listings = BusinessListing::whereIn('id', $wishBusinessIds)
             ->where('status', 'published')
             ->where('is_allowed', 1)
             ->latest()

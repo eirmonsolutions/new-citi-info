@@ -23,7 +23,7 @@
             : true; // wishlist page pe already saved
             @endphp
 
-            <div class="whishlist-wrapper">
+            <div class="whishlist-wrapper" id="wishlist-item-{{ $listing->id }}">
                 <div class="front-listing-box">
                     <div class="front-listing-img">
                         <div class="listing-slider-wrapper mySwiper mb-5">
@@ -195,6 +195,54 @@
 </main>
 
 
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.wishlist-btn').forEach(button => {
+            button.addEventListener('click', function() {
+                const businessId = this.dataset.businessId;
+                const card = document.getElementById('wishlist-item-' + businessId);
+                const btn = this;
 
+                fetch("{{ route('wishlist.toggle') }}", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Accept": "application/json"
+                        },
+                        body: JSON.stringify({
+                            business_id: businessId
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.action === 'removed') {
+                            card.style.transition = 'all 0.35s ease';
+                            card.style.opacity = '0';
+                            card.style.transform = 'translateY(-10px)';
+
+                            setTimeout(() => {
+                                card.remove();
+
+                                const remaining = document.querySelectorAll('.whishlist-wrapper');
+                                if (remaining.length === 0) {
+                                    document.querySelector('.whistlist-boxes .row').innerHTML =
+                                        '<p>No saved listings found.</p>';
+                                }
+                            }, 350);
+                        } else if (data.success && data.action === 'added') {
+                            btn.classList.add('is-saved');
+                        } else {
+                            alert(data.message || 'Something went wrong.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Unable to update wishlist right now.');
+                    });
+            });
+        });
+    });
+</script>
 
 @endsection

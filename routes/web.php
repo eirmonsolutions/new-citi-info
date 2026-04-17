@@ -27,7 +27,9 @@ use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\Admin\FAQController;
 use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\FrontSearchController;
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\AjaxLocationController;
+use App\Http\Controllers\SuperAdmin\SuperadminDashboardController;
 // use App\Http\Controllers\Auth\GoogleAuthController;
 
 use App\Http\Controllers\BusinessReviewController;
@@ -106,9 +108,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(function () {
-    Route::get('/dashboard', function () {
-        return view('superadmin.dashboard');
-    })->name('.dashboard');
+    Route::get('/dashboard', [SuperadminDashboardController::class, 'index'])->name('.dashboard');
 
     Route::get('/listing/pending-count', [SuperadminListingController::class, 'pendingCount'])
         ->name('.listing.pendingCount');
@@ -170,9 +170,7 @@ Route::middleware(['auth'])->prefix('admin')->name('admin')->group(function () {
 
 
 
-    Route::get('/dashboard', function () {
-        return view('admin.dashboard');
-    })->name('.dashboard');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('.dashboard');
 
     //   Announcement Routes
     Route::get('/announcement', [AnnouncementController::class, 'index'])->name('.announcement.index');
