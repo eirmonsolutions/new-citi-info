@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Home Page')
+@section('title')
+{{ $listing->business_name ?? 'Listing' }}
+@if($listing->cityRel?->name) - {{ $listing->cityRel->name }} @endif
+@if($listing->stateRel?->name), {{ $listing->stateRel->name }} @endif
+@if($listing->countryRel?->name), {{ $listing->countryRel->name }} @endif
+| Citiinfo
+@endsection
 
 @section('content')
 
