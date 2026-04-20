@@ -114,7 +114,7 @@
                             <img
                                 src="{{ $category->image ? asset('storage/' . $category->image) : asset('assets/images/saloon.jpg') }}"
                                 alt="{{ $category->name }}"
-                                loading="lazy"
+                                
                                 decoding="async">
 
                             <div class="category-overlay">
@@ -132,7 +132,6 @@
                                 <img
                                     src="{{ asset('storage/' . $category->categoryimage) }}"
                                     alt="{{ $category->name }}"
-                                    loading="lazy"
                                     decoding="async"
                                     style="width:40px;height:40px;object-fit:contain;filter: brightness(0);">
                                 @else
