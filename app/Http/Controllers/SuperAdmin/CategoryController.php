@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
 use Intervention\Image\Drivers\Gd\Driver;
 
@@ -35,7 +36,7 @@ class CategoryController extends Controller
         return back()->with('success', 'Homepage categories updated!');
     }
 
-    // ✅ ONLY for main category image (compress to <= 500KB)
+    // Main category image compress
     private function compressAndStoreMainImage(
         UploadedFile $file,
         string $folder = 'categories',
@@ -61,6 +62,32 @@ class CategoryController extends Controller
         return $path;
     }
 
+    // Unique slug generate
+    private function generateUniqueSlug(string $name, ?int $ignoreId = null): string
+    {
+        $baseSlug = Str::slug($name);
+
+        if (empty($baseSlug)) {
+            $baseSlug = 'category';
+        }
+
+        $slug = $baseSlug;
+        $counter = 1;
+
+        while (
+            Category::where('slug', $slug)
+            ->when($ignoreId, function ($query) use ($ignoreId) {
+                $query->where('id', '!=', $ignoreId);
+            })
+            ->exists()
+        ) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        return $slug;
+    }
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -75,17 +102,18 @@ class CategoryController extends Controller
 
         $category = new Category();
         $category->name        = $data['name'];
+        $category->slug        = $this->generateUniqueSlug($data['name']);
         $category->title       = $data['title'] ?? null;
         $category->description = $data['description'] ?? null;
         $category->keyword     = $data['keyword'] ?? null;
         $category->is_active   = (bool)($data['is_active'] ?? 0);
 
-        // ✅ ICON IMAGE (NO COMPRESS)
+        // icon image
         if ($request->hasFile('categoryimage')) {
             $category->categoryimage = $request->file('categoryimage')->store('category-icon', 'public');
         }
 
-        // ✅ MAIN CATEGORY IMAGE (COMPRESS to <= 500KB)
+        // main image
         if ($request->hasFile('image')) {
             $category->image = $this->compressAndStoreMainImage(
                 $request->file('image'),
@@ -115,12 +143,13 @@ class CategoryController extends Controller
         ]);
 
         $category->name        = $data['name'];
+        $category->slug        = $this->generateUniqueSlug($data['name'], $category->id);
         $category->title       = $data['title'] ?? null;
         $category->description = $data['description'] ?? null;
         $category->keyword     = $data['keyword'] ?? null;
-        $category->is_active   = $data['is_active'] ?? 0;
+        $category->is_active   = (bool)($data['is_active'] ?? 0);
 
-        // ✅ ICON IMAGE update (NO COMPRESS)
+        // icon image update
         if ($request->hasFile('categoryimage')) {
             if ($category->categoryimage && Storage::disk('public')->exists($category->categoryimage)) {
                 Storage::disk('public')->delete($category->categoryimage);
@@ -128,7 +157,7 @@ class CategoryController extends Controller
             $category->categoryimage = $request->file('categoryimage')->store('category-icon', 'public');
         }
 
-        // ✅ MAIN IMAGE update (COMPRESS)
+        // main image update
         if ($request->hasFile('image')) {
             if ($category->image && Storage::disk('public')->exists($category->image)) {
                 Storage::disk('public')->delete($category->image);
