@@ -110,7 +110,7 @@
                 <div class="category-item-grid">
                     @forelse($categories as $category)
                     <div class="category-item category-item-two">
-                        <div class="category-img">
+                        <!-- <div class="category-img">
                             <img
                                 src="{{ $category->image ? asset('storage/' . $category->image) : asset('assets/images/saloon.jpg') }}"
                                 alt="{{ $category->name }}"
@@ -124,7 +124,7 @@
                                     </a>
                                 </div>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="info">
                             <div class="icon">

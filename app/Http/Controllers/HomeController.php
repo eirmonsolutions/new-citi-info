@@ -22,7 +22,7 @@ class HomeController extends Controller
                 }
             ])
             ->orderBy('id', 'desc')
-            ->take(8)
+            ->take(12)
             ->get();
 
         $wishIds = auth()->check()

@@ -311,7 +311,6 @@ section.category-area {
 
 .category-item-two .info {
     position: relative;
-    margin-top: -50px;
     text-align: center;
 }
 
@@ -356,7 +355,7 @@ h3.title {
 
 .category-item.category-item-two {
     margin-bottom: 35px;
-    flex-basis: 315px;
+    flex-basis: 207px;
 }
 
 .category-item-grid {
