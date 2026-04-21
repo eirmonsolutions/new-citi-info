@@ -56,6 +56,8 @@ class ListingPageController extends Controller
             $query->latest();
         }
 
+        // ✅ Paginate
+        $listings = $query->paginate(50)->withQueryString();
 
         // ✅ Dropdown ke liye DB se unique cities nikaalo
         $cities = BusinessListing::query()
