@@ -167,7 +167,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cities['Melbourne']->listings_count ?? 0 }}
+                                {{ $stateListings['Melbourne'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -187,7 +187,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cities['Sydney']->listings_count ?? 0 }}
+                                {{ $stateListings['Sydney'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -204,7 +204,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cities['Perth']->listings_count ?? 0 }}
+                                {{ $stateListings['Perth'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -224,7 +224,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cities['Perth']->listings_count ?? 0 }}
+                                {{ $stateListings['Perth'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -244,7 +244,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $cities['Brisbane']->listings_count ?? 0 }}
+                                {{ $stateListings['Brisbane'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>

@@ -25,13 +25,9 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
-        $wishIds = auth()->check()
-            ? Wishlist::where('user_id', auth()->id())
-                ->pluck('business_id')
-                ->toArray()
-            : [];
+        $wishIds = auth()->check() ? Wishlist::where('user_id', auth()->id())->pluck('business_id')->toArray() : [];
 
-        // ✅ Homepage par sirf random 6 listings
+        // ✅ Fetch business listings for homepage
         $listings = BusinessListing::with(['gallery', 'hours', 'contacts'])
             ->withAvg(['reviews as avg_rating' => function ($q) {
                 $q->where('is_approved', 1);
@@ -46,14 +42,17 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
+        // ✅ Fetch cities with listings count
         $cityNames = ['Melbourne', 'Sydney', 'Perth', 'Brisbane'];
 
+        // Fetch city ids from business listings
         $cityIds = BusinessListing::whereNotNull('city')
             ->select('city')
             ->distinct()
             ->pluck('city')
             ->toArray();
 
+        // Fetch city and their listings count
         $cities = City::whereIn('id', $cityIds)
             ->whereIn('name', $cityNames)
             ->withCount([
@@ -66,6 +65,18 @@ class HomeController extends Controller
             ->get()
             ->keyBy('name');
 
-        return view('pages.homepage', compact('categories', 'listings', 'cities', 'wishIds'));
+        // ✅ Fetch state-wise listings (for Melbourne, Sydney, Perth, Brisbane)
+        $states = ['Melbourne', 'Sydney', 'Perth', 'Brisbane'];
+        $stateListings = [];
+
+        foreach ($states as $state) {
+            $stateListings[$state] = BusinessListing::where('state', $state)
+                ->where('status', 'published')
+                ->where('is_allowed', 1)
+                ->whereNull('deleted_at')
+                ->count();
+        }
+
+        return view('pages.homepage', compact('categories', 'listings', 'cities', 'stateListings', 'wishIds'));
     }
 }
