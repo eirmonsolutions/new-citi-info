@@ -25,6 +25,7 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
+        // ✅ Wishlist Data (User specific)
         $wishIds = auth()->check() ? Wishlist::where('user_id', auth()->id())->pluck('business_id')->toArray() : [];
 
         // ✅ Fetch business listings for homepage
@@ -42,7 +43,7 @@ class HomeController extends Controller
             ->take(6)
             ->get();
 
-        // ✅ Fetch cities with listings count
+        // ✅ Fetch city listings count based on city names
         $cityNames = ['Melbourne', 'Sydney', 'Perth', 'Brisbane'];
 
         // Fetch city ids from business listings
@@ -66,11 +67,12 @@ class HomeController extends Controller
             ->keyBy('name');
 
         // ✅ Fetch state-wise listings (for Melbourne, Sydney, Perth, Brisbane)
-        $states = ['Melbourne', 'Sydney', 'Perth', 'Brisbane'];
+        $stateIds = ['3903', '3905', '3909', '3907'];  // State IDs for Melbourne, Sydney, Perth, Brisbane
         $stateListings = [];
 
-        foreach ($states as $state) {
-            $stateListings[$state] = BusinessListing::where('state', $state)
+        // Loop through the state IDs to get the listings count for each state
+        foreach ($stateIds as $stateId) {
+            $stateListings[$stateId] = BusinessListing::where('state', $stateId)
                 ->where('status', 'published')
                 ->where('is_allowed', 1)
                 ->whereNull('deleted_at')

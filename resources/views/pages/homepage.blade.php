@@ -167,7 +167,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $stateListings['Melbourne'] ?? 0 }}
+                                {{ $stateListings['3903'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -187,7 +187,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $stateListings['Sydney'] ?? 0 }}
+                                {{ $stateListings['3905'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -204,7 +204,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $stateListings['Perth'] ?? 0 }}
+                                {{ $stateListings['3909'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -224,7 +224,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $stateListings['Perth'] ?? 0 }}
+                                {{ $stateListings['3909'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
@@ -244,7 +244,7 @@
                     <div class="city-title">
                         <div class="listings-count">
                             <span class="count-number">
-                                {{ $stateListings['Brisbane'] ?? 0 }}
+                                {{ $stateListings['3907'] ?? 0 }}
                             </span>
                             <p class="count-text">LISTINGS</p>
                         </div>
