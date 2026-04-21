@@ -48,7 +48,7 @@ class CategoryPageController extends Controller
                 break;
         }
 
-        $categories = $categoriesQuery->paginate(20)->appends($request->query());
+        $categories = $categoriesQuery->paginate(30)->appends($request->query());
 
         // ✅ AJAX request ke liye JSON return karo
         if ($request->ajax()) {
