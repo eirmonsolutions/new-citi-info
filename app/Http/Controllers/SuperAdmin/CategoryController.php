@@ -25,8 +25,8 @@ class CategoryController extends Controller
 
         if (!$cat->is_home) {
             $count = Category::where('is_home', 1)->count();
-            if ($count >= 8) {
-                return back()->with('error', 'You can select only 6 categories for homepage.');
+            if ($count >= 12) {
+                return back()->with('error', 'You can select only 12 categories for homepage.');
             }
         }
 
