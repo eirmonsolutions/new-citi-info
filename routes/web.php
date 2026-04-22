@@ -142,6 +142,11 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
     Route::get('/listing/{listing}', [SuperadminListingController::class, 'show'])
         ->name('.listing.view');
 
+    Route::get('/listing/{listing}/edit', [SuperadminListingController::class, 'edit'])
+        ->name('.listing.edit');
+
+    Route::put('/listing/{listing}', [SuperadminListingController::class, 'update'])->name('.listing.update');
+
     Route::delete('/listing/{listing}', [SuperadminListingController::class, 'destroy'])
         ->name('.listing.destroy');
 
