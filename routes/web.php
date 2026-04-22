@@ -62,6 +62,10 @@ Route::get('/citiinfo-australia-business-directory', function () {
     return view('pages.blog-details.blog-1');
 });
 
+Route::get('/top-5-towing-companies-in-brisbane', function () {
+    return view('pages.blog-details.blog-2');
+});
+
 
 Route::get('/listing', [ListingPageController::class, 'index'])->name('listingpage');
 Route::get('/categories', [CategoryPageController::class, 'index'])->name('categorypage');
