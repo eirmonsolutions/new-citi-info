@@ -1364,6 +1364,84 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        const nextBtn = document.getElementById('nextBtn');
+        const formSteps = document.querySelectorAll('.form-step');
+
+        nextBtn.addEventListener('click', () => {
+            // Get the current step
+            const currentStepEl = formSteps[currentStep - 1];
+
+            // Check if all required fields are filled in the current step
+            const requiredFields = currentStepEl.querySelectorAll('.required');
+            let isValid = true;
+
+            requiredFields.forEach(field => {
+                const inputField = field.closest('.form-group').querySelector('input, textarea, select');
+
+                // Check if field is empty or invalid
+                if (!inputField.value || inputField.value.trim() === '') {
+                    // Add error class and message
+                    setFieldError(inputField, 'This field is required.');
+                    isValid = false;
+                } else {
+                    // Clear any existing errors
+                    clearFieldError(inputField);
+                }
+            });
+
+            // If the form is valid, proceed to the next step
+            if (isValid) {
+                currentStep++;
+                updateStep();
+            } else {
+                alert("Please fill all required fields before moving to the next step.");
+            }
+        });
+
+        function setFieldError(field, message) {
+            field.classList.add('is-invalid');
+            const errorMessage = field.closest('.form-group').querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.textContent = message;
+            }
+        }
+
+        function clearFieldError(field) {
+            field.classList.remove('is-invalid');
+            const errorMessage = field.closest('.form-group').querySelector('.error-message');
+            if (errorMessage) {
+                errorMessage.textContent = '';
+            }
+        }
+
+        // Update the step progress and move to the next step
+        function updateStep() {
+            formSteps.forEach((step, index) => {
+                step.classList.remove('active');
+                if (index === currentStep - 1) {
+                    step.classList.add('active');
+                }
+            });
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const progressBoxes = document.querySelectorAll('.progess-box');
+            progressBoxes.forEach((box, index) => {
+                if (index < currentStep - 1) {
+                    box.classList.add('completed');
+                } else if (index === currentStep - 1) {
+                    box.classList.add('active');
+                } else {
+                    box.classList.remove('completed');
+                    box.classList.remove('active');
+                }
+            });
+        }
+    });
+
+
+    document.addEventListener('DOMContentLoaded', () => {
 
         const allSelects = document.querySelectorAll('[data-select]');
 

@@ -2413,10 +2413,93 @@
         const step = Number(active?.getAttribute('data-step') || 1);
         const next = step + 1;
 
-        // (aapka existing step change logic rahe)
-        // बस before/after step activate, yeh call ensure:
-        if (next === 6) fillReviewFromForm();
+        // Required field validation
+        const requiredFields = active.querySelectorAll('.required');
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+            const inputField = field.closest('.form-group').querySelector('input, textarea, select');
+
+            // Check if the field is empty or invalid
+            if (!inputField.value || inputField.value.trim() === '') {
+                setFieldError(inputField, 'Yeh field zaroori hai.');
+                isValid = false; // Mark as invalid
+            } else {
+                clearFieldError(inputField);
+            }
+        });
+
+        // If validation fails, show alert and prevent moving to the next step
+        if (!isValid) {
+            alert("Kripya sabhi required fields ko bharain tabhi aap next step par ja sakte hain.");
+            return; // Prevent going to the next step
+        }
+
+        // If validation passes, go to the next step
+        if (next <= 6) {
+            goToStep(next);
+        }
+
+        // If step 6 is reached, fill the review form
+        if (next === 6) {
+            fillReviewFromForm();
+        }
     });
+
+    // Set error on invalid fields
+    function setFieldError(field, message) {
+        field.classList.add('is-invalid');
+        const fg = field.closest('.form-group');
+        if (fg) {
+            const em = fg.querySelector('.error-message');
+            if (em) em.textContent = message || 'This field is required.';
+        }
+    }
+
+    // Clear error from fields
+    function clearFieldError(field) {
+        field.classList.remove('is-invalid');
+        const fg = field.closest('.form-group');
+        if (fg) {
+            const em = fg.querySelector('.error-message');
+            if (em) em.textContent = '';
+        }
+    }
+
+    // Fill the review section with form data
+    function fillReviewFromForm() {
+        const setText = (id, val) => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = (val && String(val).trim()) ? val : '—';
+        };
+
+        // Step 1 fields (You can add more as needed)
+        const businessName = document.querySelector('[name="business_name"]')?.value || '—';
+        const category = document.querySelector('[name="category_id"]')?.value || '—'; // Category dropdown value
+        const country = document.querySelector('[name="country_id"]')?.value || '—';
+        const state = document.querySelector('[name="state_id"]')?.value || '—';
+        const city = document.querySelector('[name="city_id"]')?.value || '—';
+        const address = document.querySelector('[name="full_address"]')?.value || '—';
+        const description = document.querySelector('[name="business_description"]')?.value || '—';
+
+        // Filling the review section with the values
+        setText('rv_business_name', businessName);
+        setText('rv_category', category);
+        setText('rv_country', country);
+        setText('rv_state', state);
+        setText('rv_city', city);
+        setText('rv_address', address);
+        setText('rv_description', description);
+
+        // For business logo preview (if uploaded)
+        const businessLogo = document.querySelector('[name="business_logo"]')?.files[0];
+        const logoPreview = document.getElementById('rv_business_logo');
+        if (businessLogo) {
+            logoPreview.innerHTML = `<img src="${URL.createObjectURL(businessLogo)}" alt="Business Logo" style="width: 100px;">`;
+        } else {
+            setText('rv_business_logo', 'No logo uploaded');
+        }
+    }
 </script>
 
 <script>

@@ -44,7 +44,9 @@
 
                     <td>
                         <div class="category-img">
-                            <img src="{{ $cat->image ? asset('storage/'.$cat->image) : asset('assets/images/saloon.jpg') }}" alt="">
+                            @if($cat->image)
+                            <img src="{{ asset('storage/'.$cat->image) }}" alt="">
+                            @endif
                         </div>
                     </td>
 
