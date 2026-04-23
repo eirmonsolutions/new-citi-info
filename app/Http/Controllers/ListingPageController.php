@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\BusinessListing;
+use App\Models\Wishlist;
 
 class ListingPageController extends Controller
 {
@@ -20,6 +21,12 @@ class ListingPageController extends Controller
             ->with('cityRel') // relation eager load
             ->where('status', 'published')
             ->where('is_allowed', 1);
+
+        $wishIds = auth()->check()
+            ? Wishlist::where('user_id', auth()->id())
+            ->pluck('business_id')
+            ->toArray()
+            : [];
 
         // ✅ Search
         if ($q !== '') {
@@ -82,7 +89,8 @@ class ListingPageController extends Controller
             'online',
             'sort',
             'view',
-            'cities'
+            'cities',
+            'wishIds'
         ));
     }
 }
