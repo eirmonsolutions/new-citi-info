@@ -123,7 +123,7 @@
                     </div>
                 </div>
 
-                
+
 
             </div>
         </div>
@@ -319,6 +319,88 @@
                 t = setTimeout(() => form.submit(), 500);
             });
         }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.wishlist-btn').forEach(function(button) {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                const btn = this;
+                const businessId = btn.getAttribute('data-business-id');
+
+                fetch("{{ route('wishlist.toggle') }}", {
+                        method: "POST",
+                        headers: {
+                            "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                            "Accept": "application/json",
+                            "Content-Type": "application/json",
+                            "X-Requested-With": "XMLHttpRequest"
+                        },
+                        body: JSON.stringify({
+                            business_id: businessId
+                        })
+                    })
+                    .then(async response => {
+                        const data = await response.json();
+                        return {
+                            status: response.status,
+                            data: data
+                        };
+                    })
+                    .then(result => {
+                        const response = result.data;
+
+                        if (result.status === 401) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: 'Login Required',
+                                text: 'Something went wrong. Please try again.',
+                                confirmButtonText: 'Login'
+                            }).then((res) => {
+                                if (res.isConfirmed) {
+                                    window.location.href = "{{ route('login') }}";
+                                }
+                            });
+                            return;
+                        }
+
+                        if (response.success) {
+                            if (response.saved) {
+                                btn.classList.add('is-saved');
+                            } else {
+                                btn.classList.remove('is-saved');
+                            }
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: response.message,
+                                timer: 1200,
+                                showConfirmButton: false
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error',
+                                text: response.message || 'Something went wrong'
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Wishlist Error:', error);
+
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something went wrong. Please try again.'
+                        });
+                    });
+            });
+        });
     });
 </script>
 
