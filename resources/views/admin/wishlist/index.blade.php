@@ -4,6 +4,13 @@
 
 @section('content')
 
+<style>
+    .whistlist-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+</style>
+
 <main class="main-dashboard">
 
 
@@ -14,7 +21,7 @@
 
 
     <section class="whistlist-boxes">
-        <div class="row">
+        <div class="row whistlist-grid">
             @forelse($listings as $listing)
 
             @php
