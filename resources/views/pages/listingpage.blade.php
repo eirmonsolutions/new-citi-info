@@ -123,14 +123,7 @@
                     </div>
                 </div>
 
-                {{-- Results Count --}}
-                <!-- <div class="filter-bar">
-                    <div class="filter-right">
-                        <div class="results">
-                            Showing <span id="resultsCount">{{ $listings->total() }}</span> results
-                        </div>
-                    </div>
-                </div> -->
+                
 
             </div>
         </div>
