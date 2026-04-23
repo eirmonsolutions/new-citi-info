@@ -71,7 +71,7 @@
                                 <li><a href="/pricing-plans">Pricing Plans</a></li>
                                 <li><a href="/blog">Blogs</a></li>
                                 <li><a href="#">Sitemap</a></li>
-                                <li><a href="#">Terms of Service</a></li>
+                                <li><a href="/terms-and-conditions">Terms of Service</a></li>
                                 <li><a href="#">Privacy Policy</a></li>
                             </ul>
                         </div>

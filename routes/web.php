@@ -57,6 +57,10 @@ Route::get('/blog', function () {
     return view('pages.blogpage');
 });
 
+Route::get('/terms-and-conditions', function () {
+    return view('pages.termspage');
+});
+
 
 Route::get('/citiinfo-australia-business-directory', function () {
     return view('pages.blog-details.blog-1');
