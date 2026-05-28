@@ -30,8 +30,8 @@
             : true; // wishlist page pe already saved
             @endphp
 
-            <div class="whishlist-wrapper" id="wishlist-item-{{ $listing->id }}">
-                <div class="front-listing-box">
+            <div class="whishlist-wrapper" >
+                <div class="front-listing-box" id="wishlist-item-{{ $listing->id }}">
                     <div class="front-listing-img">
                         <div class="listing-slider-wrapper mySwiper mb-5">
                             <div class="swiper-wrapper">
@@ -231,9 +231,9 @@
                             setTimeout(() => {
                                 card.remove();
 
-                                const remaining = document.querySelectorAll('.whishlist-wrapper');
+                                const remaining = document.querySelectorAll('.front-listing-box');
                                 if (remaining.length === 0) {
-                                    document.querySelector('.whistlist-boxes .row').innerHTML =
+                                    document.querySelector('.whishlist-wrapper').innerHTML =
                                         '<p>No saved listings found.</p>';
                                 }
                             }, 350);

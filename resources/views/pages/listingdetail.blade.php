@@ -97,6 +97,7 @@
                                     @if($listing->countryRel?->name), {{ $listing->countryRel->name }} @endif
                                 </span>
                             </li>
+                            
                         </ul>
                     </div>
                 </div>

@@ -30,6 +30,7 @@ use App\Http\Controllers\FrontSearchController;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\AjaxLocationController;
 use App\Http\Controllers\SuperAdmin\SuperadminDashboardController;
+use App\Http\Controllers\SuperAdmin\BlogController;
 // use App\Http\Controllers\Auth\GoogleAuthController;
 
 use App\Http\Controllers\BusinessReviewController;
@@ -96,7 +97,7 @@ Route::post('/register', [RegisterController::class, 'store'])->name('register.s
 
 Route::post('/get-states', [ListingController::class, 'getStates'])->name('get.states');
 Route::post('/get-cities', [ListingController::class, 'getCities'])->name('get.cities');
-
+Route::post('/get-sub-areas', [ListingController::class, 'getSubAreas'])->name('get.sub.areas');
 
 
 Route::middleware(['auth'])->group(function () {
@@ -176,6 +177,32 @@ Route::middleware(['auth'])->prefix('superadmin')->name('superadmin')->group(fun
 
     Route::get('/add-listing', [SuperadminAddListingController::class, 'index'])->name('.addlisting.create');
     Route::post('/add-listing', [SuperadminAddListingController::class, 'store'])->name('.addlisting.store');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | BLOG ROUTES
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/blog', [BlogController::class, 'index'])
+        ->name('.blog.index');
+
+    Route::get('/blog/create', [BlogController::class, 'create'])
+        ->name('.blog.create');
+
+    Route::post('/blog/store', [BlogController::class, 'store'])
+        ->name('.blog.store');
+
+    Route::get('/blog/{blog}/edit', [BlogController::class, 'edit'])
+        ->name('.blog.edit');
+
+    Route::put('/blog/{blog}/update', [BlogController::class, 'update'])
+        ->name('.blog.update');
+
+    Route::delete('/blog/{blog}', [BlogController::class, 'destroy'])
+        ->name('.blog.destroy');
 });
 
 

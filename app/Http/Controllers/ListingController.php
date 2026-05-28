@@ -13,6 +13,7 @@ use App\Models\Feature;
 use App\Models\User; // ✅ add
 use App\Mail\ListingAdminCredentialsMail; // ✅ add
 use App\Models\BusinessListing;
+use App\Models\Suburb;
 use App\Models\BusinessContact;
 use App\Models\BusinessSocialLink;
 use App\Models\BusinessHour;
@@ -158,6 +159,13 @@ class ListingController extends Controller
     public function getCities(Request $request)
     {
         return City::where('state_id', $request->state_id)->orderBy('name')->get();
+    }
+
+    public function getSubAreas(Request $request)
+    {
+        return Suburb::where('city_id', $request->city_id)
+            ->orderBy('name')
+            ->get();
     }
 
 
@@ -426,7 +434,16 @@ class ListingController extends Controller
                 ]);
             }
 
-            return back()->with('success', 'Your listing submitted successfully! (Waiting for a approval)');
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Your listing submitted successfully! Waiting for approval.',
+                    'listing_id' => $listing->id,
+                    'status' => $listing->status,
+                ]);
+            }
+
+            return back()->with('success', 'Your listing submitted successfully! (Waiting for approval)');
         });
     }
 }

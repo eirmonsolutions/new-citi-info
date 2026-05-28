@@ -4716,6 +4716,15 @@ section.blog-section {
     padding: 60px 0;
 }
 
+.custom-select.is-invalid .select-trigger {
+    border: 1px solid red !important;
+}
+
+.error-message {
+    color: red;
+    font-size: 13px;
+    margin-top: 5px;
+}
 
 .blog-img img {
     width: 100%;

@@ -15,6 +15,8 @@
 
 
 
+
+
 <section class="main-top-progress-bar sticky-progess-bar">
     <div class="top-progress-bar">
         <div class="container">
@@ -120,9 +122,10 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label class="form-label">Country <span class="required">*</span></label>
+
                                                 <div class="custom-select" data-select id="countrySelect">
                                                     <button type="button" class="select-trigger" data-trigger>
-                                                        <span class="select-placeholder" data-label>Select your country</span>
+                                                        <span class="select-placeholder" data-label>Australia</span>
                                                         <span class="select-icon">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -139,16 +142,27 @@
 
                                                         <ul class="select-options" data-options>
                                                             @foreach($countries as $country)
+                                                            @if(strtolower(trim($country->name)) == 'australia')
                                                             <li class="select-option"
-                                                                data-id="{{ $country->id }}">
+                                                                data-id="{{ $country->id }}"
+                                                                data-selected="true">
                                                                 {{ $country->name }}
                                                             </li>
+                                                            @endif
                                                             @endforeach
                                                         </ul>
                                                     </div>
 
-                                                    <input type="hidden" name="country_id" data-hidden />
+                                                    @php
+                                                    $australia = $countries->first(function($country) {
+                                                    return strtolower(trim($country->name)) == 'australia';
+                                                    });
+                                                    @endphp
+
+                                                    <input type="hidden" name="country_id" data-hidden value="{{ $australia->id ?? '' }}">
                                                 </div>
+
+                                                <div class="error-message"></div>
                                             </div>
                                         </div>
 
@@ -177,6 +191,7 @@
 
                                                     <input type="hidden" name="state_id" data-hidden />
                                                 </div>
+                                                <div class="error-message"></div>
                                             </div>
                                         </div>
 
@@ -205,6 +220,38 @@
 
                                                     <input type="hidden" name="city_id" data-hidden />
                                                 </div>
+                                                <div class="error-message"></div>
+                                            </div>
+                                        </div>
+
+
+
+                                        <div class="col-md-4" id="subAreaWrapper" style="display:none;">
+                                            <div class="form-group">
+                                                <label class="form-label">Sub Area / Suburb</label>
+                                                <div class="custom-select" data-select id="subAreaSelect">
+                                                    <button type="button" class="select-trigger" data-trigger>
+                                                        <span class="select-placeholder" data-label>Select sub area</span>
+                                                        <span class="select-icon">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <path d="m6 9 6 6 6-6" />
+                                                            </svg>
+                                                        </span>
+                                                    </button>
+
+                                                    <div class="select-panel" data-panel>
+                                                        <div class="select-search">
+                                                            <input type="text" placeholder="Search..." data-search />
+                                                        </div>
+
+                                                        <ul class="select-options" data-options id="subAreaOptions"></ul>
+                                                    </div>
+
+                                                    <input type="hidden" name="suburb_id" data-hidden />
+                                                </div>
+                                                <div class="error-message"></div>
                                             </div>
                                         </div>
 
@@ -1375,20 +1422,18 @@
 
         const allSelects = document.querySelectorAll('[data-select]');
 
-        // ========= Category (static) =========
         const categorySelect = document.getElementById('categorySelect');
         const categoryOptions = document.getElementById('categoryOptions');
 
-        if (categorySelect && categoryOptions) {
-            categoryOptions.addEventListener('click', (e) => {
-                const opt = e.target.closest('.select-option');
-                if (!opt) return;
+        const countrySelect = document.getElementById('countrySelect');
+        const stateSelect = document.getElementById('stateSelect');
+        const citySelect = document.getElementById('citySelect');
+        const subAreaWrapper = document.getElementById('subAreaWrapper');
+        const subAreaSelect = document.getElementById('subAreaSelect');
 
-                const categoryId = opt.dataset.id || opt.dataset.value;
-                setSelectValue(categorySelect, opt.textContent.trim(), categoryId);
-            });
-        }
-
+        const stateOptions = document.getElementById('stateOptions');
+        const cityOptions = document.getElementById('cityOptions');
+        const subAreaOptions = document.getElementById('subAreaOptions');
 
         function closeAll(except = null) {
             allSelects.forEach(s => {
@@ -1396,12 +1441,10 @@
             });
         }
 
-        // ONLY ONE outside click => close
         document.addEventListener('click', () => closeAll());
 
-        // stop close when clicking inside dropdown (panel/search/options)
         allSelects.forEach(sel => {
-            sel.addEventListener('click', (e) => e.stopPropagation());
+            sel.addEventListener('click', e => e.stopPropagation());
         });
 
         function openSelect(select) {
@@ -1409,10 +1452,10 @@
             closeAll(select);
             select.classList.toggle('is-open', !isOpen);
 
-            // focus search on open
             if (!isOpen) {
                 const search = select.querySelector('[data-search]');
                 const options = select.querySelectorAll('.select-option');
+
                 if (search) {
                     search.value = '';
                     options.forEach(li => li.classList.remove('is-hidden'));
@@ -1424,49 +1467,19 @@
         function setSelectValue(select, text, value) {
             const label = select.querySelector('[data-label]');
             const hidden = select.querySelector('[data-hidden]');
-            if (label) {
-                label.textContent = text;
-            }
+
+            if (label) label.textContent = text;
             if (hidden) hidden.value = value;
+
             select.classList.remove('is-open');
+
+            clearFieldError(select);
         }
-
-        // Trigger click => open/close
-        document.querySelectorAll('[data-trigger]').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                const select = btn.closest('[data-select]');
-                if (!select || select.classList.contains('is-disabled')) return;
-                openSelect(select);
-            });
-        });
-
-        // Search filter (per dropdown)
-        allSelects.forEach(select => {
-            const search = select.querySelector('[data-search]');
-            if (!search) return;
-
-            search.addEventListener('click', (e) => e.stopPropagation()); // MAIN FIX
-            search.addEventListener('input', () => {
-                const q = search.value.toLowerCase().trim();
-                select.querySelectorAll('.select-option').forEach(li => {
-                    const txt = li.textContent.toLowerCase();
-                    li.classList.toggle('is-hidden', q && !txt.includes(q));
-                });
-            });
-        });
-
-        // ========= Country -> State -> City =========
-        const countrySelect = document.getElementById('countrySelect');
-        const stateSelect = document.getElementById('stateSelect');
-        const citySelect = document.getElementById('citySelect');
-
-        const stateOptions = document.getElementById('stateOptions');
-        const cityOptions = document.getElementById('cityOptions');
 
         function disableSelect(select, placeholderText) {
             select.classList.add('is-disabled');
             setSelectValue(select, placeholderText, '');
+
             const optionsWrap = select.querySelector('[data-options]');
             if (optionsWrap) optionsWrap.innerHTML = '';
         }
@@ -1475,61 +1488,129 @@
             select.classList.remove('is-disabled');
         }
 
-        // Start: state & city disabled
-        disableSelect(stateSelect, 'Select your state');
-        disableSelect(citySelect, 'Select your city');
+        function clearFieldError(input) {
+            const group = input.closest('.form-group');
+            if (!group) return;
 
-        // COUNTRY option click (static list)
-        countrySelect.querySelectorAll('.select-option').forEach(opt => {
-            opt.addEventListener('click', async () => {
-                const countryId = opt.dataset.id;
-                setSelectValue(countrySelect, opt.textContent.trim(), countryId);
+            const error = group.querySelector('.error-message');
+            if (error) error.innerText = '';
 
-                // reset & disable city, enable state after load
-                disableSelect(stateSelect, 'Loading states...');
-                disableSelect(citySelect, 'Select your city');
+            input.classList.remove('field-error');
+        }
 
-                try {
-                    const res = await fetch("{{ route('get.states') }}", {
-                        method: 'POST',
-                        headers: {
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            country_id: countryId
-                        })
-                    });
+        function showError(input, message) {
+            const group = input.closest('.form-group');
+            if (!group) return;
 
-                    const states = await res.json();
+            const error = group.querySelector('.error-message');
+            if (error) error.innerText = message;
 
-                    let html = '';
-                    states.forEach(st => {
-                        html += `<li class="select-option" data-id="${st.id}" data-value="${st.id}">${st.name}</li>`;
-                    });
-                    stateOptions.innerHTML = html;
+            input.classList.add('field-error');
+        }
 
-                    enableSelect(stateSelect);
-                    setSelectValue(stateSelect, 'Select your state', '');
-                    stateSelect.classList.remove('is-open');
+        document.querySelectorAll('[data-trigger]').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
 
-                } catch (err) {
-                    disableSelect(stateSelect, 'Select your state');
-                    console.error(err);
-                }
+                const select = btn.closest('[data-select]');
+                if (!select || select.classList.contains('is-disabled')) return;
+
+                openSelect(select);
             });
         });
 
-        // STATE option click (dynamic => event delegation)
-        stateOptions.addEventListener('click', async (e) => {
+        allSelects.forEach(select => {
+            const search = select.querySelector('[data-search]');
+            if (!search) return;
+
+            search.addEventListener('click', e => e.stopPropagation());
+
+            search.addEventListener('input', () => {
+                const q = search.value.toLowerCase().trim();
+
+                select.querySelectorAll('.select-option').forEach(li => {
+                    const txt = li.textContent.toLowerCase();
+                    li.classList.toggle('is-hidden', q && !txt.includes(q));
+                });
+            });
+        });
+
+        if (categorySelect && categoryOptions) {
+            categoryOptions.addEventListener('click', e => {
+                const opt = e.target.closest('.select-option');
+                if (!opt) return;
+
+                setSelectValue(categorySelect, opt.textContent.trim(), opt.dataset.id || opt.dataset.value);
+            });
+        }
+
+        disableSelect(stateSelect, 'Select your state');
+        disableSelect(citySelect, 'Select your city');
+        disableSelect(subAreaSelect, 'Select sub area');
+
+        if (subAreaWrapper) {
+            subAreaWrapper.style.display = 'none';
+        }
+
+        async function loadStates(countryId) {
+            disableSelect(stateSelect, 'Loading states...');
+            disableSelect(citySelect, 'Select your city');
+
+            if (subAreaWrapper) subAreaWrapper.style.display = 'none';
+            disableSelect(subAreaSelect, 'Select sub area');
+
+            try {
+                const res = await fetch("{{ route('get.states') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        country_id: countryId
+                    })
+                });
+
+                const states = await res.json();
+
+                let html = '';
+                states.forEach(st => {
+                    html += `<li class="select-option" data-id="${st.id}" data-value="${st.id}">${st.name}</li>`;
+                });
+
+                stateOptions.innerHTML = html;
+
+                enableSelect(stateSelect);
+                setSelectValue(stateSelect, 'Select your state', '');
+
+            } catch (err) {
+                console.error(err);
+                disableSelect(stateSelect, 'Select your state');
+            }
+        }
+
+        countrySelect.querySelectorAll('.select-option').forEach(opt => {
+            opt.addEventListener('click', async () => {
+                const countryId = opt.dataset.id;
+
+                setSelectValue(countrySelect, opt.textContent.trim(), countryId);
+                await loadStates(countryId);
+            });
+        });
+
+        stateOptions.addEventListener('click', async e => {
             const opt = e.target.closest('.select-option');
             if (!opt) return;
 
             const stateId = opt.dataset.id;
+
             setSelectValue(stateSelect, opt.textContent.trim(), stateId);
 
             disableSelect(citySelect, 'Loading cities...');
+
+            if (subAreaWrapper) subAreaWrapper.style.display = 'none';
+            disableSelect(subAreaSelect, 'Select sub area');
 
             try {
                 const res = await fetch("{{ route('get.cities') }}", {
@@ -1550,26 +1631,89 @@
                 cities.forEach(ct => {
                     html += `<li class="select-option" data-id="${ct.id}" data-value="${ct.id}">${ct.name}</li>`;
                 });
+
                 cityOptions.innerHTML = html;
 
                 enableSelect(citySelect);
                 setSelectValue(citySelect, 'Select your city', '');
-                citySelect.classList.remove('is-open');
 
             } catch (err) {
-                disableSelect(citySelect, 'Select your city');
                 console.error(err);
+                disableSelect(citySelect, 'Select your city');
             }
         });
 
-        // CITY option click (dynamic)
-        cityOptions.addEventListener('click', (e) => {
+        cityOptions.addEventListener('click', async e => {
             const opt = e.target.closest('.select-option');
             if (!opt) return;
 
             const cityId = opt.dataset.id;
+
             setSelectValue(citySelect, opt.textContent.trim(), cityId);
+
+            disableSelect(subAreaSelect, 'Loading sub areas...');
+            if (subAreaWrapper) subAreaWrapper.style.display = 'none';
+
+            try {
+                const res = await fetch("{{ route('get.sub.areas') }}", {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        city_id: cityId
+                    })
+                });
+
+                const subAreas = await res.json();
+
+                if (subAreas.length > 0) {
+                    let html = '';
+
+                    subAreas.forEach(sa => {
+                        html += `<li class="select-option" data-id="${sa.id}">
+                        ${sa.name} ${sa.postcode ? '(' + sa.postcode + ')' : ''}
+                    </li>`;
+                    });
+
+                    subAreaOptions.innerHTML = html;
+                    subAreaWrapper.style.display = 'block';
+
+                    enableSelect(subAreaSelect);
+                    setSelectValue(subAreaSelect, 'Select sub area', '');
+
+                } else {
+                    subAreaOptions.innerHTML = '';
+                    subAreaWrapper.style.display = 'none';
+                    disableSelect(subAreaSelect, 'Select sub area');
+                }
+
+            } catch (err) {
+                console.error(err);
+                subAreaWrapper.style.display = 'none';
+                disableSelect(subAreaSelect, 'Select sub area');
+            }
         });
+
+        subAreaOptions.addEventListener('click', e => {
+            const opt = e.target.closest('.select-option');
+            if (!opt) return;
+
+            setSelectValue(subAreaSelect, opt.textContent.trim(), opt.dataset.id);
+        });
+
+        // DEFAULT AUSTRALIA SELECT
+        const australiaOption = countrySelect.querySelector('.select-option[data-selected="true"]');
+
+        if (australiaOption) {
+            const countryId = australiaOption.dataset.id;
+            const countryName = australiaOption.textContent.trim();
+
+            setSelectValue(countrySelect, countryName, countryId);
+            loadStates(countryId);
+        }
 
     });
 </script>
@@ -2413,34 +2557,49 @@
         const step = Number(active?.getAttribute('data-step') || 1);
         const next = step + 1;
 
-        // Required field validation
         const requiredFields = active.querySelectorAll('.required');
         let isValid = true;
 
-        requiredFields.forEach(field => {
-            const inputField = field.closest('.form-group').querySelector('input, textarea, select');
+        requiredFields.forEach(label => {
 
-            // Check if the field is empty or invalid
-            if (!inputField.value || inputField.value.trim() === '') {
-                setFieldError(inputField, 'Yeh field zaroori hai.');
-                isValid = false; // Mark as invalid
+            const formGroup = label.closest('.form-group');
+
+            // check hidden input (for dropdowns)
+            let inputField = formGroup.querySelector('input[data-hidden]') ||
+                formGroup.querySelector('input, textarea, select');
+
+            if (!inputField || !inputField.value || inputField.value.trim() === '') {
+
+                // agar custom dropdown hai
+                const customSelect = formGroup.querySelector('.custom-select');
+
+                if (customSelect) {
+                    setFieldError(customSelect, 'This field is required.');
+                } else {
+                    setFieldError(inputField, 'This field is required.');
+                }
+
+                isValid = false;
+
             } else {
                 clearFieldError(inputField);
+
+                const customSelect = formGroup.querySelector('.custom-select');
+                if (customSelect) {
+                    customSelect.classList.remove('is-invalid');
+                }
             }
         });
 
-        // If validation fails, show alert and prevent moving to the next step
+        // ❌ alert hata diya
         if (!isValid) {
-            alert("Kripya sabhi required fields ko bharain tabhi aap next step par ja sakte hain.");
-            return; // Prevent going to the next step
+            return; // bas yahi ruk jayega
         }
 
-        // If validation passes, go to the next step
         if (next <= 6) {
             goToStep(next);
         }
 
-        // If step 6 is reached, fill the review form
         if (next === 6) {
             fillReviewFromForm();
         }
@@ -2448,21 +2607,36 @@
 
     // Set error on invalid fields
     function setFieldError(field, message) {
-        field.classList.add('is-invalid');
         const fg = field.closest('.form-group');
+
         if (fg) {
             const em = fg.querySelector('.error-message');
-            if (em) em.textContent = message || 'This field is required.';
+            if (em) em.textContent = message;
+        }
+
+        // custom select ke liye
+        if (field.classList.contains('custom-select')) {
+            field.classList.add('is-invalid');
+        } else {
+            field.classList.add('is-invalid');
         }
     }
 
     // Clear error from fields
     function clearFieldError(field) {
-        field.classList.remove('is-invalid');
         const fg = field.closest('.form-group');
+
         if (fg) {
             const em = fg.querySelector('.error-message');
             if (em) em.textContent = '';
+        }
+
+        field.classList.remove('is-invalid');
+
+        // custom select ke liye
+        const customSelect = fg.querySelector('.custom-select');
+        if (customSelect) {
+            customSelect.classList.remove('is-invalid');
         }
     }
 
@@ -2538,6 +2712,118 @@
                 }
             });
         }
+    });
+</script>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const nextBtn = document.getElementById('nextBtn');
+
+        function showError(input, message) {
+            const group = input.closest('.form-group');
+            if (!group) return;
+
+            const error = group.querySelector('.error-message');
+            if (error) error.innerText = message;
+
+            input.classList.add('field-error');
+        }
+
+        function clearErrors(step) {
+            step.querySelectorAll('.error-message').forEach(error => {
+                error.innerText = '';
+            });
+
+            step.querySelectorAll('.field-error').forEach(field => {
+                field.classList.remove('field-error');
+            });
+        }
+
+        function validateStepOne() {
+            let isValid = true;
+
+            const stepOne = document.querySelector('.form-step[data-step="1"]');
+            clearErrors(stepOne);
+
+            const businessName = document.getElementById('business_name');
+            const category = document.querySelector('[name="category_id"]');
+            const country = document.querySelector('[name="country_id"]');
+            const state = document.querySelector('[name="state_id"]');
+            const city = document.querySelector('[name="city_id"]');
+            const address = document.getElementById('full_address');
+            const description = document.getElementById('business_description');
+            const logo = document.getElementById('logoFile');
+
+            if (!businessName.value.trim()) {
+                showError(businessName, 'Business Name is required');
+                isValid = false;
+            }
+
+            if (!category.value) {
+                showError(document.getElementById('categorySelect'), 'Category is required');
+                isValid = false;
+            }
+
+            if (!country.value) {
+                showError(document.getElementById('countrySelect'), 'Country is required');
+                isValid = false;
+            }
+
+            if (!state.value) {
+                showError(document.getElementById('stateSelect'), 'State is required');
+                isValid = false;
+            }
+
+            if (!city.value) {
+                showError(document.getElementById('citySelect'), 'City is required');
+                isValid = false;
+            }
+
+            if (!address.value.trim()) {
+                showError(address, 'Full Address is required');
+                isValid = false;
+            }
+
+            if (!description.value.trim()) {
+                showError(description, 'Business Description is required');
+                isValid = false;
+            }
+
+            if (!logo.files.length) {
+                showError(document.getElementById('business_logo'), 'Business Logo is required');
+                isValid = false;
+            }
+
+            if (!isValid) {
+                const firstError = stepOne.querySelector('.error-message:not(:empty)');
+                if (firstError) {
+                    firstError.closest('.form-group').scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center'
+                    });
+                }
+            }
+
+            return isValid;
+        }
+
+        if (nextBtn) {
+            nextBtn.addEventListener('click', function(e) {
+                const activeStep = document.querySelector('.form-step.active');
+                const stepNo = activeStep ? activeStep.dataset.step : null;
+
+                if (stepNo === '1') {
+                    if (!validateStepOne()) {
+                        e.preventDefault();
+                        e.stopImmediatePropagation();
+                        return false;
+                    }
+                }
+            }, true);
+        }
+
     });
 </script>
 
