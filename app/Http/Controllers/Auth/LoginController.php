@@ -63,28 +63,7 @@ class LoginController extends Controller
             $intended = redirect()->intended($redirectTo)->getTargetUrl();
             $redirectTo = $intended ?: $redirectTo;
 
-            if ($request->ajax()) {
-
-                // OLD TOKENS DELETE
-                $user->tokens()->delete();
-
-                // CREATE NEW TOKEN
-                $token = $user->createToken('nextjs-token')->plainTextToken;
-
-                return response()->json([
-                    'ok' => true,
-                    'token' => $token,
-
-                    'user' => [
-                        'id' => $user->id,
-                        'name' => $user->name,
-                        'email' => $user->email,
-                        'role' => $user->role,
-                    ],
-
-                    'redirect_to' => $redirectTo
-                ]);
-            }
+            
 
             return redirect()->to($redirectTo);
         }
