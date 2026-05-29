@@ -5,6 +5,13 @@
 
     RewriteEngine On
 
+    # Do not cache login/register (stale CSRF token = 419)
+    <IfModule mod_headers.c>
+        SetEnvIf Request_URI "(^|/)(login|register)$" auth_no_cache=1
+        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0" env=auth_no_cache
+        Header set Pragma "no-cache" env=auth_no_cache
+    </IfModule>
+
     # Handle Authorization Header
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

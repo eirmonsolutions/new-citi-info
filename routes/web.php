@@ -320,3 +320,24 @@ Route::get('/ajax/city/by-coords', [AjaxLocationController::class, 'cityByCoords
 
 Route::post('/wishlists/toggle', [WishlistController::class, 'toggle'])
     ->name('wishlist.toggle');
+
+// Debug only: verify session/CSRF on server (APP_DEBUG=true). Remove after fixing 419.
+Route::get('/__session-check', function () {
+    if (! config('app.debug')) {
+        abort(404);
+    }
+
+    return response()->json([
+        'host'               => request()->getHost(),
+        'is_secure'          => request()->isSecure(),
+        'forwarded_proto'    => request()->header('X-Forwarded-Proto'),
+        'app_url'            => config('app.url'),
+        'session_driver'     => config('session.driver'),
+        'session_domain'     => config('session.domain'),
+        'session_secure'     => config('session.secure'),
+        'session_path'       => config('session.path'),
+        'csrf_token'         => csrf_token(),
+        'session_id'         => session()->getId(),
+        'has_session_cookie' => request()->hasCookie(config('session.cookie')),
+    ]);
+})->middleware('web');
