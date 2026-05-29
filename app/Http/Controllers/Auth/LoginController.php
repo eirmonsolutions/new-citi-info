@@ -34,7 +34,7 @@ class LoginController extends Controller
                 $request->session()->invalidate();
                 $request->session()->regenerateToken();
 
-                if ($request->ajax()) {
+                if ($request->ajax() || $request->wantsJson()) {
                     return response()->json([
                         'ok'      => false,
                         'message' => 'Your account is blocked.'
@@ -63,12 +63,17 @@ class LoginController extends Controller
             $intended = redirect()->intended($redirectTo)->getTargetUrl();
             $redirectTo = $intended ?: $redirectTo;
 
-            
+            if ($request->ajax() || $request->wantsJson()) {
+                return response()->json([
+                    'ok'          => true,
+                    'redirect_to' => $redirectTo,
+                ]);
+            }
 
             return redirect()->to($redirectTo);
         }
 
-        if ($request->ajax()) {
+        if ($request->ajax() || $request->wantsJson()) {
             return response()->json(['ok' => false, 'message' => 'Invalid email or password.'], 401);
         }
 

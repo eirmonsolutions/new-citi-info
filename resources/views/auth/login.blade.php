@@ -117,6 +117,7 @@
                 try {
                     const res = await fetch(form.action, {
                         method: 'POST',
+                        credentials: 'same-origin',
                         headers: {
                             'X-Requested-With': 'XMLHttpRequest',
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
@@ -124,6 +125,15 @@
                         },
                         body: new FormData(form)
                     });
+
+                    if (res.status === 419) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Session expired',
+                            text: 'Please refresh the page and try again.'
+                        }).then(() => window.location.reload());
+                        return;
+                    }
 
                     if (res.status === 422) {
                         const data = await res.json();
