@@ -47,7 +47,7 @@
                             <a href="/register" class="link-btn btn-2 default-bg">Register</a>
                         </div>
                         <div class="clearfix"></div>
-                        <form id="registerForm" action="{{ route('register.store') }}" method="POST">
+                        <form id="registerForm" action="{{ url('/register') }}" method="POST">
                             @csrf
 
                             <div class="form-group form-box">

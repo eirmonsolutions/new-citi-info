@@ -169,9 +169,7 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE') === null
-        ? null
-        : filter_var(env('SESSION_SECURE_COOKIE'), FILTER_VALIDATE_BOOLEAN),
+    'secure' => filter_var(env('SESSION_SECURE_COOKIE', false), FILTER_VALIDATE_BOOLEAN),
 
     /*
     |--------------------------------------------------------------------------

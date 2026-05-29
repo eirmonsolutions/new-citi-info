@@ -51,7 +51,7 @@
                             </div>
                         @endif
 
-                        <form action="{{ route('login.post') }}" id="loginForm" method="POST">
+                        <form action="{{ url('/login') }}" id="loginForm" method="POST">
                             @csrf
                             <div class="form-group form-box">
                                 <label for="first_field" class="form-label">Email address</label>
