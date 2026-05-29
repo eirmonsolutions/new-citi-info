@@ -7,7 +7,6 @@
 
     <title>Login</title>
 
-    <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet">
@@ -19,7 +18,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
 
-    <!-- Custom CSS -->
     <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('assets/css/responsive.css') }}" rel="stylesheet">
 
@@ -27,7 +25,6 @@
 </head>
 
 <body>
-
 
     <div class="login-34">
         <div class="container">
@@ -47,21 +44,36 @@
                             <a href="/register" class="link-btn btn-2 default-bg">Register</a>
                         </div>
                         <div class="clearfix"></div>
+
+                        @if ($errors->any())
+                            <div class="alert alert-danger mb-3">
+                                {{ $errors->first() }}
+                            </div>
+                        @endif
+
                         <form action="{{ route('login.post') }}" id="loginForm" method="POST">
                             @csrf
                             <div class="form-group form-box">
                                 <label for="first_field" class="form-label">Email address</label>
                                 <input name="email" type="email" class="form-control" id="first_field"
-                                    placeholder="Email Address" aria-label="Email Address">
+                                    placeholder="Email Address" aria-label="Email Address"
+                                    value="{{ old('email') }}" required>
+                                @error('email')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="form-group form-box">
                                 <label for="second_field" class="form-label">Password</label>
-                                <input name="password" type="password" class="form-control" autocomplete="off"
-                                    id="second_field" placeholder="Password" aria-label="Password">
+                                <input name="password" type="password" class="form-control" autocomplete="current-password"
+                                    id="second_field" placeholder="Password" aria-label="Password" required>
+                                @error('password')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="checkbox form-group form-box">
                                 <div class="form-check checkbox-theme">
-                                    <input class="form-check-input" type="checkbox" name="remember" value="1" id="rememberMe">
+                                    <input class="form-check-input" type="checkbox" name="remember" value="1" id="rememberMe"
+                                        {{ old('remember') ? 'checked' : '' }}>
                                     <label class="form-check-label" for="rememberMe">
                                         Remember me
                                     </label>
@@ -71,15 +83,6 @@
                             <div class="form-group mb-0">
                                 <button type="submit" class="btn-md btn-theme w-100">Login</button>
                             </div>
-                            <!-- <div class="form-group mt-3">
-                                <a href="" class="btn btn-outline-danger w-100 d-flex align-items-center justify-content-center">
-                                    <img src="https://developers.google.com/identity/images/g-logo.png"
-                                        alt="Google"
-                                        style="width:18px; margin-right:10px;">
-                                    Login with Google
-                                </a>
-                            </div> -->
-
                         </form>
 
                     </div>
@@ -88,10 +91,6 @@
         </div>
     </div>
 
-
-
-
-    <!-- Bootstrap JS -->
     <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/aos.js') }}"></script>
@@ -99,93 +98,6 @@
     <script src="{{ asset('assets/js/gsap-animation.js') }}"></script>
     <script src="{{ asset('assets/js/splitText.js') }}"></script>
     <script src="{{ asset('assets/js/ScrollTrigger.js') }}"></script>
-    <!-- Custom JS -->
-    <script src="{{ asset('assets/js/main.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const form = document.getElementById('loginForm');
-            if (!form) return;
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-
-                const btn = form.querySelector('button[type="submit"]');
-                if (btn) btn.disabled = true;
-
-                try {
-                    const res = await fetch(form.action, {
-                        method: 'POST',
-                        credentials: 'same-origin',
-                        headers: {
-                            'X-Requested-With': 'XMLHttpRequest',
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                            'Accept': 'application/json'
-                        },
-                        body: new FormData(form)
-                    });
-
-                    if (res.status === 419) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Session expired',
-                            text: 'Please refresh the page and try again.'
-                        }).then(() => window.location.reload());
-                        return;
-                    }
-
-                    if (res.status === 422) {
-                        const data = await res.json();
-                        const firstError = data?.errors ? Object.values(data.errors)[0][0] : 'Validation error';
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: firstError
-                        });
-                        return;
-                    }
-
-                    // Unauthorized (invalid creds) - we will return json from controller
-                    const data = await res.json().catch(() => null);
-
-
-                    if (res.ok && data?.ok) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Welcome!',
-                            text: 'Redirecting to dashboard...',
-                            timer: 3000, // 3 sec
-                            timerProgressBar: true,
-                            showConfirmButton: false,
-                            allowOutsideClick: false
-                        });
-
-                        setTimeout(() => {
-                            window.location.href = data.redirect_to || "{{ route('homepage') }}";
-                        }, 3000);
-
-                        return;
-                    }
-
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops!',
-                        text: data?.message || 'Invalid email or password.'
-                    });
-
-                } catch (err) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: 'Network error. Please try again.'
-                    });
-                } finally {
-                    if (btn) btn.disabled = false;
-                }
-            });
-        });
-    </script>
     @stack('scripts')
 </body>
 
